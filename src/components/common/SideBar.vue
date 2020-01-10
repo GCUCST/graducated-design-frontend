@@ -1,137 +1,131 @@
 <template>
   <div>
     <!-- 显隐侧边栏按钮 -->
-    <div  :class=" ifShowSideBar?'btn-isNotShow':'btn-isShow'" @click="ifShowSideBar=!ifShowSideBar">
-        <i v-if="ifShowSideBar" class="el-icon-menu"></i>
-        <i  v-if="!ifShowSideBar" class="el-icon-s-grid"></i>
+    <div :class=" ifShowSideBar?'btn-isNotShow':'btn-isShow'" @click="ifShowSideBar=!ifShowSideBar">
+      <i v-if="ifShowSideBar" class="el-icon-menu"></i>
+      <i v-if="!ifShowSideBar" class="el-icon-s-grid"></i>
     </div>
 
-
-  <transition
-    name="custom-classes-transition"
-    enter-active-class="animated fadeInDown"
-    leave-active-class="animated fadeOutUp"
-  >
-    <!-- 这个是侧边栏 -->
-    <div v-if="ifShowSideBar">
-      <el-menu
-        style="height:800px;"
-        unique-opened
-        text-color="white"
-        background-color="#2A333C"
-        class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
-        :collapse="isCollapse"
-      >
-        <!-- 展开/收缩按钮 -->
-        <el-menu-item class="extend">
-          <i v-show="isCollapse" class="el-icon-d-arrow-right" @click="SideBarStatusChange"></i>
-          <i v-show="!isCollapse" class="el-icon-d-arrow-left" @click="SideBarStatusChange"></i>
-          <!-- <span slot="title"></span> -->
-        </el-menu-item>
-
-        <!-- 个人中心 -->
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">个人中心（所有）</span>
-        </el-menu-item>
-
-        <!-- 视频学习 -->
-        <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span slot="title">视频系统（教师和学生）</span>
-          </template>
-          <el-menu-item-group>
-            <span slot="title"></span>
-            <el-menu-item index="1-1">视频主页（学生和教师）</el-menu-item>
-            <el-menu-item index="1-1">我的课程（学生）</el-menu-item>
-            <el-menu-item index="1-1">视频上传（教师）</el-menu-item>
-            <el-menu-item index="1-2">我的视频库（教师）</el-menu-item>
-            <el-menu-item index="1-2">我教的课程（教师）</el-menu-item>
-            <el-menu-item index="1-2">笔记本（学生，保留）</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-
-        <!-- 信息管理 -->
-        <el-submenu index="3">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span slot="title">成员管理（教务员）</span>
-          </template>
-          <el-menu-item-group>
+    <transition
+      name="custom-classes-transition"
+      enter-active-class="animated fadeInDown"
+      leave-active-class="animated fadeOutUp"
+    >
+      <!-- 这个是侧边栏 -->
+      <div v-if="ifShowSideBar">
+        <el-menu
+          style="height:800px;"
+          unique-opened
+          text-color="white"
+          background-color="#2A333C"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          :collapse="isCollapse"
+        >
+          <!-- 展开/收缩按钮 -->
+          <el-menu-item class="extend">
+            <i v-show="isCollapse" class="el-icon-d-arrow-right" @click="SideBarStatusChange"></i>
+            <i v-show="!isCollapse" class="el-icon-d-arrow-left" @click="SideBarStatusChange"></i>
             <!-- <span slot="title"></span> -->
-            <el-menu-item index="1-1">学生管理（教务员）</el-menu-item>
-            <el-menu-item index="1-2">教师管理（教务员）</el-menu-item>
-            <el-menu-item index="1-3">班级管理（教务员）</el-menu-item>
-            <el-menu-item index="1-4">专业管理（教务员）</el-menu-item>
-            <el-menu-item index="1-5">年级管理（教务员）</el-menu-item>
-            <el-menu-item index="1-6">课程管理（教务员）</el-menu-item>
-            <el-menu-item index="1-7">授课任务管理（教务员）</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
+          </el-menu-item>
 
-        <!-- 管理 -->
-        <el-submenu index="8">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span slot="title">考试系统（学生和教师）</span>
-          </template>
-          <el-menu-item-group>
-            <!-- <span slot="title"></span> -->
-            <el-menu-item index="1-1">章节自由练习（学生）</el-menu-item>
-            <el-menu-item index="1-2">章节测试（学生）</el-menu-item>
-            <el-menu-item index="1-3">考试（学生）</el-menu-item>
-            <el-menu-item index="1-4">错题集（学生）</el-menu-item>
-            <el-menu-item index="1-5">我的课程（教师）</el-menu-item>
-            <el-menu-item index="1-6">我的试题库（教师，添加试题）</el-menu-item>
-            <el-menu-item index="1-7">改卷（教师）</el-menu-item>
-            <el-menu-item index="1-8">学生章节练习进度（教师，查看进度情况）</el-menu-item>
-            <el-menu-item index="1-9">导出学生考试卷（教师）</el-menu-item>
-            <el-menu-item index="1-10">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
+          <!-- 用户登录 -->
+          <el-menu-item index="1" @click="routeJump('Login')">
+            <i class="el-icon-user-solid"></i>
+            <span slot="title">用户登录</span>
+          </el-menu-item>
 
-        <el-menu-item index="5">
-          <i class="el-icon-setting"></i>
-          <span slot="title">消息系统（所有）</span>
-        </el-menu-item>
+          <!-- 视频学习 -->
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span slot="title">视频系统（教师和学生）</span>
+            </template>
+            <el-menu-item-group>
+              <span slot="title"></span>
+              <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页（学生和教师）</el-menu-item>
+              <el-menu-item index="2-2">我的课程（学生）</el-menu-item>
+              <el-menu-item index="2-3">视频上传（教师）</el-menu-item>
+              <el-menu-item index="2-4">我的视频库（教师）</el-menu-item>
+              <el-menu-item index="2-5">我教的课程（教师）</el-menu-item>
+              <el-menu-item index="2-6">笔记本（学生，保留）</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
-        <!-- 反馈 -->
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">投诉反馈（所有）</span>
-        </el-menu-item>
+          <!-- 信息管理 -->
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span slot="title">成员管理（教务员）</span>
+            </template>
+            <el-menu-item-group>
+              <!-- <span slot="title"></span> -->
+              <el-menu-item index="3-1" @click="routeJump('ManageStudent')">学生管理（教务员）</el-menu-item>
+              <el-menu-item index="3-2">教师管理（教务员）</el-menu-item>
+              <el-menu-item index="3-4">班级管理（教务员）</el-menu-item>
+              <el-menu-item index="3-5">专业管理（教务员）</el-menu-item>
+              <el-menu-item index="3-6">年级管理（教务员）</el-menu-item>
+              <el-menu-item index="3-7">课程管理（教务员）</el-menu-item>
+              <el-menu-item index="3-8">授课任务管理（教务员）</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
-        <!-- 反馈 -->
-        <el-menu-item index="55">
-          <i class="el-icon-setting"></i>
-          <span slot="title">帮助关于（所有）</span>
-        </el-menu-item>
+          <!-- 管理 -->
+          <el-submenu index="4">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span slot="title">考试系统（学生和教师）</span>
+            </template>
+            <el-menu-item-group>
+              <!-- <span slot="title"></span> -->
+              <el-menu-item index="4-1">章节自由练习（学生）</el-menu-item>
+              <el-menu-item index="4-2">章节测试（学生）</el-menu-item>
+              <el-menu-item index="4-3">考试（学生）</el-menu-item>
+              <el-menu-item index="4-4">错题集（学生）</el-menu-item>
+              <el-menu-item index="4-5">我的课程（教师）</el-menu-item>
+              <el-menu-item index="4-6">我的试题库（教师，添加试题）</el-menu-item>
+              <el-menu-item index="4-7">改卷（教师）</el-menu-item>
+              <el-menu-item index="4-8">学生章节练习进度（教师，查看进度情况）</el-menu-item>
+              <el-menu-item index="4-9">导出学生考试卷（教师）</el-menu-item>
+              <el-menu-item index="4-10">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
-        <el-menu-item index="11">
-          <i class="el-icon-setting"></i>
-          <span slot="title">退出登录（所有）</span>
-        </el-menu-item>
+          <el-menu-item index="5">
+            <i class="el-icon-setting"></i>
+            <span slot="title">消息系统（所有）</span>
+          </el-menu-item>
 
-        <el-menu-item index="199">
-          <i class="el-icon-setting"></i>
-          <span slot="title">管理教务员（超级管理员）</span>
-        </el-menu-item>
-      </el-menu>
-    </div>
-  </transition>
+          <!-- 反馈 -->
+          <el-menu-item index="6">
+            <i class="el-icon-setting"></i>
+            <span slot="title">投诉反馈（所有）</span>
+          </el-menu-item>
 
+          <!-- 反馈 -->
+          <el-menu-item index="7">
+            <i class="el-icon-setting"></i>
+            <span slot="title">帮助关于（所有）</span>
+          </el-menu-item>
 
+          <el-menu-item index="8">
+            <i class="el-icon-setting"></i>
+            <span slot="title">退出登录（所有）</span>
+          </el-menu-item>
 
-
-
+          <el-menu-item index="9">
+            <i class="el-icon-setting"></i>
+            <span slot="title">管理教务员（超级管理员）</span>
+          </el-menu-item>
+        </el-menu>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import VueBus from  "@/utils/VueBus.js"
+import VueBus from "@/utils/VueBus.js";
 
 export default {
   name: "Sidebar",
@@ -139,15 +133,29 @@ export default {
     return {
       msg: "Sidebar", //没用
       isCollapse: true, //用于最大化侧边栏
-      ifShowSideBar: true   //显示侧边栏
+      ifShowSideBar: true //显示侧边栏
     };
   },
   methods: {
-    //传值侧边栏状态
-    SideBarStatusChange(){
-        this.isCollapse=!this.isCollapse
-        VueBus.$emit('isCollapse',this.isCollapse)  
+
+    //路由跳转
+    routeJump(e){
+        console.log(e)
+        
+
+        if(e=='Login') this.$router.push({ name: "Login" });
+        if(e=='ManageStudent') this.$router.push({ name: "ManageStudent" });
+        if(e=='Homebody') this.$router.push({ name: "Homebody" });
+
     },
+    //传值侧边栏状态
+    SideBarStatusChange() {
+      this.isCollapse = !this.isCollapse;
+      VueBus.$emit("isCollapse", this.isCollapse);
+    },
+
+
+
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -163,7 +171,7 @@ export default {
   height: 50px;
   color: white;
   line-height: 50px;
-  width:64px;
+  width: 64px;
   cursor: pointer;
   /* background-color: #2A333C */
 }
@@ -172,9 +180,9 @@ export default {
   height: 50px;
   color: white;
   line-height: 50px;
-  width:64px;
+  width: 64px;
   cursor: pointer;
-  background-color: #2A333C
+  background-color: #2a333c;
 }
 
 .extend {

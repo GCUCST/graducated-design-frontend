@@ -67,7 +67,7 @@ export default {
         // else{
         //     console.log("学生")
         // }
-        alert("登录成功，"+this.role)
+        // alert("登录成功，"+this.role)
         var obj = {"account":this.account,"role":this.role}
             var str = JSON.stringify(obj)
             localStorage.setItem("user",str)
@@ -77,6 +77,8 @@ export default {
         this.$router.push({ name: "Homebody" });
         else
         this.$router.push({ name: "ManageStudent" });
+
+
 
 
     },
