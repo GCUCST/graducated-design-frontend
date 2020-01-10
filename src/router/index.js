@@ -13,7 +13,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'System',
       component: System,
       children:[
@@ -34,6 +34,9 @@ export default new Router({
           components:{ManageStudent} 
         }
       ]
+    },
+    {
+      path: '/', redirect: '/index/homebody'
     }
 
   ]

@@ -7,7 +7,7 @@
 
     <div class="header-search">
         <div class="search">
-            <el-input style="width:60%"  placeholder="请输入内容" v-model="search"></el-input>
+            <el-input style="width:60%;"  placeholder="请输入内容" v-model="search"></el-input>
             <i style="color:white" class="el-icon-search"></i>
         </div>
     </div>
@@ -34,7 +34,6 @@ export default {
   display: flex;
 }
 .header-logo {
-  border: 1px solid;
   width: 34%;
 }
 .header-name {
@@ -46,12 +45,11 @@ export default {
 .header-search {
   background: #2a333c;
   width: 33%;
-   margin: 0 auto;
+  margin: 0 auto;
 }
 .search{
     text-align: right;
     width: 60%;
     margin: 0 auto;
-    line-height: 50px;
 }
 </style>

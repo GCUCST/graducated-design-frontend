@@ -1,7 +1,10 @@
 <template>
   <div>
     <!-- 显隐侧边栏按钮 -->
-    <div  class="btn-ifShow" @click="ifShowSideBar=!ifShowSideBar">三</div>
+    <div  :class=" ifShowSideBar?'btn-isNotShow':'btn-isShow'" @click="ifShowSideBar=!ifShowSideBar">
+        <i v-if="ifShowSideBar" class="el-icon-menu"></i>
+        <i  v-if="!ifShowSideBar" class="el-icon-s-grid"></i>
+    </div>
 
 
   <transition
@@ -16,7 +19,6 @@
         unique-opened
         text-color="white"
         background-color="#2A333C"
-        default-active="1-4-1"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
@@ -156,7 +158,7 @@ export default {
 };
 </script>
 <style scoped>
-.btn-ifShow {
+.btn-isShow {
   text-align: center;
   height: 50px;
   color: white;
@@ -164,6 +166,15 @@ export default {
   width:64px;
   cursor: pointer;
   /* background-color: #2A333C */
+}
+.btn-isNotShow {
+  text-align: center;
+  height: 50px;
+  color: white;
+  line-height: 50px;
+  width:64px;
+  cursor: pointer;
+  background-color: #2A333C
 }
 
 .extend {
