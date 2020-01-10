@@ -1,35 +1,58 @@
 <template>
   <div class="system">
-
     <!-- 侧边栏 -->
     <div :class="contentOffset==2?'sidebar':'sidebar-max'">
       <v-SideBar></v-SideBar>
     </div>
 
     <!-- 顶栏 -->
-    <div class="header">顶栏</div>
+    <div class="header">
+      <v-Header></v-Header>
+    </div>
 
-    <!-- 内容区 -->
-    <transition>
-      <div class="content">
-        <el-row>
-          <el-col :offset="contentOffset" :span="23-contentOffset">
-            <div class="grid-content bg-purple">
-              <!-- <span @click="contentOffset=4">dianji</span> -->
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-    </transition>
+    <!-- 内容区和页脚区 -->
+    <div>
+      <!-- 内容区 -->
+      <transition>
+        <div>
+          <el-row justify="center">
+            <el-col :offset="contentOffset" :span="22-contentOffset">
+              <div class="content">
+                  <router-view name="Homebody"></router-view>
+                  <router-view name="Login"></router-view>
+                   <router-view name="ManageStudent"></router-view>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </transition>
 
+      <!-- 页脚区 -->
+      <transition>
+        <div >
+          <el-row>
+            <el-col :offset="contentOffset" :span="22-contentOffset">
+        <v-Footer></v-Footer>
+            </el-col>
+          </el-row>
+        </div>
+      </transition>
+
+    </div>
 
   </div>
 </template>
 
 <script>
-import SideBar from "@/components/common/SideBar.vue";
-
 import VueBus from "@/utils/VueBus.js";
+
+import SideBar from "@/components/common/SideBar.vue";
+import Header from "@/components/common/Header.vue";
+import Footer from "@/components/common/Footer.vue";
+
+import Login from "@/components/public/Login.vue";
+
+
 
 export default {
   name: "System",
@@ -40,7 +63,11 @@ export default {
     };
   },
   components: {
-    "v-SideBar": SideBar
+    "v-SideBar": SideBar,
+    "v-Header": Header,
+    "v-Footer": Footer,
+
+    "v-Login":Login
   },
   mounted() {
     var that = this;
@@ -54,9 +81,10 @@ export default {
 };
 </script>
 <style scoped>
+.content{
+  margin-top:20px;
+}
 .header {
-  width: 99%;
-  border: 1px solid;
   height: 50px;
   text-align: center;
   line-height: 50px;

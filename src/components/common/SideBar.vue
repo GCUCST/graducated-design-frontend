@@ -159,10 +159,11 @@ export default {
 .btn-ifShow {
   text-align: center;
   height: 50px;
+  color: white;
   line-height: 50px;
   width:64px;
   cursor: pointer;
-  border:1px solid
+  /* background-color: #2A333C */
 }
 
 .extend {
