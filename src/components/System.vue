@@ -72,7 +72,7 @@ export default {
   mounted() {
     var that = this;
     VueBus.$on("isCollapse", function(data) {
-      console.log("System收到..");
+      console.log("System收到,offset:"+data);
       if (data) that.contentOffset = 2;
       else that.contentOffset = 6;
       console.log(that.contentOffset);

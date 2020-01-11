@@ -45,7 +45,7 @@
 
 
 <script>
-// import VueBus from  "@/utils/VueBus.js"
+import VueBus from  "@/utils/VueBus.js"
 export default {
   data() {
     return {
@@ -58,25 +58,25 @@ export default {
   },
   methods: {
     login() {
-        // if(this.role==1){
-        // }
-        // else if(this.role==2)
-        // {
-        //     console.log("教师");
-        // }
-        // else{
-        //     console.log("学生")
-        // }
-        // alert("登录成功，"+this.role)
+        //请求后端数据库库，做一个判断
+
         var obj = {"account":this.account,"role":this.role}
+        
             var str = JSON.stringify(obj)
             localStorage.setItem("user",str)
         console.log("登录账号："+ localStorage.getItem("user"))
         
-        if(this.role!=1)
-        this.$router.push({ name: "Homebody" });
-        else
-        this.$router.push({ name: "ManageStudent" });
+        if(this.role==2||this.role==3)
+           {
+this.$router.push({ name: "Homebody" });
+           } 
+        else if(this.role==1)
+           {
+           this.$router.push({ name: "ManageStudent" });
+           }
+        //传值给侧边栏，做一个更新侧边栏菜单
+        var that = this
+        VueBus.$emit("role",that.role);
 
 
 
