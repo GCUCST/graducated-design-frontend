@@ -36,6 +36,21 @@
             <span slot="title">用户登录</span>
           </el-menu-item>
 
+          <!-- 个人中心,登录后就显示这个，表现为头像 -->
+          <el-menu-item @click="routeJump('PersonalCenter')" style="text-align:center;" :style="{'height':isCollapse ? '':'100px'}" v-if="role!=null" index="1.1">
+              <img
+                v-show="isCollapse"
+                src="http://47.94.166.187:70/cwh_pics/ad.jpg"
+                style="height:25px;width:25px;"
+              />
+            <span slot="title">
+                 <img
+                  src="http://47.94.166.187:70/cwh_pics/ad.jpg"
+                  style="height:100px;width:100px;"
+                />
+            </span>
+          </el-menu-item>
+
           <!-- 视频学习 -->
           <el-submenu index="2">
             <template slot="title">
@@ -43,7 +58,7 @@
               <span slot="title">视频系统</span>
             </template>
             <el-menu-item-group>
-              <span slot="title"></span>
+              <span slot="title">视频系统</span>
               <el-menu-item index="2-1"  @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
               <el-menu-item index="2-2" v-if="role==3" >我的课程（学生）</el-menu-item>
               <el-menu-item index="2-6" v-if="role==3" >笔记本（学生）</el-menu-item>
@@ -60,7 +75,7 @@
               <span slot="title">成员管理（教务员）</span>
             </template>
             <el-menu-item-group>
-              <!-- <span slot="title"></span> -->
+              <span slot="title">管理系统</span>
               <el-menu-item index="3-1" @click="routeJump('ManageStudent')">学生管理（教务员）</el-menu-item>
               <el-menu-item index="3-2">教师管理（教务员）</el-menu-item>
               <el-menu-item index="3-4">班级管理（教务员）</el-menu-item>
@@ -78,7 +93,7 @@
               <span slot="title">考试系统（学生和教师，需登录）</span>
             </template>
             <el-menu-item-group>
-              <!-- <span slot="title"></span> -->
+              <span slot="title">考试系统</span>
               <el-menu-item index="4-1" v-if="role==3" >章节自由练习（学生）</el-menu-item>
               <el-menu-item index="4-2" v-if="role==3" >章节测试（学生）</el-menu-item>
               <el-menu-item index="4-3" v-if="role==3">考试（学生）</el-menu-item>
@@ -135,8 +150,7 @@ export default {
       msg: "Sidebar", //没用
       isCollapse: true, //用于最大化侧边栏
       ifShowSideBar: true, //显示侧边栏
-    //   haveLogined:false, //已经登录,不用
-      // 1教务员 2教师 3学生 4管理员
+      // 1教务员 2教师 3学生 4管理员  
       role:localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")).role:null,  
     };
   },
@@ -174,6 +188,7 @@ export default {
       if (e == "Login") this.$router.push({ name: "Login" });
       if (e == "ManageStudent") this.$router.push({ name: "ManageStudent" });
       if (e == "Homebody") this.$router.push({ name: "Homebody" });
+      if(e=="PersonalCenter")alert("跳转去个人中心")
     },
     //传值侧边栏状态
     SideBarStatusChange() {
