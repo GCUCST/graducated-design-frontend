@@ -20,7 +20,9 @@
               <div class="content">
                   <router-view name="Homebody"></router-view>
                   <router-view name="Login"></router-view>
-                   <router-view name="ManageStudent"></router-view>
+                  <router-view name="ManageStudent"></router-view>
+                  <router-view name="PersonalCenter"></router-view>
+
               </div>
             </el-col>
           </el-row>

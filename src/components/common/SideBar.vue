@@ -37,17 +37,20 @@
           </el-menu-item>
 
           <!-- 个人中心,登录后就显示这个，表现为头像 -->
-          <el-menu-item @click="routeJump('PersonalCenter')" style="text-align:center;" :style="{'height':isCollapse ? '':'100px'}" v-if="role!=null" index="1.1">
-              <img
-                v-show="isCollapse"
-                src="http://47.94.166.187:70/cwh_pics/ad.jpg"
-                style="height:25px;width:25px;"
-              />
+          <el-menu-item
+            @click="routeJump('PersonalCenter')"
+            style="text-align:center;"
+            :style="{'height':isCollapse ? '':'100px'}"
+            v-if="role!=null"
+            index="1.1"
+          >
+            <img
+              v-show="isCollapse"
+              src="http://47.94.166.187:70/cwh_pics/ad.jpg"
+              style="height:25px;width:25px;"
+            />
             <span slot="title">
-                 <img
-                  src="http://47.94.166.187:70/cwh_pics/ad.jpg"
-                  style="height:100px;width:100px;"
-                />
+              <img src="http://47.94.166.187:70/cwh_pics/ad.jpg" style="height:100px;width:100px;" />
             </span>
           </el-menu-item>
 
@@ -59,12 +62,12 @@
             </template>
             <el-menu-item-group>
               <span slot="title">视频系统</span>
-              <el-menu-item index="2-1"  @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
-              <el-menu-item index="2-2" v-if="role==3" >我的课程（学生）</el-menu-item>
-              <el-menu-item index="2-6" v-if="role==3" >笔记本（学生）</el-menu-item>
-              <el-menu-item index="2-3" v-if="role==2" >视频上传（教师）</el-menu-item>
-              <el-menu-item index="2-4" v-if="role==2" >我的视频库（教师）</el-menu-item>
-              <el-menu-item index="2-5" v-if="role==2" >我教的课程（教师）</el-menu-item>
+              <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
+              <el-menu-item index="2-2" v-if="role==3">我的课程（学生）</el-menu-item>
+              <el-menu-item index="2-6" v-if="role==3">笔记本（学生）</el-menu-item>
+              <el-menu-item index="2-3" v-if="role==2">视频上传（教师）</el-menu-item>
+              <el-menu-item index="2-4" v-if="role==2">我的视频库（教师）</el-menu-item>
+              <el-menu-item index="2-5" v-if="role==2">我教的课程（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -94,8 +97,8 @@
             </template>
             <el-menu-item-group>
               <span slot="title">考试系统</span>
-              <el-menu-item index="4-1" v-if="role==3" >章节自由练习（学生）</el-menu-item>
-              <el-menu-item index="4-2" v-if="role==3" >章节测试（学生）</el-menu-item>
+              <el-menu-item index="4-1" v-if="role==3">章节自由练习（学生）</el-menu-item>
+              <el-menu-item index="4-2" v-if="role==3">章节测试（学生）</el-menu-item>
               <el-menu-item index="4-3" v-if="role==3">考试（学生）</el-menu-item>
               <el-menu-item index="4-4" v-if="role==3">错题集（学生）</el-menu-item>
               <el-menu-item index="4-5" v-if="role==2">我的课程（教师）</el-menu-item>
@@ -107,24 +110,27 @@
             </el-menu-item-group>
           </el-submenu>
 
-          <el-menu-item index="5" v-if="role!=null" >
-            <i class="el-icon-setting"></i>
+          <el-menu-item index="5" v-if="role!=null">
+            <!-- 小红点提示消息未读 -->
+            <el-badge :value="3" class="item">
+              <i class="el-icon-setting"></i>
+            </el-badge>
             <span slot="title">消息系统（所有，需登录）</span>
           </el-menu-item>
 
           <!-- 反馈 -->
-          <el-menu-item index="6" v-if="role!=null" >
+          <el-menu-item index="6" v-if="role!=null">
             <i class="el-icon-setting"></i>
             <span slot="title">投诉反馈（所有,需登录）</span>
           </el-menu-item>
 
           <!-- 帮助-->
-          <el-menu-item index="7"  >
+          <el-menu-item index="7">
             <i class="el-icon-setting"></i>
             <span slot="title">帮助关于（所有，无需登录）</span>
           </el-menu-item>
 
-          <el-menu-item index="8"  v-if="role"  @click="logout">
+          <el-menu-item index="8" v-if="role" @click="logout">
             <i class="el-icon-setting"></i>
             <span slot="title">退出登录（所有，需登录）</span>
           </el-menu-item>
@@ -133,7 +139,6 @@
             <i class="el-icon-setting"></i>
             <span slot="title">管理教务员（超级管理员）</span>
           </el-menu-item>
-
         </el-menu>
       </div>
     </transition>
@@ -150,15 +155,16 @@ export default {
       msg: "Sidebar", //没用
       isCollapse: true, //用于最大化侧边栏
       ifShowSideBar: true, //显示侧边栏
-      // 1教务员 2教师 3学生 4管理员  
-      role:localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")).role:null,  
+      // 1教务员 2教师 3学生 4管理员
+      role: localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user")).role
+        : null
     };
   },
   methods: {
-
     //退出登录
     logout() {
-     console.log(JSON.parse(localStorage.getItem("user")).role)
+      console.log(JSON.parse(localStorage.getItem("user")).role);
       this.$confirm("确定退出？", "消息提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -188,15 +194,13 @@ export default {
       if (e == "Login") this.$router.push({ name: "Login" });
       if (e == "ManageStudent") this.$router.push({ name: "ManageStudent" });
       if (e == "Homebody") this.$router.push({ name: "Homebody" });
-      if(e=="PersonalCenter")alert("跳转去个人中心")
+      if (e == "PersonalCenter") this.$router.push({ name: "PersonalCenter" });
     },
     //传值侧边栏状态
     SideBarStatusChange() {
       this.isCollapse = !this.isCollapse;
       VueBus.$emit("isCollapse", this.isCollapse);
     },
-
-
 
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -205,14 +209,13 @@ export default {
       console.log(key, keyPath);
     }
   },
-  mounted(){
+  mounted() {
     //收到更新侧边栏功能的指令
     var that = this;
     VueBus.$on("role", function(data) {
-      console.log("SideBar收到role："+data);
-      that.role = data
+      console.log("SideBar收到role：" + data);
+      that.role = data;
     });
-  
   }
 };
 </script>
