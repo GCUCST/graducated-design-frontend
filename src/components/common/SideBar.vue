@@ -110,7 +110,7 @@
             </el-menu-item-group>
           </el-submenu>
 
-          <el-menu-item index="5" v-if="role!=null">
+          <el-menu-item index="5" v-if="role!=null"  @click="routeJump('Message')">
             <!-- 小红点提示消息未读 -->
             <el-badge :value="3" class="item">
               <i class="el-icon-setting"></i>
@@ -118,17 +118,12 @@
             <span slot="title">消息系统（所有，需登录）</span>
           </el-menu-item>
 
-          <!-- 反馈 -->
-          <el-menu-item index="6" v-if="role!=null">
+          <!-- 帮助反馈 -->
+          <el-menu-item index="6" @click="routeJump('HelpFreeback')">
             <i class="el-icon-setting"></i>
-            <span slot="title">投诉反馈（所有,需登录）</span>
+            <span slot="title">帮助反馈</span>
           </el-menu-item>
 
-          <!-- 帮助-->
-          <el-menu-item index="7">
-            <i class="el-icon-setting"></i>
-            <span slot="title">帮助关于（所有，无需登录）</span>
-          </el-menu-item>
 
           <el-menu-item index="8" v-if="role" @click="logout">
             <i class="el-icon-setting"></i>
@@ -195,6 +190,12 @@ export default {
       if (e == "ManageStudent") this.$router.push({ name: "ManageStudent" });
       if (e == "Homebody") this.$router.push({ name: "Homebody" });
       if (e == "PersonalCenter") this.$router.push({ name: "PersonalCenter" });
+      if (e == "HelpFreeback") this.$router.push({ name: "HelpFreeback" });
+      if (e == "Message") this.$router.push({ name: "Message" });
+
+
+      
+
     },
     //传值侧边栏状态
     SideBarStatusChange() {

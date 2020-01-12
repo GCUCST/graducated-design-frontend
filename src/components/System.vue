@@ -22,6 +22,8 @@
                   <router-view name="Login"></router-view>
                   <router-view name="ManageStudent"></router-view>
                   <router-view name="PersonalCenter"></router-view>
+                  <router-view name="HelpFreeback"></router-view>
+                  <router-view name="Message"></router-view>
 
               </div>
             </el-col>

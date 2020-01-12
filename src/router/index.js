@@ -4,6 +4,11 @@ import System from '@/components/System'
 
 import Login from '@/components/public/Login'
 import PersonalCenter from '@/components/public/PersonalCenter'
+import HelpFreeback from '@/components/public/HelpFreeback'
+import Message from '@/components/public/Message'
+
+
+
 import Homebody from '@/components/video_system/Homebody'
 import ManageStudent from '@/components/manage/ManageStudent'
 
@@ -60,6 +65,21 @@ export default new Router({
           path:'personalcenter',
           name:"PersonalCenter",
           components:{PersonalCenter} 
+        }
+        ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'message',
+          name:"Message",
+          components:{Message} 
+        }
+        ,
+        {
+          path:'helpfreeback',
+          name:"HelpFreeback",
+          components:{HelpFreeback} 
         }
       ]
     },
