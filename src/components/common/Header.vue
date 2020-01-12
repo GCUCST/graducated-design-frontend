@@ -3,7 +3,7 @@
     <!-- 占位置的 -->
     <div class="header-logo"></div>
 
-    <div class="header-name">{{msg}}</div>
+    <div class="header-name" @click="toAdminLogin">{{msg}}</div>
 
     <div class="header-search">
         <div class="search">
@@ -20,10 +20,22 @@ export default {
   data() {
     return {
       msg: "华广学习系统",
+      times:0,  //次数超过10就进入管理员登录页面
       search:""
     };
   },
-  methods: {}
+  methods: {
+      toAdminLogin()
+      {
+          this.times = this.times+1;
+          console.log("第"+this.times+"次")
+          if(this.times>=10)
+          {
+              this.times = 0;
+              this.$router.push({name:"AdminLogin"})
+          }
+      }
+  }
 };
 </script>
 <style scoped>

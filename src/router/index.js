@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import System from '@/components/System'
 
 import Login from '@/components/public/Login'
+import AdminLogin from '@/components/public/AdminLogin'
+
 import PersonalCenter from '@/components/public/PersonalCenter'
 import HelpFreeback from '@/components/public/HelpFreeback'
 import Message from '@/components/public/Message'
@@ -11,6 +13,9 @@ import Message from '@/components/public/Message'
 
 import Homebody from '@/components/video_system/Homebody'
 import ManageStudent from '@/components/manage/ManageStudent'
+
+import ManageDean from '@/components/manage/ManageDean'
+
 
 Vue.use(Router)
 
@@ -47,6 +52,21 @@ export default new Router({
           path:'login',
           name:"Login",
           components:{Login} 
+        }
+        ,
+        {
+          path:'adminlogin',
+          name:"AdminLogin",
+          components:{AdminLogin} 
+        }
+        ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'managesdean',
+          name:"ManageDean",
+          components:{ManageDean} 
         }
         ,
         {

@@ -110,6 +110,12 @@
             </el-menu-item-group>
           </el-submenu>
 
+          <el-menu-item index="8"  v-if="role==4" @click="routeJump('ManageDean')">
+            <i class="el-icon-setting"></i>
+            <span slot="title">管理教务员（超级管理员）</span>
+          </el-menu-item>
+
+
           <el-menu-item index="5" v-if="role!=null"  @click="routeJump('Message')">
             <!-- 小红点提示消息未读 -->
             <el-badge :value="3" class="item">
@@ -125,15 +131,11 @@
           </el-menu-item>
 
 
-          <el-menu-item index="8" v-if="role" @click="logout">
+          <el-menu-item index="9" v-if="role" @click="logout">
             <i class="el-icon-setting"></i>
             <span slot="title">退出登录（所有，需登录）</span>
           </el-menu-item>
 
-          <el-menu-item index="9" v-if="role==4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">管理教务员（超级管理员）</span>
-          </el-menu-item>
         </el-menu>
       </div>
     </transition>
@@ -192,6 +194,9 @@ export default {
       if (e == "PersonalCenter") this.$router.push({ name: "PersonalCenter" });
       if (e == "HelpFreeback") this.$router.push({ name: "HelpFreeback" });
       if (e == "Message") this.$router.push({ name: "Message" });
+      if (e == "ManageDean") this.$router.push({ name: "ManageDean" });
+
+      
 
 
       

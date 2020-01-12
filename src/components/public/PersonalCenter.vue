@@ -3,7 +3,7 @@
        <el-tabs tab-position="up">
     <el-tab-pane label="我的信息">
        账号：{{user.account}}<br>
-       身份：{{user.role==1?'教务员':user.role==2?'教师':'学生'}}
+       身份：{{user.role==1?'教务员':user.role==2?'教师':user.role==1?'学生':'管理员'}}
     </el-tab-pane>
     <el-tab-pane label="我的头像">我的头像 </el-tab-pane>
     <el-tab-pane label="账户安全">账户安全</el-tab-pane>

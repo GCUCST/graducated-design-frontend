@@ -24,6 +24,9 @@
                   <router-view name="PersonalCenter"></router-view>
                   <router-view name="HelpFreeback"></router-view>
                   <router-view name="Message"></router-view>
+                   <router-view  name="AdminLogin"></router-view>
+                   <router-view  name="ManageDean"></router-view>
+
 
               </div>
             </el-col>

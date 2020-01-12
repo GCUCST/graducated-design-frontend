@@ -16,9 +16,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-radio v-model="role" label="1">教务员</el-radio>
-          <el-radio v-model="role" label="2">教师</el-radio>
-          <el-radio v-model="role" label="3">学生</el-radio>
+          <el-radio v-model="role" label="4">管理员</el-radio>
         </el-form-item>
 
         <el-form-item>
@@ -39,10 +37,10 @@ import VueBus from "@/utils/VueBus.js";
 export default {
   data() {
     return {
-      account: "cst",
+      account: "admin",
       password: "12345",
       code: "as54",
-      role: "3",
+      role: "4",
       commit: false
     };
   },
@@ -55,12 +53,7 @@ export default {
       var str = JSON.stringify(obj);
       localStorage.setItem("user", str);
       console.log("登录账号：" + localStorage.getItem("user"));
-
-      if (this.role == 2 || this.role == 3) {
         this.$router.push({ name: "Homebody" });
-      } else if (this.role == 1) {
-        this.$router.push({ name: "ManageStudent" });
-      }
       //传值给侧边栏，做一个更新侧边栏菜单
       var that = this;
       VueBus.$emit("role", that.role);
