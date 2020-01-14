@@ -14,7 +14,6 @@
         <el-form-item label="验证码">
           <el-input v-model="code" suffix-icon="el-icon-warning-outline"></el-input>
         </el-form-item>
-
         <el-form-item>
           <el-radio v-model="role" label="4">管理员</el-radio>
         </el-form-item>
@@ -47,7 +46,6 @@ export default {
   methods: {
     login() {
       //请求后端数据库库，做一个判断
-
       var obj = { account: this.account, role: this.role };
 
       var str = JSON.stringify(obj);

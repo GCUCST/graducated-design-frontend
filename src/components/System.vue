@@ -74,7 +74,6 @@ export default {
     "v-Header": Header,
     "v-Footer": Footer,
 
-    "v-Login":Login
   },
   mounted() {
     var that = this;
@@ -120,7 +119,7 @@ export default {
 }
 
 .system {
-  min-width: 900px;
+  min-width: 1200px;
 }
 
 .bg-purple {
