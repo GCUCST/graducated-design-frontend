@@ -63,7 +63,7 @@
             <el-menu-item-group>
               <span slot="title">视频系统</span>
               <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
-              <el-menu-item index="2-2" v-if="role==3">我的课程（学生）</el-menu-item>
+              <el-menu-item index="2-2" v-if="role==3" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
               <el-menu-item index="2-6" v-if="role==3">笔记本（学生）</el-menu-item>
               <el-menu-item index="2-3" v-if="role==2">视频上传（教师）</el-menu-item>
               <el-menu-item index="2-4" v-if="role==2">我的视频库（教师）</el-menu-item>
@@ -191,6 +191,7 @@ export default {
       if (e == "Login") this.$router.push({ name: "Login" });
       if (e == "ManageStudent") this.$router.push({ name: "ManageStudent" });
       if (e == "Homebody") this.$router.push({ name: "Homebody" });
+      if (e == "MyCourse") this.$router.push({ name: "MyCourse" });
       if (e == "PersonalCenter") this.$router.push({ name: "PersonalCenter" });
       if (e == "HelpFreeback") this.$router.push({ name: "HelpFreeback" });
       if (e == "Message") this.$router.push({ name: "Message" });

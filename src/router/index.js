@@ -12,6 +12,8 @@ import Message from '@/components/public/Message'
 
 
 import Homebody from '@/components/video_system/Homebody'
+import MyCourse from '@/components/video_system/MyCourse'
+
 import ManageStudent from '@/components/manage/ManageStudent'
 
 import ManageDean from '@/components/manage/ManageDean'
@@ -47,6 +49,11 @@ export default new Router({
           path:'homebody',
           name:"Homebody",
           components:{Homebody} 
+        },
+        {
+          path:'mycourse',
+          name:"MyCourse",
+          components:{MyCourse} 
         },
         {
           path:'login',

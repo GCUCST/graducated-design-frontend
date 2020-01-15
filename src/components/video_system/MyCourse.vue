@@ -28,7 +28,7 @@
           <el-card
             shadow="hover"
             style="width:29%;margin:2%"
-            v-for="i in 9"
+            v-for="i in 3"
             :key="i"
             class="box-card"
           >
@@ -65,10 +65,10 @@
 
 <script>
 export default {
-  name: "Homebody",
+  name: "MyCourse",
   data() {
     return {
-      msg: "公开课(右击查看详情)",
+      msg: "我的课程",
       Axis: { x: 0, y: 0, index: null }, //坐标和对象
       visible: false //展示右击菜单
     };
