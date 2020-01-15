@@ -14,10 +14,12 @@ import Message from '@/components/public/Message'
 import Homebody from '@/components/video_system/Homebody'
 import MyCourse from '@/components/video_system/MyCourse'
 
+
 import ManageStudent from '@/components/manage/ManageStudent'
 
 import ManageDean from '@/components/manage/ManageDean'
 
+import VideoLibrary from '@/components/video_system/VideoLibrary'
 
 Vue.use(Router)
 
@@ -49,6 +51,11 @@ export default new Router({
           path:'homebody',
           name:"Homebody",
           components:{Homebody} 
+        },
+        {
+          path:'videolibrary',
+          name:"VideoLibrary",
+          components:{VideoLibrary} 
         },
         {
           path:'mycourse',

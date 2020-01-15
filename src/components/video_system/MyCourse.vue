@@ -54,7 +54,7 @@
       </el-tab-pane>
 
       <div style="text-align:center">
-        <el-pagination layout="prev, pager, next" :total="50"></el-pagination>
+        <el-pagination layout="prev, pager, next" :total="10"></el-pagination>
       </div>
     </el-tabs>
   </div>

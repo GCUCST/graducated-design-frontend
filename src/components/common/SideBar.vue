@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div style="height:100%">
     <!-- 显隐侧边栏按钮 -->
-    <div :class=" ifShowSideBar?'btn-isNotShow':'btn-isShow'" @click="ifShowSideBar=!ifShowSideBar">
+    <div :class="ifShowSideBar?'btn-isNotShow':'btn-isShow'" @click="ifShowSideBar=!ifShowSideBar">
       <i v-if="ifShowSideBar" class="el-icon-menu"></i>
       <i v-if="!ifShowSideBar" class="el-icon-s-grid"></i>
     </div>
@@ -12,9 +12,9 @@
       leave-active-class="animated fadeOutUp"
     >
       <!-- 这个是侧边栏 -->
-      <div v-if="ifShowSideBar">
+      <div v-if="ifShowSideBar"  style="height:100%;min-width:64px">
         <el-menu
-          style="height:800px;"
+           style="height:100%;"
           unique-opened
           text-color="white"
           background-color="#2A333C"
@@ -65,8 +65,7 @@
               <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
               <el-menu-item index="2-2" v-if="role==3" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
               <el-menu-item index="2-6" v-if="role==3">笔记本（学生）</el-menu-item>
-              <el-menu-item index="2-3" v-if="role==2">视频上传（教师）</el-menu-item>
-              <el-menu-item index="2-4" v-if="role==2">我的视频库（教师）</el-menu-item>
+              <el-menu-item index="2-4" v-if="role==2" @click="routeJump('VideoLibrary')"   >我的视频库（教师）</el-menu-item>
               <el-menu-item index="2-5" v-if="role==2">我教的课程（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -196,11 +195,8 @@ export default {
       if (e == "HelpFreeback") this.$router.push({ name: "HelpFreeback" });
       if (e == "Message") this.$router.push({ name: "Message" });
       if (e == "ManageDean") this.$router.push({ name: "ManageDean" });
+      if (e == "VideoLibrary") this.$router.push({ name: "VideoLibrary" });
 
-      
-
-
-      
 
     },
     //传值侧边栏状态
@@ -231,17 +227,16 @@ export default {
   text-align: center;
   height: 50px;
   color: white;
-  line-height: 50px;
   width: 64px;
+  line-height: 50px;
   cursor: pointer;
-  /* background-color: #2A333C */
 }
 .btn-isNotShow {
   text-align: center;
   height: 50px;
+  width: 64px;
   color: white;
   line-height: 50px;
-  width: 64px;
   cursor: pointer;
   background-color: #2a333c;
 }
