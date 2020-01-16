@@ -28,6 +28,8 @@
                    <router-view  name="AdminLogin"></router-view>
                    <router-view  name="ManageDean"></router-view>
                    <router-view  name="VideoLibrary"></router-view>
+                   <router-view  name="MyTeach"></router-view>
+
 
 
 

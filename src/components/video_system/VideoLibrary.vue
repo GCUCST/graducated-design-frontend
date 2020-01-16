@@ -21,6 +21,8 @@
           <el-button v-if="curPath!='/'" @click="moveUp(PathAndAxis.path)" size type="text">移至上层</el-button>
           <el-button style="margin-left:0px;" @click="rename(PathAndAxis.path)" type="text">重命名</el-button>
           <br />
+          <el-button @click="targetDetail(PathAndAxis.path)" type="text">详&#12288;情</el-button>
+          <br />
           <el-button slot="reference" @click="del(PathAndAxis.path)" type="text">删&#12288;除</el-button>
         </div>
         <!-- /点击文件或者文件夹 -->
@@ -273,6 +275,13 @@ export default {
   },
 
   methods: {
+   
+    //详情
+    targetDetail(path){
+      alert("显示详情："+path)
+    },
+
+
     //上传文件
     uploadFile() {
       this.$prompt("请输入文件名称", "提示", {

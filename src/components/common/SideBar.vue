@@ -66,7 +66,7 @@
               <el-menu-item index="2-2" v-if="role==3" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
               <el-menu-item index="2-6" v-if="role==3">笔记本（学生）</el-menu-item>
               <el-menu-item index="2-4" v-if="role==2" @click="routeJump('VideoLibrary')"   >我的视频库（教师）</el-menu-item>
-              <el-menu-item index="2-5" v-if="role==2">我教的课程（教师）</el-menu-item>
+              <el-menu-item index="2-5" v-if="role==2" @click="routeJump('MyTeach')"  >我教的课程（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -196,6 +196,7 @@ export default {
       if (e == "Message") this.$router.push({ name: "Message" });
       if (e == "ManageDean") this.$router.push({ name: "ManageDean" });
       if (e == "VideoLibrary") this.$router.push({ name: "VideoLibrary" });
+      if (e == "MyTeach") this.$router.push({ name: "MyTeach" });
 
 
     },

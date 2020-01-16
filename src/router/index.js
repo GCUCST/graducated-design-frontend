@@ -13,6 +13,8 @@ import Message from '@/components/public/Message'
 
 import Homebody from '@/components/video_system/Homebody'
 import MyCourse from '@/components/video_system/MyCourse'
+import MyTeach from '@/components/video_system/MyTeach'
+
 
 
 import ManageStudent from '@/components/manage/ManageStudent'
@@ -56,6 +58,11 @@ export default new Router({
           path:'videolibrary',
           name:"VideoLibrary",
           components:{VideoLibrary} 
+        },
+        {
+          path:'myteach',
+          name:"MyTeach",
+          components:{MyTeach} 
         },
         {
           path:'mycourse',
