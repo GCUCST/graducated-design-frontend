@@ -3,6 +3,12 @@
     <template>
       <el-tabs tab-position="up">
         <el-tab-pane label="课程添加">
+<el-steps :active="1" finish-status="success"  align-center>
+  <el-step title="课程介绍">25154545</el-step>
+  <el-step title="设置章节">454545</el-step>
+  <el-step title="添加班级"></el-step>
+</el-steps>
+
           <div style="display:flex">
             <div style="width:40%;margin:0 auto">
               封面：
