@@ -23,6 +23,19 @@ import ManageDean from '@/components/manage/ManageDean'
 
 import VideoLibrary from '@/components/video_system/VideoLibrary'
 
+import Courses from '@/components/exam_system/Courses'
+import QuestionBank from '@/components/exam_system/QuestionBank'
+import LearnProgress from '@/components/exam_system/LearnProgress'
+import TestSetting from '@/components/exam_system/TestSetting'
+import Marking from '@/components/exam_system/Marking'
+import ExportPaper from '@/components/exam_system/ExportPaper'
+
+import ChapterPractice from '@/components/exam_system/stu/ChapterPractice'
+import ChapterTest from '@/components/exam_system/stu/ChapterTest'
+import Exam from '@/components/exam_system/stu/Exam'
+import ErrorSet from '@/components/exam_system/stu/ErrorSet'
+
+
 Vue.use(Router)
 
 
@@ -121,6 +134,56 @@ export default new Router({
           path:'helpfreeback',
           name:"HelpFreeback",
           components:{HelpFreeback} 
+        },
+        {
+          path:'courses',  //考试系统的课程
+          name:"Courses",
+          components:{Courses}
+        },
+        {
+          path:'questionbank',  //考试系统的试题库
+          name:"QuestionBank",
+          components:{QuestionBank}
+        },
+        {
+          path:'learnprogress',  //考试系统的学生测试进度
+          name:"LearnProgress",
+          components:{LearnProgress}
+        },
+        {
+          path:'testsetting',  //考试系统的试卷设置
+          name:"TestSetting",
+          components:{TestSetting}
+        },
+        {
+          path:'marking',  //考试系统的阅卷
+          name:"Marking",
+          components:{Marking}
+        },
+        {
+          path:'exportpaper',  //考试系统的导出试卷
+          name:"ExportPaper",
+          components:{ExportPaper}
+        },
+        {
+          path:'chapterpractice',  //考试系统学生的章节练习
+          name:"ChapterPractice",
+          components:{ChapterPractice}
+        },
+        {
+          path:'chaptertest',  //考试系统学生的章节测试
+          name:"ChapterTest",
+          components:{ChapterTest}
+        },
+        {
+          path:'exam',    //考试系统学生的考试
+          name:"Exam",
+          components:{Exam}
+        },
+        {
+          path:'errorset',    //考试系统学生的错题集
+          name:"ErrorSet",
+          components:{ErrorSet}
         }
       ]
     },

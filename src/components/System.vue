@@ -29,6 +29,16 @@
                    <router-view  name="ManageDean"></router-view>
                    <router-view  name="VideoLibrary"></router-view>
                    <router-view  name="MyTeach"></router-view>
+                  <router-view  name="Courses"></router-view>
+                  <router-view  name="QuestionBank"></router-view>
+                  <router-view  name="LearnProgress"></router-view>
+                  <router-view  name="TestSetting"></router-view>
+                  <router-view  name="Marking"></router-view>
+                  <router-view  name="ExportPaper"></router-view>
+                  <router-view  name="ChapterPractice"></router-view>
+                  <router-view  name="ChapterTest"></router-view>
+                  <router-view  name="Exam"></router-view>
+                  <router-view  name="ErrorSet"></router-view>
 
 
 

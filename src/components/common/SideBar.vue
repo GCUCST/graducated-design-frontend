@@ -88,7 +88,7 @@
             </el-menu-item-group>
           </el-submenu>
 
-          <!-- 管理 -->
+          <!-- 考试系统 -->
           <el-submenu index="4" v-if="role==2||role==3">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -96,16 +96,16 @@
             </template>
             <el-menu-item-group>
               <span slot="title">考试系统</span>
-              <el-menu-item index="4-1" v-if="role==3">章节自由练习（学生）</el-menu-item>
-              <el-menu-item index="4-2" v-if="role==3">章节测试（学生）</el-menu-item>
-              <el-menu-item index="4-3" v-if="role==3">考试（学生）</el-menu-item>
-              <el-menu-item index="4-4" v-if="role==3">错题集（学生）</el-menu-item>
-              <el-menu-item index="4-5" v-if="role==2">我的课程（教师）</el-menu-item>
-              <el-menu-item index="4-6" v-if="role==2">我的试题库（教师，添加试题）</el-menu-item>
-              <el-menu-item index="4-7" v-if="role==2">改卷（教师）</el-menu-item>
-              <el-menu-item index="4-8" v-if="role==2">学生章节练习进度（教师，查看进度情况）</el-menu-item>
-              <el-menu-item index="4-9" v-if="role==2">导出学生考试卷（教师）</el-menu-item>
-              <el-menu-item index="4-10" v-if="role==2">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
+              <el-menu-item index="4-1" v-if="role==3" @click="routeJump('ChapterPractice')">章节自由练习（学生）</el-menu-item>
+              <el-menu-item index="4-2" v-if="role==3" @click="routeJump('ChapterTest')">章节测试（学生）</el-menu-item>
+              <el-menu-item index="4-3" v-if="role==3" @click="routeJump('Exam')">考试（学生）</el-menu-item>
+              <el-menu-item index="4-4" v-if="role==3" @click="routeJump('ErrorSet')">错题集（学生）</el-menu-item>
+              <el-menu-item index="4-5" v-if="role==2" @click="routeJump('Courses')">我的课程（教师）</el-menu-item>
+              <el-menu-item index="4-6" v-if="role==2" @click="routeJump('QuestionBank')">我的试题库（教师，添加试题）</el-menu-item>
+              <el-menu-item index="4-7" v-if="role==2" @click="routeJump('LearnProgress')">学生章节练习进度（教师，查看进度情况）</el-menu-item>
+              <el-menu-item index="4-8" v-if="role==2" @click="routeJump('TestSetting')">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
+              <el-menu-item index="4-9" v-if="role==2" @click="routeJump('Marking')">阅卷（教师）</el-menu-item>
+              <el-menu-item index="4-10" v-if="role==2" @click="routeJump('ExportPaper')">导出学生考试卷（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -197,7 +197,16 @@ export default {
       if (e == "ManageDean") this.$router.push({ name: "ManageDean" });
       if (e == "VideoLibrary") this.$router.push({ name: "VideoLibrary" });
       if (e == "MyTeach") this.$router.push({ name: "MyTeach" });
-
+      if (e == "Courses") this.$router.push({ name: "Courses" });
+      if (e == "QuestionBank") this.$router.push({ name: "QuestionBank" });
+      if (e == "LearnProgress") this.$router.push({ name: "LearnProgress" });
+      if (e == "TestSetting") this.$router.push({ name: "TestSetting" });
+      if (e == "Marking") this.$router.push({ name: "Marking" });
+      if (e == "ExportPaper") this.$router.push({ name: "ExportPaper" });
+      if (e == "ChapterPractice") this.$router.push({ name: "ChapterPractice" });
+      if (e == "ChapterTest") this.$router.push({ name: "ChapterTest" });
+      if (e == "Exam") this.$router.push({ name: "Exam" });
+      if (e == "ErrorSet") this.$router.push({ name: "ErrorSet" });
 
     },
     //传值侧边栏状态
