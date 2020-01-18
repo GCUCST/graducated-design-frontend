@@ -1,6 +1,7 @@
 <template>
   <div class="body">
-    <div name="封面.jpg" style="margin: auto;">
+    <!-- 封面 -->
+    <div style="margin: auto;">
       <el-upload
         class="avatar-uploader"
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -12,10 +13,13 @@
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
     </div>
-    <div name="名称和介绍" style="width:100%;text-align:center;">
+    <!-- /封面 -->
+
+    <!-- 名称和介绍 -->
+    <div style="width:60%;text-align:center;margin:auto">
       <br />
-      <div name="介绍">
-        <el-input style="width:80%;" v-model="input" placeholder="标题.."></el-input>
+      <div name="标题">
+        <el-input style="width:80%;" v-model="textTitle" placeholder="标题.."></el-input>
       </div>
       <br />
       <div name="介绍" :disable="true" style="text-align:center">
@@ -24,11 +28,52 @@
           type="textarea"
           :autosize="{ minRows: 3, maxRows: 3}"
           placeholder="介绍.."
-          v-model="textarea1"
+          v-model="textIntro"
         ></el-input>
       </div>
     </div>
-    <!-- 开始 -->
+    <!-- /名称和介绍 -->
+
+    <br />
+    <!-- 其他选项 -->
+    <div style="text-align:left;width:48%;margin:0 auto;">
+      <div>
+        性&emsp;&emsp;质：
+        <el-select v-model="courseType" placeholder="请选择">
+          <el-option
+            v-for="item in  options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </div>
+      <br />
+      <div>
+        学&emsp;&emsp;时：
+        <el-input-number v-model="courseHour" :min="1" :max="1000" label="描述文字"></el-input-number>
+      </div>
+      <br />
+      <div v-if="courseType!='public'">
+        学&emsp;&emsp;分：
+        <el-input-number v-model="credit" :precision="2" :step="0.1" :max="10"></el-input-number>
+      </div>
+      <br />
+      <div style="display:flex;line-height:42px;" v-if="courseType!='public'">
+        课程时间：
+        <el-date-picker
+          style="width:60%;"
+          v-model="date"
+          unlink-panels
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </div>
+    </div>
+
+    <!-- 标签 -->
     <div style="width:80%;margin:0 auto;text-align:center;padding-top:30px">
       <el-tag
         :key="tag"
@@ -48,8 +93,12 @@
       ></el-input>
       <el-button v-else class="button-new-tag" size="small" @click="showInput">添加标签</el-button>
     </div>
-    <!-- 结束 -->
+    <!--/标签 -->
+
     <br />
+    <br />
+
+    <!-- /其他选项 -->
   </div>
 </template>
 
@@ -63,12 +112,26 @@ export default {
     return {
       msg: "介绍",
       imageUrl: "",
-      input: "",
-      textarea1: "",
+      textTitle: "",
+      textIntro: "",
 
       dynamicTags: [],
       inputVisible: false,
-      inputValue: ""
+      inputValue: "",
+
+      courseHour: 64,
+      credit: 2,
+
+      options: [
+        { label: "公开课", value: "public" },
+        { label: "必修课", value: "b" },
+        { label: "选修课", value: "c" },
+        { label: "通选课", value: "d" },
+        { label: "其他", value: "e" }
+      ],
+      courseType: "b",
+
+      date: ""
     };
   },
   methods: {

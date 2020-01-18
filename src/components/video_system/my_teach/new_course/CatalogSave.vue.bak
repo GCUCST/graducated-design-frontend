@@ -1,8 +1,10 @@
 <template>
   <div class="body">
-        <!-- 开始 -->
+    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <span>
+        <!-- 开始 -->
         <div>
           <el-cascader
             v-model="value"
@@ -17,13 +19,13 @@
             @change="handleChange"
           ></el-cascader>
         </div>
+        <!-- 结束 -->
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
-        <!-- 结束 -->
 
     <span style="text-align:center;font-size:22px">目录</span>
     <br />
@@ -62,15 +64,19 @@
             </el-tooltip>
           </el-button>
 
-          <el-button v-if="data.level==3" size="mini" type="text"  @click="relate(data)">
+          <el-button size="mini" type="text" v-if="data.src==null" @click="relate(data)">
             <el-tooltip class="item" effect="dark" content="关联文件" placement="top">
               <i class="el-icon-star-off"></i>
             </el-tooltip>
           </el-button>
 
+          <el-button size="mini" v-show="data.src!=null" type="text" @click="relate(data)">
+            <el-tooltip class="item" effect="dark" :content="data.src" placement="top">
+              <i class="el-icon-star-on"></i>
+            </el-tooltip>
+          </el-button>
 
-
-          <el-button v-if="data.level<3" type="text" size="mini" @click="() => append(data)">
+          <el-button :disabled="data.level>=3" type="text" size="mini" @click="() => append(data)">
             <el-tooltip class="item" effect="dark" content="添加子节点" placement="top">
               <i class="el-icon-circle-plus-outline"></i>
             </el-tooltip>
@@ -142,7 +148,7 @@ export default {
       //可以
       if (!unclose) {
         setTimeout(() => {
-          localStorage.setItem("catalog", JSON.stringify(this.data));
+          localStorage.setItem("catalog", JSON.stringify(this.data);
           alert("保存成功");
         }, 100);
       } else {
@@ -163,7 +169,7 @@ export default {
       };
       this.temp_data = ""; //清空临时输入内容
       this.data.push(newChapter);
-      localStorage.setItem("id", id); //最新id
+      this.$storage.set("id", id); //最新id
       setTimeout(() => {
         document.getElementById(newChapter.id).focus();
         console.log("获取焦点");
@@ -187,7 +193,7 @@ export default {
       };
       this.temp_data = ""; //清空临时输入框的东西
       curr_node.children.push(newChild); //添加到当前节点的children里面
-      localStorage.setItem("id", id); //最新id
+      this.$storage.set("id", id); //最新id
       setTimeout(() => {
         //获取焦点
         document.getElementById(newChild.id).focus();

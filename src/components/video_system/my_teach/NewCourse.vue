@@ -1,28 +1,22 @@
 <template>
   <div class="new-course" @contextmenu.prevent>
-    <template>
-      <el-tabs tab-position="up">
-        <el-tab-pane label="课程添加">
-<el-steps :active="1" finish-status="success"  align-center>
-  <el-step title="课程介绍">25154545</el-step>
-  <el-step title="设置章节">454545</el-step>
-  <el-step title="添加班级"></el-step>
-</el-steps>
+      <el-steps :active="step" finish-status="success" align-center>
+        <el-step title="课程介绍"></el-step>
+        <el-step title="设置章节"></el-step>
+        <el-step title="添加班级"></el-step>
+      </el-steps>
 
-          <div style="display:flex">
-            <div style="width:40%;margin:0 auto">
-              封面：
-              <v-imgTitleIntro />
-            </div>
-            <div style="width:50%;margin:1px auto">
-              目录：
-              <v-catalog />
-            </div>
+        <div style="width:80%;margin:0 auto">
+          <v-ImgTitleIntro v-if="step==0" />
+          <v-Catalog v-if="step==1" />
+          <div style="display:flex;justify-content:space-between">
+            <el-button type="primary" plain>重新填写</el-button>
+            <el-button type="primary" plain>暂存修改</el-button>
+            <el-button type="primary" @click="nextStep" plain>下一步</el-button>
           </div>
-          <br />
-        </el-tab-pane>
-      </el-tabs>
-    </template>
+
+        </div>
+      <br />
   </div>
 </template>
 
@@ -37,18 +31,24 @@ export default {
   name: "NewCourse",
   data() {
     return {
+      step: 0
     };
   },
   components: {
-    "v-catalog": Catalog,
-    "v-imgTitleIntro": ImgTitleIntro
+    "v-Catalog": Catalog,
+    "v-ImgTitleIntro": ImgTitleIntro
+  },
+  methods:{
+    nextStep(){
+      this.step=++this.step%3;
+    }
+
   }
 };
 </script>
 
 <style scoped>
 .new-course {
-  border: 1px solid yellow;
   width: 100%;
 }
 </style>

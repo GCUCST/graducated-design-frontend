@@ -1,0 +1,7 @@
+
+/** 覆盖Element的全局css，在main.js引入 */
+
+/* 这个是解决添加目录时候原定输入框显示不全   by cst */
+.el-tree-node__content{
+    height: 34px;
+}
