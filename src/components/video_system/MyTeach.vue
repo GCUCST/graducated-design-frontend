@@ -57,8 +57,6 @@
                   考试时间：2020-50-15  15：00
                   <br />教学班级：
                   陈一一：16软工1，2班
-                  <br />&emsp;&emsp;&emsp;&emsp;&emsp;李二二：16软件工程三班
-                  <br />&emsp;&emsp;&emsp;&emsp;&emsp;站三三：暂无添加
                   <br />
                 </div>
               </el-card>
@@ -72,9 +70,16 @@
         </div>
         <!--  -->
       </el-tab-pane>
+
       <el-tab-pane label="新建课程">
         <v-NowCourse></v-NowCourse>
       </el-tab-pane>
+
+       <el-tab-pane label="共享课程">
+         <v-ShareCourse></v-ShareCourse>
+      </el-tab-pane>
+
+
     </el-tabs>
   </div>
 </template>
@@ -84,6 +89,7 @@
 
 <script>
 import NowCourse from "@/components/video_system/my_teach/NewCourse.vue";
+import ShareCourse from "@/components/video_system/my_teach/ShareCourse.vue";
 
 export default {
   name: "MyTeach",
@@ -100,7 +106,9 @@ export default {
     }
   },
   components: {
-    "v-NowCourse": NowCourse
+    "v-NowCourse": NowCourse,
+    "v-ShareCourse": ShareCourse
+
   }
 };
 </script>

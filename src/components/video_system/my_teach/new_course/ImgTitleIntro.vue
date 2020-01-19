@@ -94,6 +94,9 @@
       <el-button v-else class="button-new-tag" size="small" @click="showInput">添加标签</el-button>
     </div>
     <!--/标签 -->
+    <br />
+
+    <el-button type="primary" @click="save">保存</el-button>
 
     <br />
     <br />
@@ -135,6 +138,21 @@ export default {
     };
   },
   methods: {
+    save() {
+      var intordutcion = {
+      imageUrl: this.imageUrl,
+      textTitle: this.textTitle,
+      textIntro: this.textIntro,
+      dynamicTags: this.dynamicTags,
+      inputVisible: this.inputVisible,
+      courseHour: this.courseHour,
+      credit: this.credit,
+      courseType: this.courseType,
+      date: this.date
+      }
+      localStorage.setItem("intro",JSON.stringify(intordutcion))
+    },
+
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
     },
