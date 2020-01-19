@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-        <!-- 开始 -->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <!-- 开始 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
       <span>
         <div>
           <el-cascader
@@ -14,16 +14,14 @@
               label:'path',
               children:'content'
               }"
-            @change="handleChange"
           ></el-cascader>
         </div>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
-        <!-- 结束 -->
+    <!-- 结束 -->
 
     <span style="text-align:center;font-size:22px">目录</span>
     <br />
@@ -39,8 +37,9 @@
       @node-click="handleNodeClick"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span v-show="!data.inp_stat">{{node.label}}</span>
-        <div>
+        
+        <span v-show="!data.inp_stat">{{data.label}}</span>
+        <div style="width:50%">
           <el-input
             @keyup.enter.native="inp_blur(data)"
             @blur="inp_blur(data)"
@@ -49,11 +48,13 @@
             :placeholder="data.level==1?'新章节':(data.level==2?'知识大点':'知识小点')"
             value="node.label"
             v-show="data.inp_stat"
-            maxlength="20"
+            maxlength="24"
             size="small"
             show-word-limit
           />
         </div>
+
+          <span>{{arrayToStr(data.src)}}</span>
 
         <span>
           <el-button size="mini" type="text" @click="update(data)">
@@ -62,13 +63,15 @@
             </el-tooltip>
           </el-button>
 
-          <el-button v-if="data.level==3" size="mini" type="text"  @click="relate(data)">
-            <el-tooltip class="item" effect="dark" content="关联文件" placement="top">
-              <i class="el-icon-star-off"></i>
+          <el-button v-if="data.level==3" size="mini" type="text" @click="relate(data)">
+            <el-tooltip  v-if="data.src==null" class="item" effect="dark" content="关联" placement="top">
+              <i   class="el-icon-star-off"></i>
+            </el-tooltip>
+
+             <el-tooltip v-if="data.src!=null" class="item" effect="dark" :content="data.src" placement="top">
+              <i  class="el-icon-star-on"></i>
             </el-tooltip>
           </el-button>
-
-
 
           <el-button v-if="data.level<3" type="text" size="mini" @click="() => append(data)">
             <el-tooltip class="item" effect="dark" content="添加子节点" placement="top">
@@ -96,9 +99,6 @@
 
 
 <script>
-//拿取当前最新id
-var now_id = localStorage.getItem("id");
-var id = now_id ? now_id : 0;
 
 export default {
   name: "catalog",
@@ -110,13 +110,29 @@ export default {
       temp_data: null,
       data: catalog_data ? catalog_data : [],
       //----start----
-      value: [],
+      value: null,
       folders: JSON.parse(localStorage.getItem("folders"))[0].content,
       //--end-
-      dialogVisible: false
+      dialogVisible: false,
+
+      curNode:null
     };
   },
   methods: {
+   
+   //转为路径显示
+    arrayToStr(array){
+      if(array==null)return null;
+      array = JSON.parse(array)
+      var str = "";
+      for(var i = 0;i<array.length;i++)
+      {
+        str +=  "/" + array[i]
+      }
+      return str;
+    },
+   
+    //取消显示对话框
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {
@@ -124,15 +140,21 @@ export default {
         })
         .catch(_ => {});
     },
-    handleChange(value) {
-      console.log("handlechange:"+value);
-    },
-    relate(curr_node) {
-      
-      this.dialogVisible = true
-      curr_node.src = '....';
+    //确定关联
+    submit() {
+      this.dialogVisible = false
+      console.log("添加了:" , this.value);
+      this.curNode.src = this.value==null||this.value.length==0? null: JSON.stringify( this.value);
+      this.curNode = null
 
+
+    },
+    //数据关联
+    relate(curr_node) {
       console.log("数据关联");
+      this.value =curr_node.src==null?null:JSON.parse(curr_node.src);
+      this.dialogVisible = true;
+      this.curNode = curr_node;
     },
 
     //保存目录
@@ -149,12 +171,13 @@ export default {
         alert("保存失败");
       }
     },
-    handleNodeClick(spec) {
-      console.log(spec.id);
+    //点击某个节点
+    handleNodeClick(node) {
     },
+    //新增章节
     addChapter() {
       const newChapter = {
-        id: ++id, //id
+        id: new Date() - 0, //id
         src: null, //用于关联
         inp_stat: true, //输入状态
         label: "新章节", //名字
@@ -163,7 +186,6 @@ export default {
       };
       this.temp_data = ""; //清空临时输入内容
       this.data.push(newChapter);
-      localStorage.setItem("id", id); //最新id
       setTimeout(() => {
         document.getElementById(newChapter.id).focus();
         console.log("获取焦点");
@@ -178,7 +200,7 @@ export default {
     //新增节点
     append(curr_node) {
       const newChild = {
-        id: ++id, //id
+        id: new Date() - 0, //id
         src: null, //用于关联
         inp_stat: true, //输入状态
         label: curr_node.level == 1 ? "知识大点" : "知识小点", //名称
@@ -187,11 +209,9 @@ export default {
       };
       this.temp_data = ""; //清空临时输入框的东西
       curr_node.children.push(newChild); //添加到当前节点的children里面
-      localStorage.setItem("id", id); //最新id
       setTimeout(() => {
         //获取焦点
         document.getElementById(newChild.id).focus();
-        console.log(id + "获取焦点");
       }, 50);
       this.$notify({
         title: "提示",
@@ -204,7 +224,6 @@ export default {
     recursive(tempData, id) {
       var data = tempData.children;
       for (var i = 0; i < data.length; i++) {
-        console.log(data[i].inp_stat);
         if (data[i].inp_stat == true) {
           //查找输入框状态的
           console.log("递归找到：", data[i]);
