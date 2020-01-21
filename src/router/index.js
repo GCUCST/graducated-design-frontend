@@ -1,28 +1,29 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import System from '@/components/System'
 
+
+//系统公共部分
+import System from '@/components/System'
 import Login from '@/components/public/Login'
 import AdminLogin from '@/components/public/AdminLogin'
-
 import PersonalCenter from '@/components/public/PersonalCenter'
 import HelpFreeback from '@/components/public/HelpFreeback'
 import Message from '@/components/public/Message'
 
 
-
+//视频系统
 import Homebody from '@/components/video_system/Homebody'
 import MyCourse from '@/components/video_system/MyCourse'
 import MyTeach from '@/components/video_system/MyTeach'
+import VideoLibrary from '@/components/video_system/VideoLibrary'
+import VideoCourse from '@/components/video_system/VideoCourse'
 
 
-
+// 教务员
 import ManageStudent from '@/components/manage/ManageStudent'
-
 import ManageDean from '@/components/manage/ManageDean'
 
-import VideoLibrary from '@/components/video_system/VideoLibrary'
-
+//考试系统
 import Courses from '@/components/exam_system/Courses'
 import QuestionBank from '@/components/exam_system/QuestionBank'
 import LearnProgress from '@/components/exam_system/LearnProgress'
@@ -37,6 +38,12 @@ import ErrorSet from '@/components/exam_system/stu/ErrorSet'
 
 
 Vue.use(Router)
+
+
+// 提示：
+//  meta:{
+//   requiresAuth:true, //添加该属性，表明该页面需要登录，详情看main.js
+// },
 
 
 //解决相同路由跳转报错问题
@@ -76,6 +83,14 @@ export default new Router({
           path:'myteach',
           name:"MyTeach",
           components:{MyTeach} 
+        },
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'videocourse',
+          name:"VideoCourse",
+          components:{VideoCourse} 
         },
         {
           path:'mycourse',

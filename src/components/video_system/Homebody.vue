@@ -7,7 +7,7 @@
         <!-- 右击详情 -->
         <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
           <div style="font-size:14px">
-          名称：JAVA入门基础{{Axis.index}}<br>
+          <span>名称：JAVA入门基础{{Axis.index}}</span><br>
           介绍：一个 Java 程序可以认为是一系列对象的
           集合，而这些对的集。 简要介绍下类、对 象
           、方法和实个 Java 程序可以认为是一系列对象的
@@ -38,7 +38,7 @@
                 <img style="width:100%;height:200px;" src="http://47.94.166.187:70/cwh_pics/ad.jpg" />
               </div>
               <!-- 标题 -->
-              <div class="title">JAVA入门基础{{i}}</div>
+              <div class="title" @click="intoCourse(i)">JAVA入门基础{{i}}</div>
 
               <div class="bottom-content">
                 <div>陈老师</div>
@@ -74,6 +74,10 @@ export default {
     };
   },
   methods: {
+    intoCourse(index){
+      console.log("进入某节课"+index)
+      this.$router.push({ name: 'Course', params: { "courseId": index }})
+    },
     rightClick(e, index) {
       this.Axis = { x: e.x, y: e.y, index: index };
       this.visible = true;
