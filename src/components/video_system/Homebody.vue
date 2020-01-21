@@ -76,7 +76,7 @@ export default {
   methods: {
     intoCourse(index){
       console.log("进入某节课"+index)
-      this.$router.push({ name: 'Course', params: { "courseId": index }})
+      this.$router.push({ name: 'VideoCourse', query: { "courseId": index }})
     },
     rightClick(e, index) {
       this.Axis = { x: e.x, y: e.y, index: index };
