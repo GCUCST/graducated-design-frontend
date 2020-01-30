@@ -46,11 +46,11 @@
           >
             <img
               v-show="isCollapse"
-              src="http://47.94.166.187:70/cwh_pics/ad.jpg"
+              src="http://134.175.238.145:70/example.jpg"
               style="height:25px;width:25px;"
             />
             <span slot="title">
-              <img src="http://47.94.166.187:70/cwh_pics/ad.jpg" style="height:100px;width:100px;" />
+              <img src="http://134.175.238.145:70/example.jpg" style="height:100px;width:100px;" />
             </span>
           </el-menu-item>
 
