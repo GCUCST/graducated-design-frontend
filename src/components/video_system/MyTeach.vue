@@ -17,7 +17,7 @@
                 <div>
                   <img
                     style="width:100%;height:150px;"
-                    src="http://47.94.166.187:70/cwh_pics/ad.jpg"
+                    src="http://134.175.238.145:70/example.jpg"
                   />
                 </div>
                 <!-- 标题 -->

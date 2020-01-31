@@ -26,7 +26,7 @@
                 :class="[video_full?'video-big':'video-small']"
                 controls="controls"
                 id="qnv"
-                src="http://47.94.166.187:70/cwh_pics/1.mp4"
+                src="http://134.175.238.145:70/example.mp4"
               >您的视频开始</video>
               <br />
               <div style="display:flex;justify-content:space-between">
@@ -47,9 +47,14 @@
           <transition name="custom-classes-transition" enter-active-class="animated bounceInRight">
             <div style="width:35%" v-show="!video_full">
               <el-tabs style="height:100%" type="border-card" stretch>
+
                 <el-tab-pane label="章节">
-                  <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+                  <el-tree :data="data" :props="defaultProps" 
+                  @node-click="handleNodeClick">
+                  </el-tree>
                 </el-tab-pane>
+
+
                 <el-tab-pane label="笔记本">笔记本</el-tab-pane>
               </el-tabs>
             </div>
@@ -150,63 +155,7 @@ export default {
 
       
 
-      data: [
-        {
-          label: "一级 1",
-          children: [
-            {
-              label: "二级 1-1",
-              children: [
-                {
-                  label: "三级 1-1-1"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: "一级 2",
-          children: [
-            {
-              label: "二级 2-1",
-              children: [
-                {
-                  label: "三级 2-1-1"
-                }
-              ]
-            },
-            {
-              label: "二级 2-2",
-              children: [
-                {
-                  label: "三级 2-2-1"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: "一级 3",
-          children: [
-            {
-              label: "二级 3-1",
-              children: [
-                {
-                  label: "三级 3-1-1"
-                }
-              ]
-            },
-            {
-              label: "二级 3-2",
-              children: [
-                {
-                  label: "三级 3-2-1"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      data: JSON.parse( localStorage.getItem("catalog")),
       defaultProps: {
         children: "children",
         label: "label"
@@ -234,6 +183,68 @@ export default {
   mounted() {
     console.log("接受到：" + this.$route.query.courseId);
     this.courseId = this.$route.query.courseId;
+
+
+
+
+    //防止进度条拉前
+    let that = this;
+    var sym; //实际进度
+    var time; //拉的进度    //far是最远进度
+    var qnv = document.querySelector("#qnv");
+    var interval = setInterval(function() {
+      try {
+        time = qnv.currentTime;
+        if (time - sym > 1 && time > that.far) {
+          qnv.currentTime = that.far; //拉过头就跳到最远播放位置
+        }
+        sym = qnv.currentTime;
+
+        if (sym > that.far) that.far = sym;
+      } catch (error) {
+        console.log("没有获取到视频资源:" + error);
+        clearInterval(interval);
+      }
+    }, 500);
+
+    var myVideo = document.getElementById("qnv");
+    if (myVideo != null) {
+      myVideo.oncanplay = function() {
+        console.log("准备就绪");
+      };
+      //监听播放开始
+      myVideo.addEventListener("play", function() {
+        console.log("开始播放");
+      });
+
+      //监听播放结束
+      myVideo.addEventListener("pause", function() {
+        console.log("播放暂停");
+      });
+
+      //监听播放结束
+      myVideo.addEventListener("ended", function() {
+        console.log("播放结束");
+      });
+
+      var Media = document.getElementById("qnv");
+      Media.addEventListener(
+        "timeupdate",
+        function() {
+          var timeDisplay;
+          //用秒数来显示当前播放进度
+          timeDisplay = Math.floor(Media.currentTime);
+          console.log(
+            (Number(Media.currentTime) / Number(Media.duration)).toFixed(2)
+          );
+          //当视频播放到 4s的时候做处理
+          if (timeDisplay == 4) {
+            console.log("第四秒");
+          }
+        },
+        true
+      );
+    }
   }
 };
 </script>
