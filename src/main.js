@@ -16,7 +16,7 @@ import "@/assets/css/global.css"
 //用于判断用户是否登录的路由拦截,在index.js配置meta
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) { // 判断该路由是否需要登录权限
-    if (localStorage.getItem("user") != null) { // 判断当前的token是否存在
+    if (localStorage.getItem("userInfo") != null) { // 判断当前的token是否存在
       next();
     } else {
       alert("该页面需要登录")

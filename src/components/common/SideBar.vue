@@ -46,11 +46,11 @@
           >
             <img
               v-show="isCollapse"
-              src="http://134.175.238.145:70/example.jpg"
+              :src="src"
               style="height:25px;width:25px;"
             />
             <span slot="title">
-              <img src="http://134.175.238.145:70/example.jpg" style="height:100px;width:100px;" />
+              <img   :src="src" style="height:100px;width:100px;" />
             </span>
           </el-menu-item>
 
@@ -63,15 +63,15 @@
             <el-menu-item-group>
               <span slot="title">视频系统</span>
               <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
-              <el-menu-item index="2-2" v-if="role==3" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
-              <el-menu-item index="2-6" v-if="role==3">笔记本（学生）</el-menu-item>
-              <el-menu-item index="2-4" v-if="role==2" @click="routeJump('VideoLibrary')"   >我的视频库（教师）</el-menu-item>
-              <el-menu-item index="2-5" v-if="role==2" @click="routeJump('MyTeach')"  >我教的课程（教师）</el-menu-item>
+              <el-menu-item index="2-2" v-if="role=='student'" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
+              <el-menu-item index="2-6" v-if="role=='student'">笔记本（学生）</el-menu-item>
+              <el-menu-item index="2-4" v-if="role=='teacher'" @click="routeJump('VideoLibrary')"   >我的视频库（教师）</el-menu-item>
+              <el-menu-item index="2-5" v-if="role=='teacher'" @click="routeJump('MyTeach')"  >我教的课程（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
           <!-- 信息管理 -->
-          <el-submenu index="3" v-if="role==1">
+          <el-submenu index="3" v-if="role=='dean'">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span slot="title">成员管理（教务员）</span>
@@ -89,27 +89,27 @@
           </el-submenu>
 
           <!-- 考试系统 -->
-          <el-submenu index="4" v-if="role==2||role==3">
+          <el-submenu index="4" v-if="role=='student'||role=='teacher'">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span slot="title">考试系统（学生和教师，需登录）</span>
             </template>
             <el-menu-item-group>
               <span slot="title">考试系统</span>
-              <el-menu-item index="4-1" v-if="role==3" @click="routeJump('ChapterPractice')">章节自由练习（学生）</el-menu-item>
-              <el-menu-item index="4-2" v-if="role==3" @click="routeJump('ChapterTest')">章节测试（学生）</el-menu-item>
-              <el-menu-item index="4-3" v-if="role==3" @click="routeJump('Exam')">考试（学生）</el-menu-item>
-              <el-menu-item index="4-4" v-if="role==3" @click="routeJump('ErrorSet')">错题集（学生）</el-menu-item>
-              <el-menu-item index="4-5" v-if="role==2" @click="routeJump('Courses')">我的课程（教师）</el-menu-item>
-              <el-menu-item index="4-6" v-if="role==2" @click="routeJump('QuestionBank')">我的试题库（教师，添加试题）</el-menu-item>
-              <el-menu-item index="4-7" v-if="role==2" @click="routeJump('LearnProgress')">学生章节练习进度（教师，查看进度情况）</el-menu-item>
-              <el-menu-item index="4-8" v-if="role==2" @click="routeJump('TestSetting')">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
-              <el-menu-item index="4-9" v-if="role==2" @click="routeJump('Marking')">阅卷（教师）</el-menu-item>
-              <el-menu-item index="4-10" v-if="role==2" @click="routeJump('ExportPaper')">导出学生考试卷（教师）</el-menu-item>
+              <el-menu-item index="4-1" v-if="role=='student'" @click="routeJump('ChapterPractice')">章节自由练习（学生）</el-menu-item>
+              <el-menu-item index="4-2" v-if="role=='student'" @click="routeJump('ChapterTest')">章节测试（学生）</el-menu-item>
+              <el-menu-item index="4-3" v-if="role=='student'" @click="routeJump('Exam')">考试（学生）</el-menu-item>
+              <el-menu-item index="4-4" v-if="role=='student'" @click="routeJump('ErrorSet')">错题集（学生）</el-menu-item>
+              <el-menu-item index="4-5" v-if="role=='teacher'" @click="routeJump('Courses')">我的课程（教师）</el-menu-item>
+              <el-menu-item index="4-6" v-if="role=='teacher'" @click="routeJump('QuestionBank')">我的试题库（教师，添加试题）</el-menu-item>
+              <el-menu-item index="4-7" v-if="role=='teacher'" @click="routeJump('LearnProgress')">学生章节练习进度（教师，查看进度情况）</el-menu-item>
+              <el-menu-item index="4-8" v-if="role=='teacher'" @click="routeJump('TestSetting')">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
+              <el-menu-item index="4-9" v-if="role=='teacher'" @click="routeJump('Marking')">阅卷（教师）</el-menu-item>
+              <el-menu-item index="4-10" v-if="role=='teacher'" @click="routeJump('ExportPaper')">导出学生考试卷（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
-          <el-menu-item index="8"  v-if="role==4" @click="routeJump('ManageDean')">
+          <el-menu-item index="8"  v-if="role=='admin'" @click="routeJump('ManageDean')">
             <i class="el-icon-setting"></i>
             <span slot="title">管理教务员（超级管理员）</span>
           </el-menu-item>
@@ -143,7 +143,7 @@
 
 <script>
 import VueBus from "@/utils/VueBus.js";
-
+import axios from 'axios' 
 export default {
   name: "Sidebar",
   data() {
@@ -152,15 +152,19 @@ export default {
       isCollapse: true, //用于最大化侧边栏
       ifShowSideBar: true, //显示侧边栏
       // 1教务员 2教师 3学生 4管理员
-      role: localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user")).role
-        : null
+      role: localStorage.getItem("userInfo")
+        ? JSON.parse(localStorage.getItem("userInfo")).role
+        : null,
+        src:localStorage.getItem("userInfo")
+        ? JSON.parse(localStorage.getItem("userInfo")).info.avatar
+        : null  //图片地址
+
     };
   },
   methods: {
     //退出登录
     logout() {
-      console.log(JSON.parse(localStorage.getItem("user")).role);
+      console.log(JSON.parse(localStorage.getItem("userInfo")).role);
       this.$confirm("确定退出？", "消息提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -168,7 +172,10 @@ export default {
       })
         .then(() => {
           //主要退出函数
-          localStorage.removeItem("user");
+          //清楚三大信息源
+          localStorage.removeItem("userInfo");
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
           this.role = null;
           this.$router.push("/");
           this.$message({
@@ -226,9 +233,21 @@ export default {
     //收到更新侧边栏功能的指令
     var that = this;
     VueBus.$on("role", function(data) {
-      console.log("SideBar收到role：" + data);
+      console.log("侧边栏收到role：" + data);
       that.role = data;
+      that.src = localStorage.getItem("userInfo")
+        ? JSON.parse(localStorage.getItem("userInfo")).info.avatar:null
     });
+
+    //获取图片资源的地址
+    //  axios.get('/api/comm/url')
+    //     .then(function (response) {
+    //       console.log(response)
+    //       that.src = response.data.url + "/test/pics/1.jpg"     //从后台获取地址
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
   }
 };
 </script>

@@ -35,7 +35,7 @@
             <!-- 一个课程 -->
             <div @contextmenu.prevent @click.right="rightClick($event,i)">
               <div>
-                <img style="width:100%;height:200px;" src="http://134.175.238.145:80/example.jpg" />
+                <img style="width:100%;height:200px;" :src="src" />
               </div>
               <!-- 标题 -->
               <div class="title" @click="intoCourse(i)">JAVA入门基础{{i}}</div>
@@ -64,13 +64,16 @@
 
 
 <script>
+import axios from 'axios' 
+
 export default {
   name: "Homebody",
   data() {
     return {
       msg: "公开课(右击查看详情)",
       Axis: { x: 0, y: 0, index: null }, //坐标和对象
-      visible: false //展示右击菜单
+      visible: false, //展示右击菜单
+      src:null       //图片地址
     };
   },
   methods: {
@@ -82,6 +85,17 @@ export default {
       this.Axis = { x: e.x, y: e.y, index: index };
       this.visible = true;
     }
+  },
+  mounted(){
+     var that = this
+     axios.get('/api/comm/url')
+        .then(function (response) {
+          console.log(response)
+          that.src = response.data.url + "/test/pics/1.jpg"     //从后台获取地址
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 };
 </script>
