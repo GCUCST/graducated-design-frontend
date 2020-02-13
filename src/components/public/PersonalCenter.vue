@@ -4,7 +4,9 @@
     <el-tab-pane label="我的信息">
       <v-MyInfo></v-MyInfo>
     </el-tab-pane>
-    <el-tab-pane label="我的头像">我的头像 </el-tab-pane>
+    <el-tab-pane label="我的头像">
+      <v-MyAvatar></v-MyAvatar>  
+     </el-tab-pane>
     <el-tab-pane label="账户安全">账户安全</el-tab-pane>
   </el-tabs>
   </div>
@@ -13,6 +15,7 @@
 
 <script>
 import MyInfo from "@/components/public/personal_center/MyInfo.vue"
+import MyAvatar from "@/components/public/personal_center/MyAvatar.vue"
 export default {
   name: "PersonalCenter",
   data() {
@@ -22,7 +25,8 @@ export default {
     };
   },
   components:{
-    "v-MyInfo":MyInfo
+    "v-MyInfo":MyInfo,
+    "v-MyAvatar":MyAvatar
   }
 };
 </script>

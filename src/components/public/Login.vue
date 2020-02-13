@@ -56,6 +56,7 @@ export default {
   },
 
   methods: {
+    //根据用户跳转页面
     jumpPageByUser(role)
     {
        //根据角色跳转
@@ -68,6 +69,7 @@ export default {
           VueBus.$emit("role", role);
 
     },
+    //保存到用户信息到localstorage 
     saveUserInfo(response)
     {
        var role = response.data.object.role;
