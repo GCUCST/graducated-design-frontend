@@ -43,6 +43,7 @@
 <script>
 import axios from "axios";
 import VueBus from "@/utils/VueBus.js";
+import UrlConfig from "../../config/UrlConfig.js"
 export default {
   data() {
     return {
@@ -105,13 +106,7 @@ export default {
       var that = this
       axios
         .post(
-          "/api/comm/getuserInfo",
-          {},
-          {
-            headers: {
-              Authorization: "Bearer " + token
-            }
-          }
+          UrlConfig.getApi().getUserInfo         
         )
         .then(function(response) {
           that.saveUserInfo(response);
@@ -127,7 +122,7 @@ export default {
       var params = new URLSearchParams();
       params.append("token", token);
       axios
-        .post("/api/oauth/check_token", params)
+        .post(UrlConfig.getApi().checkToken, params)
         .then(function(response) {
           console.log("校验成功");
           that.getUserInfoByToken(token);
@@ -156,7 +151,7 @@ export default {
       params.append("grant_type", "password");
       //向后端请求token
       axios
-        .post("/api/oauth/token", params)
+        .post(UrlConfig.getApi().getToken, params)
         .then(function(response) {
           //判断登录是否成功
           if (response.data.access_token) {
@@ -175,18 +170,6 @@ export default {
 
       return;
 
-      // var obj = { account: this.account, role: role };
-      // var str = JSON.stringify(obj);
-      // localStorage.setItem("user", str);
-      // console.log("登录账号：" + localStorage.getItem("user"));
-      // if (role == 2 || role == 3) {
-      //   this.$router.push({ name: "Homebody" });
-      // } else if (role == 1) {
-      //   this.$router.push({ name: "ManageStudent" });
-      // }
-      // //传值给侧边栏，做一个更新侧边栏菜单
-      // var that = this;
-      // VueBus.$emit("role", that.role);
     },
     reset() {
       this.account = "";

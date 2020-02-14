@@ -65,7 +65,7 @@
 
 <script>
 import axios from 'axios' 
-
+import UrlConfig from "../../config/UrlConfig.js"
 export default {
   name: "Homebody",
   data() {
@@ -87,15 +87,17 @@ export default {
     }
   },
   mounted(){
-     var that = this
-     axios.get('/api/comm/url')
-        .then(function (response) {
-          console.log(response)
-          that.src = response.data.url + "/test/pics/1.jpg"     //从后台获取地址
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    this.src = UrlConfig.getUrl().getDefaultAvatarUrl
+    //  var that = this
+    //  axios.get(UrlConfig.getApi().getQiniuyunUrl)
+    //     .then(function (response) {
+    //       console.log(response)
+    //       that.src = response.data.url + "/test/pics/1.jpg"  //获取图片地址
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+
   }
 };
 </script>

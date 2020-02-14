@@ -17,8 +17,10 @@
 
 
 <script>
+import UrlConfig from "../../../config/UrlConfig.js";
 import * as qiniu from "qiniu-js";
 import axios from "axios";
+
 export default {
   name: "myavatar",
   data() {
@@ -29,42 +31,48 @@ export default {
   },
   methods: {
     //从服务器获取本次上传的名称
-    getUploadKey(type,suffix) {
+    getUploadKey(type, suffix) {
       var params = new URLSearchParams();
-      params.append("type",type);
+      params.append("type", type);
       params.append("suffix", suffix);
-      axios
-        .post("/api/comm/getKey", params, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("access_token")
-          }
-        })
-        .then(function(response) {
-          console.log(response.data.key);
-        })
-        .catch(function(error) {
-          console.log(error);
+      return new Promise((resolve, reject) => {
+        axios.post(UrlConfig.getApi().getKey, params).then(function(response) {
+          resolve(response);
         });
+      });
+    },
+    //获取七牛云通行证
+    getQiniuyunUpToken() {
+      var params = new URLSearchParams();
+      //指定回调的地址
+      params.append("callbackUrl", UrlConfig.getUrl().callbackUrl);
+      return new Promise((resolve, reject) => {
+        axios
+          .post(UrlConfig.getApi().getQiniuyunUploadToken, params)
+          .then(function(response) {
+            resolve(response);
+          });
+      });
     },
 
-    updateAvatar() {
-      this.getUploadKey("avatar","jpg");
-      return;  ///做到这里
-
-      var key = null;
-      var token =
-        "fowMfgH7t7z8zoOJlBxwO0viT9cZCRejf6BUdGXJ:ORW3puA2wGy8vSklq2XAoppqRR4=:eyJjYWxsYmFja0JvZHlUeXBlIjoiYXBwbGljYXRpb24vanNvbiIsInNjb3BlIjoiY3N0LWltYWdlIiwiY2FsbGJhY2tVcmwiOiJodHRwOi8vY3N0Lm5hdGFwcDEuY2MvY29tbS9jYWxsYmFjayIsImRlYWRsaW5lIjoxNjQxNjA0NzE2LCJjYWxsYmFja0JvZHkiOiJ7XCJrZXlcIjokKGtleSksXCJtaW1lVHlwZVwiOiQobWltZVR5cGUpLFwiZm5hbWVcIjokKGZuYW1lKSxcImJ1Y2tldFwiOiQoYnVja2V0KSxcImltYWdlQXZlXCI6JChpbWFnZUF2ZSl9LFwiaW1hZ2VJbmZvXCI6JChpbWFnZUluZm8pfSJ9";
-
+    async updateAvatar() {
+      var tokenResult = await this.getQiniuyunUpToken();
+      var keyResult = await this.getUploadKey("avatar", "jpg");
+      var token = tokenResult.data.token;
+      var key = keyResult.data.key;
+      //判断是否成功获取key和token
+      if (key == null || token == null) return;
+      //上传文件
       var file = document.getElementById("select").files[0];
-      // var config = {
-      //   retryCount:3
-      //   //region: qiniu.region.z2
-      // };
-      // var putExtra = {
-      //   fname: "",
-      //   params: {},
-      //   mimeType: ["image/jpg"]
-      // };
+
+      if (file == null) {
+        alert("请选择文件");
+        return;
+      }
+      //定义用户名
+      var putExtra = {
+         params:{'x:username':JSON.parse(localStorage.getItem("userInfo")).account}
+      };
       var observer = {
         next(res) {
           console.log("next: ", res);
@@ -76,7 +84,7 @@ export default {
           console.log("complete: ", res);
         }
       };
-      var observable = qiniu.upload(file, null, token, null, null);
+      var observable = qiniu.upload(file, key, token, putExtra,null );
       var subscription = observable.subscribe(observer); // 上传开始
     }
   }
