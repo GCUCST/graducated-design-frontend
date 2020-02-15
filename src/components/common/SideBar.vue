@@ -144,6 +144,7 @@
 <script>
 import VueBus from "@/utils/VueBus.js";
 import axios from 'axios' 
+import LoginStatus from "@/utils/LoginStatus.js"
 export default {
   name: "Sidebar",
   data() {
@@ -172,10 +173,7 @@ export default {
       })
         .then(() => {
           //主要退出函数
-          //清楚三大信息源
-          localStorage.removeItem("userInfo");
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
+          LoginStatus.logout();
           this.role = null;
           this.$router.push("/");
           this.$message({

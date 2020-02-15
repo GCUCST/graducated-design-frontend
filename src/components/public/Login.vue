@@ -44,6 +44,7 @@
 import axios from "axios";
 import VueBus from "@/utils/VueBus.js";
 import UrlConfig from "../../config/UrlConfig.js"
+import LoginStatus from "../../utils/LoginStatus.js"
 export default {
   data() {
     return {
@@ -51,16 +52,16 @@ export default {
       password: "",
       code: null,
       comfirmCode: null,
-      // role: "3",
       commit: false
     };
   },
 
   methods: {
     //根据用户跳转页面
-    jumpPageByUser(role)
+    JumpToIndex()
     {
-       //根据角色跳转
+      //根据角色跳转
+      var role = "student"
           if (role == "student" || role == "teacher") {
             this.$router.push({ name: "Homebody" });
           } else if (role == "dean") {
@@ -68,52 +69,12 @@ export default {
           }
           //传值给侧边栏，做一个更新侧边栏菜单
           VueBus.$emit("role", role);
-
-    },
-    //保存到用户信息到localstorage 
-    saveUserInfo(response)
-    {
-       var role = response.data.object.role;
-          var userinfo = response.data.object;
-          var account = response.data.object.stuId
-            ? response.data.object.stuId
-            : response.data.object.staId;
-          var name = response.data.object.name;
-          //输出角色信息
-          switch (role) {
-            case "student":
-              console.log("登录学生：" + name + "\n账号：" + account);
-              break;
-            case "teacher":
-              console.log("登录老师：" + name + "\n账号：" + account);
-              break;
-            case "dean":
-              console.log("登录教务员：" + name + "\n账号：" + account);
-              break;
-            default:
-              console.log("获取角色错误，情练习管理员。");
-              break;
-          }
-          //保存角色信息
-          var obj = { account: account, role: role, info: userinfo };
-          localStorage.setItem("userInfo", JSON.stringify(obj));
-
-          this.jumpPageByUser(role);
     },
 
     //获取用户信息
-    getUserInfoByToken(token) {
-      var that = this
-      axios
-        .post(
-          UrlConfig.getApi().getUserInfo         
-        )
-        .then(function(response) {
-          that.saveUserInfo(response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+    getUserInfoByToken() {
+      LoginStatus.getUserInfoByToken();
+      this.JumpToIndex()
     },
 
     //令牌校验
@@ -125,7 +86,7 @@ export default {
         .post(UrlConfig.getApi().checkToken, params)
         .then(function(response) {
           console.log("校验成功");
-          that.getUserInfoByToken(token);
+          that.getUserInfoByToken();
         })
         .catch(function(error) {
           console.log(error);

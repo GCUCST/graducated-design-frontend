@@ -20,6 +20,7 @@
 import UrlConfig from "../../../config/UrlConfig.js";
 import * as qiniu from "qiniu-js";
 import axios from "axios";
+import LoginStatus from "../../../utils/LoginStatus.js"
 
 export default {
   name: "myavatar",
@@ -69,22 +70,31 @@ export default {
         alert("请选择文件");
         return;
       }
+      //做到这里  214
       //定义用户名
       var putExtra = {
-         params:{'x:username':JSON.parse(localStorage.getItem("userInfo")).account}
+         params:{
+           'x:username':JSON.parse(localStorage.getItem("userInfo")).account,
+           "x:target":'updateAvatar'
+        }
+         
       };
       var observer = {
         next(res) {
-          console.log("next: ", res);
+          console.log("do..: ", res);
         },
         error(err) {
-          console.log("cst_error: ", err);
+          console.log("上传错误: ", err);
         },
         complete(res) {
-          console.log("complete: ", res);
+          console.log("上传完成: ", res);
+          //更新储存的用户信息
+          LoginStatus.reflashUserInfo()
+          alert("更新完成，请刷新页面。")
+          
         }
       };
-      var observable = qiniu.upload(file, key, token, putExtra,null );
+      var observable = qiniu.upload(file, key, token, putExtra,null);
       var subscription = observable.subscribe(observer); // 上传开始
     }
   }
