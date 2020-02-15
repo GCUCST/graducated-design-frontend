@@ -9,8 +9,9 @@
     <br />
 
     <div id="box">
-      <input type="file" id="select" />
-      <el-button @click="updateAvatar">点击修改头像</el-button>
+      <input type="file" id="select" /><br>
+      <el-button @click="updateAvatar">上传头像</el-button>
+        <el-button @click="reflashAvatar">刷新头像</el-button>
     </div>
   </div>
 </template>
@@ -31,6 +32,10 @@ export default {
     };
   },
   methods: {
+    reflashAvatar(){
+      this.user = JSON.parse(localStorage.getItem("userInfo"))
+      console.log("刷新完成。")
+    },
     //从服务器获取本次上传的名称
     getUploadKey(type, suffix) {
       var params = new URLSearchParams();
@@ -90,7 +95,7 @@ export default {
           console.log("上传完成: ", res);
           //更新储存的用户信息
           LoginStatus.reflashUserInfo()
-          alert("更新完成，请刷新页面。")
+          alert("更新完成，请点击刷新头像。")
           
         }
       };
