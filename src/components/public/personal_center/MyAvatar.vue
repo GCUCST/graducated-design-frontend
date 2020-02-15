@@ -94,7 +94,7 @@ export default {
         complete(res) {
           console.log("上传完成: ", res);
           //更新储存的用户信息
-          LoginStatus.reflashUserInfo()
+          LoginStatus.reflashAndSetUserInfo()
           alert("更新完成，请点击刷新头像。")
           
         }

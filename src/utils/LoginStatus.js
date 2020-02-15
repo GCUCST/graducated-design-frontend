@@ -11,7 +11,7 @@ var LoginStatus = {
         localStorage.removeItem("refresh_token");
     },
     //刷新用户信息
-    reflashUserInfo(){
+    reflashAndSetUserInfo(){
         this.getUserInfoByToken();
     },
     //更新本地的userinfo

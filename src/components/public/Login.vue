@@ -58,23 +58,21 @@ export default {
 
   methods: {
     //根据用户跳转页面
-    JumpToIndex()
+    JumpToIndex(ROLE)
     {
-      //根据角色跳转
-      var role = "student"
-          if (role == "student" || role == "teacher") {
-            this.$router.push({ name: "Homebody" });
-          } else if (role == "dean") {
-            this.$router.push({ name: "ManageStudent" });
-          }
-          //传值给侧边栏，做一个更新侧边栏菜单
-          VueBus.$emit("role", role);
+      switch (ROLE)
+      {
+        case "ROLE_student":  VueBus.$emit("role", "student"); break;
+        case "ROLE_teacher":VueBus.$emit("role", "teacher"); break;
+        case "ROLE_dean":VueBus.$emit("role", "dean"); break;
+      }
+        this.$router.push({ name: "Homebody" });
     },
 
-    //获取用户信息
-    getUserInfoByToken() {
-      LoginStatus.getUserInfoByToken();
-      this.JumpToIndex()
+    //获刷新且保存userinfo
+    reflashAndSetUserInfo(ROLE) {
+      LoginStatus.reflashAndSetUserInfo();
+      this.JumpToIndex(ROLE)
     },
 
     //令牌校验
@@ -86,7 +84,7 @@ export default {
         .post(UrlConfig.getApi().checkToken, params)
         .then(function(response) {
           console.log("校验成功");
-          that.getUserInfoByToken();
+          that.reflashAndSetUserInfo(response.data.authorities[0]);
         })
         .catch(function(error) {
           console.log(error);

@@ -231,21 +231,12 @@ export default {
     //收到更新侧边栏功能的指令
     var that = this;
     VueBus.$on("role", function(data) {
-      console.log("侧边栏收到role：" + data);
+      console.log("侧边栏收到：" + data);
       that.role = data;
       that.src = localStorage.getItem("userInfo")
         ? JSON.parse(localStorage.getItem("userInfo")).info.avatar:null
     });
 
-    //获取图片资源的地址
-    //  axios.get('/api/comm/url')
-    //     .then(function (response) {
-    //       console.log(response)
-    //       that.src = response.data.url + "/test/pics/1.jpg"     //从后台获取地址
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
   }
 };
 </script>
