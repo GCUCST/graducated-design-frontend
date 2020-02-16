@@ -69,6 +69,7 @@
 
 
 <script>
+import LoginStatus from "../../../utils/LoginStatus.js"
 export default {
   name: "myinfo",
   data() {
@@ -76,6 +77,9 @@ export default {
       msg: "个人中心",
       user: JSON.parse(localStorage.getItem("userInfo"))
     };
+  },
+  mounted(){
+     LoginStatus.reflashAndSetUserInfo();
   }
 };
 </script>

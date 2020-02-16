@@ -1,5 +1,55 @@
 <template>
   <div>
+    <!-- 测试---------------------- -->
+    <div
+      v-show="showUploadPanel"
+      style="width: 50%;
+    height: 280px;
+    margin: 1px auto;
+    background: white;
+    position: fixed;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 12%;
+    z-index: 9999;
+    border: 1px solid;"
+    >
+      <div style="text-align:left;display:flex;justify-content:space-between">
+        <div style="margin:0 auto;">
+          <input
+            @input="parseFileInfo"
+            v-if="progress!=100"
+            style="opacity: 0;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    position: fixed;"
+            type="file"
+            id="select"
+          />
+          <div :class="file==null?'el-icon-upload':'el-icon-finished'" style="font-size: 150px" />
+        </div>
+        <div v-if="file!=null">
+          <br />
+          文件名：{{file.name}}
+          <br />
+          大小：{{file.size/1024}}KB
+          <br />
+          格式：{{file.type}}
+        </div>
+      </div>
+      <br />
+      <div v-if="file!=null" style="text-align:center">
+        <el-progress :percentage="progress" status="success"></el-progress>
+        <el-button v-if="progress!=100" @click.once="uploadTest">上传</el-button>
+      </div>
+      <div style="text-align:center">
+        <el-button @click="cancelUpload">{{progress==100?'完成':'取消'}}</el-button>
+      </div>
+    </div>
+
+    <!-- /测试---------------------- -->
+
     <!-- 快捷菜单 -->
     <transition name="custom-classes-transition" enter-active-class="animated fadeIn">
       <div
@@ -37,12 +87,13 @@
         @click.right="rightEvent($event,null)"
         @contextmenu.prevent
         class="body"
+        v-loading="loading"
       >
         <template>
           <el-tabs tab-position="up">
             <el-tab-pane :label="msg">
               <div style="text-align:right">
-                <el-button type="primary" plain @click="uploadFile">上传文件</el-button>
+                <el-button type="primary"   plain @click="uploadFile">上传文件</el-button>
 
                 <el-button type="primary" plain @click="addFolder">新建文件夹</el-button>
 
@@ -61,21 +112,21 @@
                   <el-link type="primary" style="font-size:16px;" @click="jump(index)">/</el-link>
                 </span>
                 <span v-else>
-                  <span style="font-size:16px;">></span>
+                  <span style="font-size:16px;">&nbsp;></span>
                   <el-link type="primary" @click="jump(index)" style="font-size:16px;">{{item}}</el-link>
                 </span>
               </span>
               <!-- /导航路径  -->
 
               <div class="content">
+                <!-- 处于顶层，屏蔽返回键 -->
                 <div @click="back" class="back" v-if="this.curPath!='/'">
                   <i class="el-icon-back"></i>
                 </div>
 
-                <div  v-for="(item,index) in curContent" :key="index">
-                
+                <div v-for="(item,index) in curContent" :key="index">
                   <el-tooltip effect="light" :content="item.path" placement="top-start">
-<!-- -------------------文件夹------------- -->
+                    <!-- -------------------文件夹------------- -->
                     <div
                       @click.right="rightEvent($event,item.path)"
                       @contextmenu.prevent
@@ -93,17 +144,17 @@
                       </div>
                       <footer class="folder-text">{{item.path}}</footer>
                     </div>
-  <!-- ------------------ /文件夹 ------------------ -->
+                    <!-- ------------------ /文件夹 ------------------ -->
 
-<!-- --------------------文件--------------------------------------- -->
-                      <div
+                    <!-- --------------------文件--------------------------------------- -->
+                    <div
                       v-if="item.type==0"
                       @contextmenu.prevent
                       @click.right="rightEvent($event,item.path)"
                       @click.right.stop="rightEvent($event,item.path)"
                       class="target"
                     >
-                      <div class="file-img"  draggable="true" :id="index">
+                      <div class="file-img" draggable="true" :id="index">
                         <img
                           width="85px"
                           height="85px"
@@ -112,8 +163,7 @@
                       </div>
                       <footer class="folder-text">{{item.path}}</footer>
                     </div>
-<!-- ----------------------/文件----------------------- -->
-
+                    <!-- ----------------------/文件----------------------- -->
                   </el-tooltip>
                 </div>
               </div>
@@ -127,6 +177,8 @@
 
 
 <script>
+import UploadUtil from "../../utils/UploadUtil.js";
+import VueBus from "@/utils/VueBus.js";
 //默认文件夹
 var defaultFolders = [
   {
@@ -182,6 +234,11 @@ export default {
   data() {
     return {
       msg: "视频库",
+      tempForUpload:{},//上传视频完成需要传递这临时变量
+      progress: 0, //上传进度
+      file: null, //上传的文件
+      showUploadPanel: false, //出现上传白板
+      loading: false, //页面不可以编辑状态
       PathAndAxis: { x: 0, y: 0, path: null }, //坐标和path
       from: null, //文件拖拽的起点
       to: null, //文件拖拽的目的地
@@ -206,11 +263,9 @@ export default {
       dragged = event.target;
       // 被拖拉节点的背景色变透明
       event.target.style.opacity = 0.1;
-      console.log(event);
       that.from = event.path[1].id;
       that.visible = false;
     });
-
 
     b.addEventListener(
       "dragend",
@@ -258,7 +313,6 @@ export default {
       function(event) {
         // 防止事件默认行为（比如某些元素节点上可以打开链接），
         event.preventDefault();
-        console.log(event);
         that.to = event.path[1].id;
         if (that.from == that.to) {
           console.log("不做操作..");
@@ -272,15 +326,71 @@ export default {
       },
       false
     );
+
+
+
+    //-----------------
+          var that = this;
+      VueBus.$on("uploadPrecent", function(data) {
+        console.log("视频库收到进度：" + data);
+        that.progress = data;
+      });
+      VueBus.$on("uploadError", function(data) {
+        console.log("视频库收到错误：" , data);
+      });
+
+      VueBus.$on("uploadFinish", function(data) {
+        console.log("视频库收到完成：" ,data);
+        that.tempForUpload.newFile.url = data.object
+        that.tempForUpload.tempContent.push( that.tempForUpload.newFile);
+
+          this.$message({
+              type: "success",
+              message: "新建文件成功！ "+ that.tempForUpload.value
+            });})
+
+     
   },
 
   methods: {
-   
-    //详情
-    targetDetail(path){
-      alert("显示详情："+path)
+    parseFileInfo() {
+      this.file = document.getElementById("select").files[0];
+      console.log(this.file);
     },
+    cancelUpload() {
+      console.log("取消。。");
+      this.showUploadPanel = false; //关闭上传白板
+      this.loading = false; //页面不可以编辑状态
+      this.file = null; //取消选择
+      this.progress = 0; //置0
+    },
+    uploadTest() {
+      console.log("uploadTest");
+      this.progress = 0; //置0
+      var file = document.getElementById("select").files[0];
+      if (file == null) {
+        alert("请选择文件");
+        return;
+      }
+      //  文件  命名在中间的字段  后缀  操作的用户名  调用目标方法
+      var username = JSON.parse(localStorage.getItem("userInfo")).account;
+      var midType = "upload";
+      var suffix = "";
+      var targetType = "uploadFile";
+      UploadUtil.upload(file, midType, suffix, username, targetType);
+      
+    },
+   
 
+     
+   
+
+    //-----------------------------------------
+
+    //详情
+    targetDetail(path) {
+      alert("显示详情：" + path);
+    },
 
     //上传文件
     uploadFile() {
@@ -293,7 +403,7 @@ export default {
       })
         .then(({ value }) => {
           //1.new一个   2解析当前路径   3遍历到当前文件夹的json  4.插入进去  5.更新数据展示
-          var newFile = { path: value, content: "", type: 0 };
+          var newFile = { path: value, url: null, type: 0 };
           var array = this.pathToArray(this.curPath);
           var tempContent = this.folders;
           array.forEach(o => {
@@ -305,21 +415,27 @@ export default {
             o.path == value ? (legal = false) : null;
           });
           if (legal) {
-            tempContent.push(newFile);
-          }
-          this.curContent = tempContent;
-          this.resolveCurPathToContent();
-          if (legal) {
-            this.$message({
-              type: "success",
-              message: "新建文件： " + value
-            });
+            this.showUploadPanel = true;
+            this.loading = true;
+            console.log("这里做上传，把地址更新进来。");
+
+            //为临时变量赋值
+            this.tempForUpload = {
+              tempContent:tempContent,
+              newFile:newFile,
+              value:value
+            }
+
+
+            // tempContent.push(newFile);
           } else {
             this.$message({
               type: "error",
               message: "新建文件： " + value + "   已存在"
             });
           }
+          this.curContent = tempContent;
+          this.resolveCurPathToContent();
         })
         .catch(() => {
           this.$message({
@@ -378,16 +494,14 @@ export default {
 
     //跳转指定目录
     jump(index) {
-      //  alert(index)
       //1.当前路径字符串解析路径数组
       //2.切开数组  后面的不要，在转为路径字符串
       //3重新赋值当前路径
       //4.重新展示
       var array = this.pathToArray(this.curPath);
       array.splice(index + 1);
-      console.log("cst", array);
       var path = this.arrayToPath(array);
-      console.log(path);
+      console.log("jump", path);
       this.curPath = path;
       this.resolveCurPathToContent();
     },
@@ -420,10 +534,10 @@ export default {
       }
 
       var movedObj = this.curContent[i];
-
       var upPath = this.arrayToPath(array);
-      console.log("upPath" + upPath);
+      console.log("上一级目录" + upPath);
       var tempContent = this.folders;
+      //把路劲转为数组
       var array = this.pathToArray(upPath);
       array.forEach(o => {
         tempContent = tempContent.find(item => item.path == o).content;
@@ -438,7 +552,7 @@ export default {
       });
       if (canMove) {
         tempContent.push(movedObj);
-        console.log("临时变量：", movedObj);
+        console.log("转移的文件：", movedObj.path);
         this.curContent.splice(i, 1); //删除这个文件(夹)
         this.resolveCurPathToContent();
       } else {
@@ -470,7 +584,6 @@ export default {
       }
       //  1。临时变量存储from文件夹  2进入to的路径添加临时变量 3删除现在的from节点
       var tempContent = this.curContent[from];
-      console.log("from", tempContent);
       var i = 0;
       for (i = 0; i < this.curContent[to].content.length; i++) {
         if (this.curContent[to].content[i].path == this.curContent[from].path) {
@@ -486,7 +599,7 @@ export default {
     //重命名
     rename(path) {
       this.visible = false;
-      console.log("删除的路径：" + path);
+      console.log("重命名的路径：" + path);
       //1 解析当前路径  2找到当前路径的folder  3遍历并找到对应path 4修改 5刷新数据展示
       var array = this.pathToArray(this.curPath);
       console.log(array);
@@ -542,7 +655,6 @@ export default {
       var k = tempContent.length;
       for (var i = 0; i < k; i++) {
         if (tempContent[i].path == path) {
-          console.log("i:" + i);
           break;
         }
       }
@@ -598,7 +710,6 @@ export default {
         var array = path.split("/").slice(1);
         array.unshift("/");
       }
-      console.log(array);
       return array;
     }
   }
@@ -606,7 +717,6 @@ export default {
 </script>
 
 <style scoped>
-
 .back {
   text-align: center;
   margin: 20px;
@@ -650,12 +760,12 @@ export default {
   /* border: 1px solid; */
 }
 .folder-img {
-    width: 85px;
+  width: 85px;
   height: 85px;
   cursor: pointer;
 }
 .file-img {
-    width: 85px;
+  width: 85px;
   height: 85px;
   cursor: pointer;
 }
