@@ -145,6 +145,7 @@
 import VueBus from "@/utils/VueBus.js";
 import axios from 'axios' 
 import LoginStatus from "@/utils/LoginStatus.js"
+import UrlConfig from "../../config/UrlConfig.js"
 export default {
   name: "Sidebar",
   data() {
@@ -157,7 +158,7 @@ export default {
         ? JSON.parse(localStorage.getItem("userInfo")).role
         : null,
         src:localStorage.getItem("userInfo")
-        ? JSON.parse(localStorage.getItem("userInfo")).info.avatar
+        ? UrlConfig.getQiniuyunUrl()+ JSON.parse(localStorage.getItem("userInfo")).info.avatar
         : null  //图片地址
 
     };
@@ -234,7 +235,7 @@ export default {
       console.log("侧边栏收到：" + data);
       that.role = data;
       that.src = localStorage.getItem("userInfo")
-        ? JSON.parse(localStorage.getItem("userInfo")).info.avatar:null
+        ? UrlConfig.getQiniuyunUrl()+JSON.parse(localStorage.getItem("userInfo")).info.avatar:null
     });
 
   }

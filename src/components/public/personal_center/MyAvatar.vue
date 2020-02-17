@@ -2,10 +2,10 @@
   <div>
     <div>
       <div>
-        <el-avatar :size="100" :src="user.info.avatar"></el-avatar>
+        <el-avatar :size="100" :src="srcBase+user.info.avatar"></el-avatar>
       </div>
     </div>
-    地址：{{user.info.avatar}}
+    地址：{{srcBase+user.info.avatar}}
     <br />
 
     <div id="box">
@@ -29,7 +29,8 @@ export default {
   data() {
     return {
       msg: "个人中心",
-      user: JSON.parse(localStorage.getItem("userInfo"))
+      user: JSON.parse(localStorage.getItem("userInfo")),
+      srcBase:UrlConfig.getQiniuyunUrl()
     };
   },
   methods: {
@@ -53,7 +54,7 @@ export default {
       var targetType = "updateAvatar";
       
       UploadUtil.upload(file,midType,suffix,username,targetType)
-      
+
     }
   }
 };

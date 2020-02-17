@@ -64,7 +64,7 @@ var UploadUtil = {
         },
         error(err) {
           console.log("上传错误！");
-          VueBus.$emit("uploadError", res); 
+          VueBus.$emit("uploadError", err); 
         },
         complete(res) {
           console.log("上传完成!"); 
