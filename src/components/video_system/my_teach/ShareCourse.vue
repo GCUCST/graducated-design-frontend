@@ -7,7 +7,7 @@
           <!-- 一个课程 -->
           <div @contextmenu.prevent @click.right="rightClick($event,i)">
             <div>
-              <img style="width:100%;height:150px;" src="http://47.94.166.187:70/cwh_pics/ad.jpg" />
+              <img style="width:100%;height:150px;" src="http://134.175.238.145:80/example.jpg" />
             </div>
             <!-- 标题 -->
             <div class="title">JAVA入门基础{{i}}</div>

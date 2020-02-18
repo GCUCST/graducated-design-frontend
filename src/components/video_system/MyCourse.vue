@@ -1,3 +1,5 @@
+// 学生
+
 <template>
   <div class="homebody" @click="visible=false" @contextmenu.prevent>
     <el-tabs tab-position="up">

@@ -71,7 +71,7 @@
 
       <div style="display:flex;margin:20px;line-height:40px;height:40px;">
         <div>
-          <el-avatar src="http://134.175.238.145:70/example.jpg"></el-avatar>
+          <el-avatar src="http://134.175.238.145:80/example.jpg"></el-avatar>
         </div>
         <div style="margin-left:40px">
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>

@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    
     <!-- 上传面板---------------------- -->
     <div
       v-show="showUploadPanel"
@@ -350,7 +352,7 @@ export default {
     });
 
     VueBus.$on("uploadFinish", function(data) {
-      console.log("视频库收到完成：", data);
+      console.log("视频库收到上传完成：", data);
       that.tempForUpload.newFile.url = data.object.key;
       that.tempForUpload.newFile.size = data.object.fsize;
       that.tempForUpload.newFile.mimeType = data.object.mimeType;
