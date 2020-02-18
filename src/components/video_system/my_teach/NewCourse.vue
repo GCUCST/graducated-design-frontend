@@ -38,8 +38,6 @@
 import Catalog from "./new_course/CatalogSave";
 import ImgTitleIntro from "./new_course/ImgTitleIntro.vue";
 
-import AddClass from "./new_course/AddClass.vue";
-
 
 import SettingShare from "./new_course/SettingShare.vue";
 import PreviewAndRelease from "./new_course/PreviewAndRelease.vue";

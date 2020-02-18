@@ -116,7 +116,7 @@ export default {
   data() {
     return {
       msg: "介绍",
-      cover: "/123.jpg", //封面地址
+      cover: "http://134.175.238.145:80/example.jpg", //封面地址
       title: "默认标题", //标题
       introduce: "请输入你的介绍", //介绍
 
@@ -160,7 +160,7 @@ export default {
         VueBus.$emit("jump", 1);
     },
     reset(){
-        this.cover="/123.jpg";
+        this.cover="http://134.175.238.145:80/example.jpg";
         this.title=null;
         this.introduce=null;
         this.courseHour=0;

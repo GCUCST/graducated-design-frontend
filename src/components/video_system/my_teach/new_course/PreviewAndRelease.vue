@@ -28,13 +28,13 @@
           v-model="switchValue"
           active-color="#13ce66"
           inactive-color="#ff4949"
-          active-value="1"
-          inactive-value="0"
+          active-value=1
+          inactive-value=0
         ></el-switch>
 <br>
         生成考试系统目录：   是？    否？<br>
         填写考试时间：   ？       ？     ？<br>
-        课程状态：无<br>
+        课程状态：默认未发布<br>
       
 <br>
 <br>
@@ -83,6 +83,33 @@ export default {
       else{
         alert("成功！请去我的课程添加学生！")
       }
+      var courseObjects = [{
+      courseId:new Date().getTime(),
+      share:this.switchValue,
+      cover: this.cover,
+      title: this.title,
+      introduce: this.introduce,
+      courseHour: this.courseHour,
+      credit: this.credit,
+      date: this.date,
+      tags: this.tags,
+      courseType: this.courseType,
+      catalogData: JSON.parse(localStorage.getItem("catalog")),
+
+      createTime:new Date(),
+      author:JSON.parse(localStorage.getItem("userInfo")).info.name,
+      status:"待发布",
+      like:0,
+      reply:0,
+      examTime:"null",
+      class:"null",
+      student:"null",
+      tips:"null"
+      }]
+
+      localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+
+
     },
     lastStep(){
       console.log("lastStep...")

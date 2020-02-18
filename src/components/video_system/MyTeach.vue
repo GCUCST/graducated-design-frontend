@@ -10,7 +10,7 @@
       </el-tab-pane>
 
 
-       <el-tab-pane label="我的课程">   
+       <el-tab-pane label="我所有课程">   
           <v-MyAllCourses></v-MyAllCourses>
       </el-tab-pane>
 
