@@ -41,9 +41,9 @@
             <el-card class="box-card" shadow="never" style="width:100%">
               <div slot="header">
                 <span>{{item.title}}</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑课程</el-button>
+            <!-- <el-button style="float: right; padding: 3px 0" type="text">编辑课程</el-button> -->
             <el-button style="float: right; padding: 3px 3px" type="text">删除课程</el-button>
-              <el-button style="float: right; padding: 3px 3px" type="text">添加课程</el-button>
+              <el-button @click="addCourse(item.courseId)" style="float: right; padding: 3px 3px" type="text">添加课程</el-button>
               </div>
               <div style="font-size:14px">
                 介&emsp;&emsp;绍：{{item.introduce}}
@@ -111,13 +111,12 @@ export default {
   name: "ShareClass",
   data() {
     return {
-      defaultProps: {
+      shareCourseObjects: JSON.parse(localStorage.getItem("shareCourseObjects"))
+      ,
+        defaultProps: {
         children: "children",
         label: "label"
       },
-      msg: "1",
-      showAddClassPanel:false,
-      shareCourseObjects: JSON.parse(localStorage.getItem("shareCourseObjects"))
     };
   },
   mounted() {
@@ -129,21 +128,35 @@ export default {
     })
   },
   methods: {
-    addClass(index){
-      localStorage.setItem("courseIndex",index)
-      this.showAddClassPanel = true;
-    },
-    delClass(index){
-    
-     var shareCourseObjects =  JSON.parse(localStorage.getItem("shareCourseObjects"))
-     shareCourseObjects[index].class = "null"
-     shareCourseObjects[index].student = []
-     localStorage.setItem("courseObjects",JSON.stringify(shareCourseObjects))
-    this.shareCourseObjects=JSON.parse(localStorage.getItem("shareCourseObjects"))
+    addCourse(courseId){
+        // console.log("courseId:"+courseId)
+        var shareCourseObjects=JSON.parse(localStorage.getItem("shareCourseObjects"))
+        var targetCourse = null;
+        shareCourseObjects.forEach(course => {
+           if(course.courseId == courseId) 
+           targetCourse  = course
+        });
+        console.log(targetCourse)
 
-    },
-    lookClass(array){
-       alert(JSON.stringify(array))
+        var canAdd = true
+        if(targetCourse){
+             var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
+             courseObjects.forEach(course=>{
+                if(courseId==course.courseId){
+                  alert("已经添加！请勿重复添加！")
+                  canAdd = false
+                }
+             });
+        }
+
+        if(canAdd){
+          courseObjects.push(targetCourse);
+          localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+          alert("添加成功！")
+        }
+
+
+
     }
   },
   components:{

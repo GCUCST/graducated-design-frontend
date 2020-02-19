@@ -69,7 +69,7 @@
                 教&emsp;&emsp;师：{{item.author}}
                 <br />
                 教学班级： 
-                {{item.class}} <el-button @click="lookClass(item.student)">查看</el-button> 
+                {{item.class}} <el-button @click="lookClass(item.students)">查看</el-button> 
                 <br />
                 课程共享：{{item.share==0?'否':'是'}}
                 <br />

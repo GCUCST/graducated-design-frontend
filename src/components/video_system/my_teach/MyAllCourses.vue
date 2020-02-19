@@ -7,7 +7,7 @@
     <!-- 整个内容区 -->
     <div class="content">
       <div v-for="(item,i) in courseObjects" :key="i">
-        <div v-if="item.share==false&&item.status=='待发布'" style="justify-content:space-between ;padding:2%;display:flex">
+        <div v-if="item.status=='待发布'" style="justify-content:space-between ;padding:2%;display:flex">
           <el-card shadow="hover" style="width:24%;" class="box-card">
             <el-tabs stretch>
               <el-tab-pane label="封面">
@@ -42,6 +42,7 @@
               <div slot="header">
                 <span>{{item.title}}</span>
                 <el-button @click="release(i)" style="float: right; padding: 3px 0" type="text">发布</el-button>
+                <el-button @click="delCourse(i)" style="float: right; padding:3px 20px" type="text">删除</el-button>
               </div>
               <div style="font-size:14px">
                 介&emsp;&emsp;绍：{{item.introduce}}
@@ -145,6 +146,14 @@ export default {
     this.courseObjects=JSON.parse(localStorage.getItem("courseObjects"))
 
     },
+    delCourse(index){
+        var courseObjects = JSON.parse(localStorage.getItem("courseObjects"))
+        var a = courseObjects.splice(index,1)
+        console.log(courseObjects)
+        localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+        this.courseObjects = courseObjects
+    },
+
     lookClass(array){
        alert(JSON.stringify(array))
     }
