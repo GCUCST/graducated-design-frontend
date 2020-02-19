@@ -83,9 +83,38 @@ export default {
       else{
         alert("成功！请去我的课程添加学生！")
       }
-      var courseObjects = [{
+      // var courseObjects = [{
+      // courseId:new Date().getTime(),
+      // share:this.switchValue,
+      // cover: this.cover,
+      // title: this.title,
+      // introduce: this.introduce,
+      // courseHour: this.courseHour,
+      // credit: this.credit,
+      // date: this.date,
+      // tags: this.tags,
+      // courseType: this.courseType,
+      // catalogData: JSON.parse(localStorage.getItem("catalog")),
+
+      // createTime:new Date(),
+      // author:JSON.parse(localStorage.getItem("userInfo")).info.name,
+      // status:"待发布",
+      // like:0,
+      // reply:0,
+      // examTime:"null",
+      // class:"null",
+      // student:"null",
+      // tips:"null"
+      // }]
+
+      //判断是否选择贡享
+     //否
+     if(this.switchValue=="0")
+     {  
+      // 一堂普通课程
+      var courseObject = {
       courseId:new Date().getTime(),
-      share:this.switchValue,
+      share:false,      //非共享 
       cover: this.cover,
       title: this.title,
       introduce: this.introduce,
@@ -95,24 +124,75 @@ export default {
       tags: this.tags,
       courseType: this.courseType,
       catalogData: JSON.parse(localStorage.getItem("catalog")),
-
       createTime:new Date(),
       author:JSON.parse(localStorage.getItem("userInfo")).info.name,
+      username:JSON.parse(localStorage.getItem("userInfo")).info.staId,
       status:"待发布",
       like:0,
       reply:0,
-      examTime:"null",
-      class:"null",
-      student:"null",
-      tips:"null"
-      }]
-
+      examTime:null,
+      class:null,
+      students:[],
+      tips:null
+      }
+      //创建一个新的   更新课程s  
+      var courseObjects = localStorage.getItem("courseObjects")
+      if(courseObjects==null){
+        courseObjects = []
+      }else{
+       courseObjects =  JSON.parse(courseObjects)
+      }
+      courseObjects.push(courseObject)
       localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+}
+else{
+
+   // 一堂共享课程
+      var shareCourseObject = {
+      courseId:new Date().getTime(),
+      share:true,      //共享 
+      cover: this.cover,
+      title: this.title,
+      introduce: this.introduce,
+      courseHour: this.courseHour,
+      credit: this.credit,
+      date: this.date,
+      tags: this.tags,
+      courseType: this.courseType,
+      catalogData: JSON.parse(localStorage.getItem("catalog")),
+      createTime:new Date(),
+      author:JSON.parse(localStorage.getItem("userInfo")).info.name,
+      username:JSON.parse(localStorage.getItem("userInfo")).info.staId,
+      status:"待发布",
+      like:0,
+      reply:0,
+      examTime:null,
+      class:null,
+      students:[],
+      tips:null
+      }
+      //创建一个新的   更新课程s  
+      var shareCourseObjects = localStorage.getItem("shareCourseObjects")
+      if(courseObjects==null){
+        shareCourseObjects = []
+      }else{
+       shareCourseObjects =  JSON.parse(shareCourseObjects)
+      }
+      shareCourseObjects.push(shareCourseObject)
+      localStorage.setItem("shareCourseObjects",JSON.stringify(shareCourseObjects))
+
+
+
+
+}
+
+
+
+
 
 
     },
     lastStep(){
-      console.log("lastStep...")
       VueBus.$emit("jump",1)
     }
   },

@@ -269,7 +269,7 @@ export default {
       console.log("courseIndex："+localStorage.getItem("courseIndex"))
      var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
      courseObjects[parseInt(localStorage.getItem("courseIndex"))].class = this.className
-     courseObjects[parseInt(localStorage.getItem("courseIndex"))].student = this.students
+     courseObjects[parseInt(localStorage.getItem("courseIndex"))].students = this.students
      localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
       VueBus.$emit("closeAddClass",true)
 

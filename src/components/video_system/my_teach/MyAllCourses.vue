@@ -7,7 +7,7 @@
     <!-- 整个内容区 -->
     <div class="content">
       <div v-for="(item,i) in courseObjects" :key="i">
-        <div v-if="item.share==0" style="justify-content:space-between ;padding:2%;display:flex">
+        <div v-if="item.share==false&&item.status=='待发布'" style="justify-content:space-between ;padding:2%;display:flex">
           <el-card shadow="hover" style="width:24%;" class="box-card">
             <el-tabs stretch>
               <el-tab-pane label="封面">
@@ -41,7 +41,7 @@
             <el-card class="box-card" shadow="never" style="width:100%">
               <div slot="header">
                 <span>{{item.title}}</span>
-                <el-button style="float: right; padding: 3px 0" type="text">发布</el-button>
+                <el-button @click="release(i)" style="float: right; padding: 3px 0" type="text">发布</el-button>
               </div>
               <div style="font-size:14px">
                 介&emsp;&emsp;绍：{{item.introduce}}
@@ -61,17 +61,18 @@
                 <br />
                 课程状态：{{item.status}}
                 <br />
-                其他提示：{{item.tips}}
+                其他提示：<span v-if="item.tips==null"><el-button  type="mini"> 添加</el-button></span>
+                         
                 <br />
-                考试时间：{{item.examTime}}
+                考试时间：<span v-if="item.examTime==null"><el-button  type="mini"> 添加</el-button></span>
                 <br />
                 教&emsp;&emsp;师：{{item.author}}
                 <br />
                 教学班级： 
-                 <span v-if="item.class!='null'" >{{item.class}}</span> <el-button @click="lookClass">查看</el-button> <el-button @click="delClass">删除</el-button>
-                <span v-if="item.class=='null'" ><el-button @click="addClass(i)">添加</el-button></span>
+                 <span v-if="item.class!=null" >{{item.class}} <el-button @click="lookClass(item.students)">查看</el-button> <el-button @click="delClass(i)">删除</el-button></span>
+                <span v-if="item.class==null" ><el-button @click="addClass(i)">添加</el-button></span>
                 <br />
-                课程共享：{{item.share}}
+                课程共享：{{item.share==0?'否':'是'}}
                 <br />
 
                 <br />
@@ -116,15 +117,36 @@ export default {
     })
   },
   methods: {
+    release(index)
+    {
+       console.log(index)
+        var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
+       if(courseObjects[index].students.length==0||courseObjects[index].class=="null")
+       {
+         alert("添加班级")
+         return;
+        }
+       courseObjects[index].status = "进行中"
+      localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+        this.courseObjects=JSON.parse(localStorage.getItem("courseObjects"))
+
+
+    },
     addClass(index){
       localStorage.setItem("courseIndex",index)
       this.showAddClassPanel = true;
     },
-    delClass(){
+    delClass(index){
+    
+     var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
+     courseObjects[index].class = null
+     courseObjects[index].students = []
+     localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
+    this.courseObjects=JSON.parse(localStorage.getItem("courseObjects"))
 
     },
-    lookClass(){
-       
+    lookClass(array){
+       alert(JSON.stringify(array))
     }
   },
   components:{
