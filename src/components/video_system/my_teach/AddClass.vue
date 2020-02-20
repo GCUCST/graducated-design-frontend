@@ -12,7 +12,7 @@
         height="350"
       >
         <el-table-column type="selection" ></el-table-column>
-        <el-table-column sortable prop="sid" label="学号"></el-table-column>
+        <el-table-column sortable prop="stuId" label="学号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
        
         <el-table-column
@@ -49,7 +49,7 @@
         @selection-change="handleSelectionChange"
         height="350"
       >
-        <el-table-column sortable prop="sid" label="学号" ></el-table-column>
+        <el-table-column sortable prop="stuId" label="学号" ></el-table-column>
         <el-table-column prop="name" label="姓名" width="80"></el-table-column>
         <el-table-column
           prop="grade"
@@ -97,6 +97,7 @@
 
 <script>
 import VueBus from "../../../utils/VueBus.js"
+import axios from "axios"
 export default {
   name: "AddClass",
   data() {
@@ -110,7 +111,7 @@ export default {
       students: [],  //添加的学生
       tableData: [
         {
-          sid: "201610098268",
+          stuId: "201610098268",
           name: "王小虎",
           grade: "2016",
           department:"计算机工程学院",
@@ -118,7 +119,7 @@ export default {
           class:2
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -126,7 +127,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -134,7 +135,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -142,7 +143,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -150,7 +151,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -158,7 +159,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -166,7 +167,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -174,7 +175,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -182,7 +183,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -190,7 +191,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -198,7 +199,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098258",
+          stuId: "201610098258",
           name: "李宏皋",
           grade: "2016",
           department:"计算机工程学院",
@@ -206,7 +207,7 @@ export default {
           class:1
         },
          {
-          sid: "201610098269",
+          stuId: "201610098269",
           name: "王小名",
           grade: "2017",
           department:"计算机工程学院",
@@ -225,7 +226,7 @@ export default {
       }
       var arr = this.students;
       const res = new Map();
-      arr =  arr.filter((arr) => !res.has(arr.sid) && res.set(arr.sid, 1))
+      arr =  arr.filter((arr) => !res.has(arr.stuId) && res.set(arr.stuId, 1))
       this.students = arr
       alert("添加成功！")
       console.log(arr)
@@ -266,12 +267,29 @@ export default {
         return;
       }
       
-      console.log("courseIndex："+localStorage.getItem("courseIndex"))
-     var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
-     courseObjects[parseInt(localStorage.getItem("courseIndex"))].class = this.className
-     courseObjects[parseInt(localStorage.getItem("courseIndex"))].students = this.students
-     localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
-      VueBus.$emit("closeAddClass",true)
+    console.log("courseId"+localStorage.getItem("courseId"))
+    //做一个学生添加操作
+    console.log("正在添加学生。")
+
+  var params = new URLSearchParams();
+  params.append("students",JSON.stringify(this.students));
+  params.append("courseId",localStorage.getItem("courseId"));
+  params.append("className",this.className);
+
+  var that = this
+      axios
+        .post("/comm/addTeachClass",params)
+        .then(function(response) {
+          console.log(response);
+          if(response.data.code==200)
+             VueBus.$emit("closeAddClass",true)
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+
+  
 
       //做值赋
 

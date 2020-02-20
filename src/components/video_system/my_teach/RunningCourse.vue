@@ -108,7 +108,7 @@ export default {
     };
   },
   mounted() {
-    console.log(localStorage.getItem("courseObjects"));
+    // console.log(localStorage.getItem("courseObjects"));
     var that = this
     VueBus.$on("closeAddClass",function(data){
         that.showAddClassPanel = false;

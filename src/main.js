@@ -18,6 +18,10 @@ axios.defaults.retry = 3;  //重新尝试
 axios.defaults.retryDelay = 2000;  //间隔时间
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
+
+  // config.headers.common['Accept'] = "application/json"
+  // config.headers.common['Content-Type'] = "application/json"
+
   // 在发送请求之前做些什么
   // 判断是否存在token,如果存在将每个页面header添加token
   //网址前缀
