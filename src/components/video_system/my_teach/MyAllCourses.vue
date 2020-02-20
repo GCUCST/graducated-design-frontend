@@ -1,23 +1,23 @@
 <template>
   <div>
-<!-- 学生 -->
-<v-AddClass v-show="showAddClassPanel"></v-AddClass>
+    <!-- 学生 -->
+    <v-AddClass v-show="showAddClassPanel"></v-AddClass>
 
-<!--  学生 -->
+    <!--  学生 -->
     <!-- 整个内容区 -->
     <div class="content">
       <div v-for="(item,i) in courseObjects" :key="i">
-        <div v-if="item.courseStatus=='待发布'" style="justify-content:space-between ;padding:2%;display:flex">
+        <div
+          v-if="item.courseStatus=='待发布'"
+          style="justify-content:space-between ;padding:2%;display:flex"
+        >
           <el-card shadow="hover" style="width:24%;" class="box-card">
             <el-tabs stretch>
               <el-tab-pane label="封面">
                 <!-- 一个课程 -->
                 <div>
                   <div>
-                    <img
-                      style="width:100%;height:150px;"
-                      :src="item.cover"
-                    />
+                    <img style="width:100%;height:150px;" :src="item.cover" />
                   </div>
                   <!-- 标题 -->
                   <div class="title">{{item.title}}</div>
@@ -41,8 +41,16 @@
             <el-card class="box-card" shadow="never" style="width:100%">
               <div slot="header">
                 <span>{{item.title}}</span>
-                <el-button @click="release(i)" style="float: right; padding: 3px 0" type="text">发布</el-button>
-                <el-button @click="delCourse(i)" style="float: right; padding:3px 20px" type="text">删除</el-button>
+                <el-button
+                  @click="release(item.courseId)"
+                  style="float: right; padding: 3px 0"
+                  type="text"
+                >发布</el-button>
+                <el-button
+                  @click="delCourse(item.courseId,item.className)"
+                  style="float: right; padding:3px 20px"
+                  type="text"
+                >删除</el-button>
               </div>
               <div style="font-size:14px">
                 介&emsp;&emsp;绍：{{item.introduce}}
@@ -61,17 +69,26 @@
                 <hr />
                 <br />
                 课程状态：{{item.courseStatus}}
-                <br />
-                其他提示：<span v-if="item.tips=='null'"><el-button  type="mini"> 添加</el-button></span>
-                         
-                <br />
-                考试时间：<span v-if="item.examTime=='null'"><el-button  type="mini"> 添加</el-button></span>
+                <br />其他提示：
+                <span v-if="item.tips=='null'">
+                  <el-button type="mini">添加</el-button>
+                </span>
+
+                <br />考试时间：
+                <span v-if="item.examTime=='null'">
+                  <el-button type="mini">添加</el-button>
+                </span>
                 <br />
                 教&emsp;&emsp;师：{{item.author}}
-                <br />
-                教学班级： 
-                 <span v-if="item.className!='null'" >{{item.className}} <el-button @click="lookClass(item.students)">查看</el-button> <el-button @click="delClass(item.courseId)">删除</el-button></span>
-                <span v-if="item.className=='null'" ><el-button @click="addClass(item.courseId)">添加</el-button></span>
+                <br />教学班级：
+                <span v-if="item.className!='null'">
+                  {{item.className}}
+                  <el-button @click="lookClass(item.students)">查看</el-button>
+                  <el-button @click="delClass(item.courseId)">删除</el-button>
+                </span>
+                <span v-if="item.className=='null'">
+                  <el-button @click="addClass(item.courseId)">添加</el-button>
+                </span>
                 <br />
                 课程共享：{{item.courseShare?'是':'否'}}
                 <br />
@@ -84,7 +101,6 @@
     </div>
     <!-- /整个内容区  -->
 
-   
     <!--  -->
   </div>
 </template>
@@ -93,8 +109,8 @@
 
 
 <script>
-import VueBus from "../../../utils/VueBus.js"
-import AddClass from "../my_teach/AddClass.vue"
+import VueBus from "../../../utils/VueBus.js";
+import AddClass from "../my_teach/AddClass.vue";
 import axios from "axios";
 
 export default {
@@ -106,92 +122,82 @@ export default {
         label: "label"
       },
       msg: "1",
-      showAddClassPanel:false,
-      courseObjects: null    // JSON.parse(localStorage.getItem("courseObjects"))
+      showAddClassPanel: false,
+      courseObjects: null 
     };
   },
   mounted() {
 
-
-    // console.log(localStorage.getItem("courseObjects"));
-    // var that = this
-    VueBus.$on("closeAddClass",function(data){
-
-        that.showAddClassPanel = false;
-
-      
-    })
-
-     var that = this
+    var that = this;
+    VueBus.$on("closeAddClass", function(data) {
+      that.showAddClassPanel = false;
+     that.reflashTeachClass();
+     localStorage.removeItem("courseId")
+    });
+    this.reflashTeachClass();
+  },
+  methods: {
+    reflashTeachClass() {
+      var that = this;
       axios
         .post("/comm/getCoursesByUsername")
         .then(function(response) {
           console.log(response);
-          that.courseObjects = response.data.object
+          that.courseObjects = response.data.object;
         })
         .catch(function(error) {
           console.log(error);
         });
-
-
-
-  },
-  methods: {
-    release(index)
-    {
-       console.log(index)
-        var courseObjects =  JSON.parse(localStorage.getItem("courseObjects"))
-       if(courseObjects[index].students.length==0||courseObjects[index].class=="null")
-       {
-         alert("添加班级")
-         return;
-        }
-       courseObjects[index].status = "进行中"
-      localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
-        this.courseObjects=JSON.parse(localStorage.getItem("courseObjects"))
-
-
     },
+    release(courseId) {},
 
-    //doinging
-    addClass(courseId){
-      localStorage.setItem("courseId",courseId)
+    addClass(courseId) {
+      localStorage.setItem("courseId", courseId);
       this.showAddClassPanel = true;
     },
 
-
-    delClass(courseId){
-      var parmas =new  URLSearchParams()
-      parmas.append("courseId",courseId)
-      var that = this
+    delClass(courseId) {
+      var parmas = new URLSearchParams();
+      parmas.append("courseId", courseId);
+      var that = this;
       axios
-        .post("/comm/delClassByCourseId",parmas)
+        .post("/comm/delClassByCourseId", parmas)
+        .then(function(response) {
+          console.log(response);
+          that.reflashTeachClass();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+        
+    },
+    //doinging
+    delCourse(courseId, className) {
+      if (className!='null') {
+        alert("请先清空班级:"+className);
+        return;
+      }
+      var parmas = new URLSearchParams();
+      parmas.append("courseId", courseId);
+      var that = this;
+      axios
+        .post("/comm/delCourse", parmas)
         .then(function(response) {
           console.log(response);
         })
         .catch(function(error) {
           console.log(error);
         });
-
-    },
-    delCourse(index){
-        var courseObjects = JSON.parse(localStorage.getItem("courseObjects"))
-        var a = courseObjects.splice(index,1)
-        console.log(courseObjects)
-        localStorage.setItem("courseObjects",JSON.stringify(courseObjects))
-        this.courseObjects = courseObjects
     },
 
-    lookClass(array){
-       alert(JSON.stringify(array))
+    lookClass(array) {
+      alert(JSON.stringify(array));
     }
   },
-  components:{
-    "v-AddClass":AddClass
+  components: {
+    "v-AddClass": AddClass
   },
-  beforeDestroy(){
-
-  }
+  beforeDestroy() {}
 };
 </script>
 
