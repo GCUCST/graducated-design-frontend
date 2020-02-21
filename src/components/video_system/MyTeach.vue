@@ -14,7 +14,7 @@
           <v-MyAllCourses></v-MyAllCourses>
       </el-tab-pane>
 
-       <el-tab-pane label="共享课程">
+       <el-tab-pane label="课程模板">
          <v-ShareCourse></v-ShareCourse>
       </el-tab-pane>
 

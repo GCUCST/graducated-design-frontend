@@ -42,7 +42,7 @@
               <div slot="header">
                 <span>{{item.title}}</span>
                 <el-button
-                  @click="release(item.courseId)"
+                  @click="release(item.courseId,item.className)"
                   style="float: right; padding: 3px 0"
                   type="text"
                 >发布</el-button>
@@ -149,7 +149,31 @@ export default {
           console.log(error);
         });
     },
-    release(courseId) {},
+    release(courseId,className) {
+
+      if(className=='null')
+      {
+        alert("发布前需要添加班级！")
+        return ;
+      }
+
+      //还需再加一个判断添加班级没有
+        var that = this;
+        var parmas = new URLSearchParams()
+        parmas.append("courseStatus","进行中")
+        parmas.append("courseId",courseId)
+
+      axios 
+        .post("/comm/updCourse",parmas)
+        .then(function(response) {
+          console.log(response);
+          that.reflashTeachClass();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+    },
 
     addClass(courseId) {
       localStorage.setItem("courseId", courseId);
@@ -191,7 +215,7 @@ export default {
     },
 
     lookClass(array) {
-      alert(JSON.stringify(array));
+      console.log(array)
     }
   },
   components: {

@@ -48,8 +48,8 @@ import LoginStatus from "../../utils/LoginStatus.js"
 export default {
   data() {
     return {
-      account: "201610098268",
-      password: "",
+      account: "1001",
+      password: "123",
       code: null,
       comfirmCode: null,
       commit: false

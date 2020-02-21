@@ -8,7 +8,7 @@
         <div style="width:20%;text-align:center">
           <img
             style="line-height:60px;height:45px;width:45px;"
-            src="http://134.175.238.145:70/example.jpg"
+            src="http://134.175.238.145:80/example.jpg"
           />
           <span style="line-height:45px;">CST先生</span>
         </div>
@@ -26,7 +26,7 @@
                 :class="[video_full?'video-big':'video-small']"
                 controls="controls"
                 id="qnv"
-                src="http://134.175.238.145:70/example.mp4"
+                src="http://134.175.238.145:80/example.mp4"
               >您的视频开始</video>
               <br />
               <div style="display:flex;justify-content:space-between">
