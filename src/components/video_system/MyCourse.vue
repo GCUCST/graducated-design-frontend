@@ -7,21 +7,19 @@
         <!--  -->
 
         <!-- 右击详情 -->
-        <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
+        <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" 
+        class="detail">
           <div style="font-size:14px">
-          名称：JAVA入门基础{{Axis.index}}<br>
-          介绍：一个 Java 程序可以认为是一系列对象的
-          集合，而这些对的集。 简要介绍下类、对 象
-          、方法和实个 Java 程序可以认为是一系列对象的
-          集合，而这些对的集。简要介绍下类、对象、
-          方法和实例变量的概括。<br><br>
-          任课老师：陈一一<br>
-          学时：64<br>
-          学分：0.0<br>
-          性质：公开课<br>
-          创建时间：20200115 01:15:22<br>
-          课程时间：永久20200101-20201122<br>
-          课程状态：进行<br>
+          名称：{{Axis.item.course.title}}<br>
+          介绍：{{Axis.item.course.introduce}}<br>
+          任课老师：{{Axis.item.course.author}}<br>
+          学时：{{Axis.item.course.courseHour}}<br>
+          学分：{{Axis.item.course.credit}}<br>
+          性质：{{Axis.item.course.courseType}}<br>
+          创建时间：{{Axis.item.course.createTime}}<br>
+          课程时间：{{Axis.item.course.courseDate}}<br>
+          课程状态：{{Axis.item.course.courseStatus}}<br>
+          其他提示：{{Axis.item.course.tips}}<br>
           </div>
         </div>
 
@@ -30,23 +28,25 @@
           <el-card
             shadow="hover"
             style="width:29%;margin:2%"
-            v-for="i in 9"
-            :key="i"
+            v-for="(item) in courses"
+            :key="item.course.courseId"
             class="box-card"
           >
             <!-- 一个课程 -->
-            <div @contextmenu.prevent @click.right="rightClick($event,i)">
+            <div @contextmenu.prevent @click.right="rightClick($event,item)">
               <div>
-                <img style="width:100%;height:200px;" src="http://134.175.238.145:70/example.jpg" />
+                <img style="width:100%;height:200px;" 
+                :src="item.course.cover" />
               </div>
               <!-- 标题 -->
-              <div class="title">JAVA入门基础{{i}}</div>
+              <div class="title" @click="intoCourse(item.course.courseId)" >{{item.course.title}}</div>
 
               <div class="bottom-content">
-                <div>陈老师</div>
+                <div>{{item.course.author}}</div>
+                 <div>{{item.teachClass.progress}}%</div>
                 <div style="display:flex;">
-                  <div>赞2664</div>&ensp;
-                  <div>回复7654</div>
+                  <div>赞{{item.course.likeNum}}</div>&ensp;
+                  <div>回{{item.course.replyNum}}</div>
                 </div>
               </div>
             </div>
@@ -55,9 +55,7 @@
         <!--  -->
       </el-tab-pane>
 
-      <div style="text-align:center">
-        <el-pagination layout="prev, pager, next" :total="50"></el-pagination>
-      </div>
+
     </el-tabs>
   </div>
 </template>
@@ -66,18 +64,39 @@
 
 
 <script>
+import axios from 'axios'
 export default {
   name: "Homebody",
   data() {
     return {
-      msg: "公开课(右击查看详情)",
-      Axis: { x: 0, y: 0, index: null }, //坐标和对象
+      msg: "我的课程（学生）",
+      courses:null,
+      Axis: { x: 0, y: 0, item: null }, //坐标和对象
       visible: false //展示右击菜单
     };
   },
+mounted(){
+  var that = this
+      axios 
+        .post("/comm/getStudentCourse")
+        .then(function(response) {
+          console.log(response);
+          that.courses = response.data.object
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+},
+
   methods: {
-    rightClick(e, index) {
-      this.Axis = { x: e.x, y: e.y, index: index };
+
+     intoCourse(courseId){
+      console.log("进入某节课"+courseId)
+      this.$router.push({ name: 'VideoCourse', query: { "courseId": courseId,"videoId":null}})
+    },
+
+    rightClick(e, item) {
+      this.Axis = { x: e.x, y: e.y, item: item };
       this.visible = true;
     }
   }
@@ -86,12 +105,15 @@ export default {
 
 <style scoped>
 .detail {
-  width: 400px;
+  width: 500px;
   /* height: 220px; */
   z-index: 99999;
   background: white;
-  border: 1px solid;
-  position:fixed
+  position:fixed;
+    box-shadow: 0px 0px 2px 1px rgba(64, 158, 255, 0.5);
+    background-color: white;
+    padding: 10px;
+    border-radius: 3px;
 
 }
 
@@ -120,6 +142,9 @@ export default {
   font-size: 18px;
   text-align: center;
   margin-top: 10px;
+}
+.title:hover{
+  color:#409EFF;
 }
 .box-card {
   width: 300px;

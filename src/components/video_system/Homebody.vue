@@ -28,7 +28,7 @@
           <el-card
             shadow="hover"
             style="width:29%;margin:2%"
-            v-for="i in 9"
+            v-for="i in 3"
             :key="i"
             class="box-card"
           >
