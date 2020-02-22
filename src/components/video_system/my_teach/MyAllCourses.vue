@@ -30,10 +30,11 @@
                   </div>
                 </div>
                 <!-- /一个课程 -->
+              </el-tab-pane >
+              <el-tab-pane label="目录" >
+                <el-tree @node-click="handleNodeClick" :data="JSON.parse(item.catalogData)" :props="defaultProps"></el-tree>
               </el-tab-pane>
-              <el-tab-pane label="目录">
-                <el-tree :data="JSON.parse(item.catalogData)" :props="defaultProps"></el-tree>
-              </el-tab-pane>
+
             </el-tabs>
           </el-card>
 
@@ -112,7 +113,7 @@
 import VueBus from "../../../utils/VueBus.js";
 import AddClass from "../my_teach/AddClass.vue";
 import axios from "axios";
-
+import UrlConfig from "../../../config/UrlConfig.js"
 export default {
   name: "ShareClass",
   data() {
@@ -137,6 +138,13 @@ export default {
     this.reflashTeachClass();
   },
   methods: {
+    
+  handleNodeClick(data){
+    if(data.url)
+     window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
+    else console.log(data.label)
+  },
+
     reflashTeachClass() {
       var that = this;
       axios
@@ -193,6 +201,7 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+          this.reflashTeachClass();
         
     },
     //doinging
@@ -208,6 +217,7 @@ export default {
         .post("/comm/delCourse", parmas)
         .then(function(response) {
           console.log(response);
+           that.reflashTeachClass();
         })
         .catch(function(error) {
           console.log(error);

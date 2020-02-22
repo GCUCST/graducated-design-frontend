@@ -98,7 +98,7 @@ export default {
         className: null, //班级名称
         students: [], //学生
         tips: null, //提示
-        refCourse:-1
+        refCourse: this.switchValue == "1" ? -1 : 0, //共享
       };
 
       var that = this;

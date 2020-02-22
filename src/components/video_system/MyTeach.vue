@@ -1,25 +1,25 @@
 //教师
 <template>
   <div class="my-teach" @click="visible=false" @contextmenu.prevent>
-    <el-tabs tab-position="up">
+    <el-tabs tab-position="up" v-model="activeName" >
       
 
       
-       <el-tab-pane label="进行中课程">   
-          <v-RunningCourse></v-RunningCourse>
+       <el-tab-pane label="进行中课程" name='0'>   
+          <v-RunningCourse v-if="activeName=='0'"></v-RunningCourse>
       </el-tab-pane>
 
 
-       <el-tab-pane label="我所有课程">   
-          <v-MyAllCourses></v-MyAllCourses>
+       <el-tab-pane label="我所有课程" name='1'>   
+          <v-MyAllCourses v-if="activeName=='1'"></v-MyAllCourses>
       </el-tab-pane>
 
-       <el-tab-pane label="课程模板">
-         <v-ShareCourse></v-ShareCourse>
+       <el-tab-pane label="课程模板" name='2'>
+         <v-ShareCourse v-if="activeName=='2'"></v-ShareCourse>
       </el-tab-pane>
 
-      <el-tab-pane label="新建课程">
-        <v-NewCourse></v-NewCourse>
+      <el-tab-pane label="新建课程" name='3'>
+        <v-NewCourse v-if="activeName=='3'"> </v-NewCourse>
       </el-tab-pane>
 
 
@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       msg: "进行中的课程",
+      activeName:'0',  //出现页面也会刷新数据
       Axis: { x: 0, y: 0, index: null } //坐标和对象
     };
   },

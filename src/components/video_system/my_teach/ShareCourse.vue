@@ -37,7 +37,7 @@
               <div slot="header">
                 <span>{{item.title}}</span>
                 <!--  做一个判断，如果是作者自己就显示这个按钮 -->
-                <el-button style="float: right; padding: 3px 3px" type="text">删除课程</el-button>
+                <el-button    @click="delCourse(item.courseId)" style="float: right; padding: 3px 3px" type="text">删除课程</el-button>
                 <el-button
                   @click="addCourse(item.courseId)"
                   style="float: right; padding: 3px 3px"
@@ -61,10 +61,13 @@
                 <hr />
 
                 <div>
-                  <span>该课程使用者</span>
-                  <el-carousel height="60px">
-                    <!-- <el-carousel-item style="text-align:center" v-for="item in 2" :key="item">无</el-carousel-item> -->
-                  </el-carousel>
+                  <span>该课程使用者:</span>
+                  <el-button>暂无实现</el-button>
+                     <div >
+                       <el-carousel height="60px">
+
+                        </el-carousel>
+                     </div>
                 </div>
 
                 <br />
@@ -98,7 +101,11 @@ export default {
   },
   mounted() {
     //还需再加一个判断添加班级没有
-    var that = this;
+       this.reflashCourses()
+  },
+  methods: {
+    reflashCourses(){
+         var that = this;
     axios
       .post("/comm/getAllShareCourses")
       .then(function(response) {
@@ -108,8 +115,25 @@ export default {
       .catch(function(error) {
         console.log(error);
       });
-  },
-  methods: {
+    },
+
+    delCourse(courseId){
+
+       var parmas = new URLSearchParams();
+      parmas.append("courseId", courseId);
+      var that = this;
+      axios
+        .post("/comm/delCourse", parmas)
+        .then(function(response) {
+          console.log(response);
+           that.reflashCourses()
+      
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+    },
     addCourse(courseId) {
       console.log(courseId)
       var that = this;
@@ -117,9 +141,15 @@ export default {
       parmas.append("courseId", courseId);
       //获取这门课？
       axios
-        .post("/comm/getCourseByCourseId", parmas)
+        .post("/comm/addShareCourseToMyCourses", parmas)
         .then(function(response) {
           console.log(response);
+          if(response.data.status){
+            alert("添加成功！请去库里查看！")
+          }
+          else{
+            alert("该课程已经存在！请勿重复添加！")
+          }
         })
         .catch(function(error) {
           console.log(error);
