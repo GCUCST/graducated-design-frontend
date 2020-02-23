@@ -23,7 +23,7 @@
                 :class="[video_full?'video-big':'video-small']"
                 controls="controls"
                 id="qnv"
-                :src="progress.nowVideoSrc"
+                :src="videoSrc"
                 type="video/mp4"
               >
                 您的浏览器不支持播放该视频！
@@ -62,9 +62,10 @@
 
                 <el-tab-pane label="我的进度">
                   <span v-for=" (item,index) in progress.catalog" :key="index">
-                    <span @click="jumpVideo(item.videoId)">
-                      {{item.label}}</span>
-                    {{item.far}}%
+                    <span style="cursor:pointer;" @click="jumpVideo(item.videoId)">{{item.label}}</span>
+                    <!-- {{item.far}}---- -->
+                    {{ item.percent+'%'}}
+                    <br />
                     <br />
                   </span>
                 </el-tab-pane>
@@ -134,10 +135,13 @@ export default {
     return {
       courseId: null, //第一次进来课程id
       videoId: null, //第一次进来当前视频id
+
+      videoSrc: null, //视频地址
+      duration:0,
       video_full: false, //全屏模式
       course: null, //当前的课程
       far: 0, //视频最远进度
-//---------------------------------
+      //---------------------------------
       input: "", //输入框内容
       comment: [
         {
@@ -166,9 +170,10 @@ export default {
         children: "children",
         label: "label"
       },
-//------------最新
+      //------------最新
       catalogData: null, //当前目录数据
-      progress: { videoId: null, nowVideoSrc: null, catalog: [] } //进度
+
+      progress: { videoId: null, catalog: [] } //进度
     };
   },
   methods: {
@@ -180,7 +185,7 @@ export default {
       location.reload();
     },
 
-    //获取目录中所有的视频
+    //第一次进来，获取目录中所有的视频，并且设置进度
     findVideoIdUrl(data) {
       for (var i = 0; i < data.length; i++) {
         if (data[i].level == 2 || data[i].level == 1) {
@@ -190,12 +195,12 @@ export default {
             label: data[i].label,
             videoId: data[i].id,
             url: data[i].url,
-            far: 0
+            far: 0,
+            percent:0
           });
         }
       }
     },
-
     goBack() {
       console.log("go back");
       this.$router.back(-1);
@@ -207,88 +212,13 @@ export default {
       console.log("鼠标出去了..");
       qnv.pause();
     },
+    //点击了目录菜单
     handleNodeClick(data) {
       // console.log(data);
-    }
-  },
-  mounted() {
-    // console.log("接受到：" + this.$route.query.courseId);
-    this.courseId = this.$route.query.courseId;
-    this.videoId = this.$route.query.videoId;
-
-    var parmas = new URLSearchParams();
-    parmas.append("courseId", this.courseId);
-    axios
-      .post("/comm/getCourseByCourseId", parmas)
-      .then(function(response) {
-        //设置课程
-        that.course = response.data.object;
-        //设置目录
-        that.catalogData = JSON.parse(response.data.object.catalogData);
-
-        //可获取课程中的视频
-        that.findVideoIdUrl(that.catalogData);
-
-        //点击封面进来，不携带videoId
-        if(that.videoId==null){
-            that.progress.videoId = that.progress.catalog[0].videoId; 
-        }
-        //进来时候拿到的videoId
-        else that.progress.videoId = that.videoId
-        for (var i = 0; i < that.progress.catalog.length; i++) {
-          if (that.progress.catalog[i].videoId == that.progress.videoId) {
-            //根据id定位到该url
-            that.progress.nowVideoSrc =
-              UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
-          }
-        }
-
-
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-    //防止进度条拉前
-    let that = this;
-    var sym; //实际进度
-    var time; //拉的进度    //far是最远进度
-    var qnv = document.querySelector("#qnv");
-    var interval = setInterval(function() {
-      try {
-        time = qnv.currentTime;
-        if (time - sym > 1 && time > that.far) {
-          qnv.currentTime = that.far; //拉过头就跳到最远播放位置
-        }
-        sym = qnv.currentTime;
-
-        if (sym > that.far) that.far = sym;
-      } catch (error) {
-        console.log("没有获取到视频资源:" + error);
-        clearInterval(interval);
-      }
-    }, 500);
-
-    var myVideo = document.getElementById("qnv");
-    if (myVideo != null) {
-      myVideo.oncanplay = function() {
-        console.log("准备就绪");
-      };
-      //监听播放开始
-      myVideo.addEventListener("play", function() {
-        console.log("开始播放");
-      });
-
-      //监听播放结束
-      myVideo.addEventListener("pause", function() {
-        console.log("播放暂停");
-      });
-
-      //监听播放结束
-      myVideo.addEventListener("ended", function() {
-        console.log("播放结束");
-      });
-
+    },
+    //设置进度
+    setProgress() {
+      var that = this;
       var Media = document.getElementById("qnv");
       Media.addEventListener(
         "timeupdate",
@@ -296,21 +226,217 @@ export default {
           var timeDisplay;
           //用秒数来显示当前播放进度
           timeDisplay = Math.floor(Media.currentTime);
-          // that.progress.catalog[0].far = that.far
-          console.log(
-            (Number(Media.currentTime) / Number(Media.duration)).toFixed(3)
-          );
-          //当视频播放到 xx %的时候做处理
-          if (
-            (Number(Media.currentTime) / Number(Media.duration)).toFixed(3) ==
-            0.8
-          ) {
-            console.log("完成80%");
+          //--------设置进度---------------
+          for (var i = 0; i < that.progress.catalog.length; i++) {
+            if (that.progress.catalog[i].videoId == that.videoId) {
+              
+               that.progress.catalog[i].far = that.far
+               if(that.progress.catalog[i].percent==0)
+              that.progress.catalog[i].percent = that.far / Number(Media.duration)*100
+               else that.progress.catalog[i].percent = ((that.far / Number(Media.duration)) *100).toFixed(2);
+
+              //  localStorage.setItem("progress",JSON.stringify(that.progress))
+
+            }
           }
+          var rightTime = (Number(Media.currentTime) / Number(Media.duration)).toFixed(3)
+          if (rightTime==0.100||rightTime==0.20||rightTime==0.300||rightTime==0.400||rightTime==0.500
+          ||rightTime==0.600||rightTime==0.700||rightTime==0.800||rightTime==0.900||rightTime==0.990
+          )
+           {
+               //上传
+               localStorage.setItem("progress",JSON.stringify(that.progress))
+            var parmas = new URLSearchParams();
+              parmas.append("courseId", that.courseId);
+              parmas.append("progress", JSON.stringify(that.progress));
+          
+            axios
+             .post("/comm/updTeachClass", parmas)
+             .then(function(response) {
+            console.log(response)
+             });
+
+           }
+          //----------------
         },
         true
       );
+    },
+    preventDragAhead() {
+      //防止进度条拉前
+      let that = this;
+      var sym; //实际进度
+      var time; //拉的进度    //far是最远进度
+      var qnv = document.querySelector("#qnv");
+      var interval = setInterval(function() {
+        try {
+          time = qnv.currentTime;
+          if (time - sym > 1 && time > that.far) {
+            qnv.currentTime = that.far; //拉过头就跳到最远播放位置
+          }
+          sym = qnv.currentTime;
+          if (sym > that.far) {
+            that.far = sym;
+          }
+        } catch (error) {
+          console.log("没有获取到视频资源:" + error);
+          clearInterval(interval);
+        }
+      }, 500);
+    },
+
+    getMyProgress(videoId)
+    {     
+          
+     var parmas = new URLSearchParams();
+      parmas.append("courseId", this.courseId);
+      var that = this;
+      axios
+        .post("/comm/getTeachClassByUsernameAndCourseId", parmas)
+        .then(function(response) {
+
+          var progress = response.data.object.progress;
+          if(response.data.object.progress==0){
+              progress=null;
+          }
+           if(progress==null)
+            {
+              console.log("目前没有目录")
+               //不存在就创建
+               that.findVideoIdUrl(that.catalogData);
+               //做更新
+          var parmas = new URLSearchParams();
+           parmas.append("courseId", that.courseId);
+           parmas.append("progress", JSON.stringify(that.progress));
+          
+          axios
+          .post("/comm/updTeachClass", parmas)
+          .then(function(response) {
+            console.log(response)
+          });
+             
+                //updTeachClass
+                //localStorage.setItem("progress",JSON.stringify(that.progress))
+
+            }
+            else{
+
+                            //存在就写入
+          that.progress = JSON.parse(progress)
+          //点击封面进来，不携带videoId
+          //进来时候拿到的videoId
+          that.videoId = videoId?videoId:(that.progress.videoId?that.progress.videoId: that.progress.catalog[0].videoId);
+         that.progress.videoId = that.videoId
+         for (var i = 0; i < that.progress.catalog.length; i++) {
+            if (that.progress.catalog[i].videoId == that.videoId) {
+              //根据进度id定位到该url
+              that.videoSrc = UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
+
+                that.far =   that.progress.catalog[i].far 
+      
+
+            }
+          }
+
+            }
+
+
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+
+
+          //去后端获取
+          //  var progress =localStorage.getItem("progress")?
+          //   JSON.parse(localStorage.getItem("progress"))
+          //   :null
+
+
+            // if(progress==null)
+            // {
+            //   console.log("目前没有目录")
+            //    // 可获取课程中的视频进度
+            //    //不存在就创建
+            //    this.findVideoIdUrl(this.catalogData);
+            //    localStorage.setItem("progress",JSON.stringify(this.progress))
+            // }
+      //       else{
+
+      //         //存在就写入
+      //     this.progress = progress
+      //     //点击封面进来，不携带videoId
+      //     //进来时候拿到的videoId
+      //     this.videoId = videoId?videoId:(this.progress.videoId?this.progress.videoId: this.progress.catalog[0].videoId);
+      //    this.progress.videoId = this.videoId
+      //    for (var i = 0; i < this.progress.catalog.length; i++) {
+      //       if (this.progress.catalog[i].videoId == this.videoId) {
+      //         //根据进度id定位到该url
+      //         this.videoSrc = UrlConfig.getQiniuyunUrl() + this.progress.catalog[i].url;
+
+      //           this.far =   this.progress.catalog[i].far 
+           
+
+
+      //       }
+      //     }
+      //  }
+
+
+    },
+    //请求课程资源和目录
+    reqCourseRes(courseId, videoId) {
+      var parmas = new URLSearchParams();
+      parmas.append("courseId", courseId);
+      var that = this;
+      axios
+        .post("/comm/getCourseByCourseId", parmas)
+        .then(function(response) {
+          //设置课程
+          that.course = response.data.object;
+          //设置目录
+          that.catalogData = JSON.parse(response.data.object.catalogData);
+          //请求视频资源
+          that.getMyProgress(videoId);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
+  },
+
+  mounted() {
+    var that = this
+    var myVideo = document.getElementById("qnv");
+    if (myVideo != null) {
+      myVideo.oncanplay = function() {
+        console.log("准备就绪"+myVideo.duration);
+      };
+    }
+    // console.log("接受到：" + this.$route.query.courseId);
+    this.courseId = this.$route.query.courseId;
+    this.videoId = this.$route.query.videoId;
+    this.reqCourseRes(this.courseId, this.videoId);
+
+    this.preventDragAhead();
+    this.setProgress();
+    
+    //   //监听播放开始
+    //   myVideo.addEventListener("play", function() {
+    //     console.log("开始播放");
+    //   });
+
+    //   //监听播放结束
+    //   myVideo.addEventListener("pause", function() {
+    //     console.log("播放暂停");
+    //   });
+
+    //   //监听播放结束
+    //   myVideo.addEventListener("ended", function() {
+    //     console.log("播放结束");
+    //   });
+    // }
   }
 };
 </script>
