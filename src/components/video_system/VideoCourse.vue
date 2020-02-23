@@ -33,8 +33,8 @@
               <br />
               <div style="display:flex;justify-content:space-between">
                 <span>
-                  <el-button plain type="primary">{{course?course.likeNum:0}}点赞</el-button>
-                  <el-button plain type="primary">{{course?course.replyNum:0}}评论</el-button>
+                  <el-button plain type="primary" @click="liked(course.courseId,'course')">{{course?course.likeNum:0}}点赞</el-button>
+                  <el-button plain type="primary" > {{course?course.replyNum:0}}评论</el-button>
                 </span>
                 <el-button
                   style="margin-right:10%;"
@@ -89,12 +89,12 @@
           <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
         </div>
         <div style="margin-left:20px;">
-          <el-button type="primary">发表</el-button>
+          <el-button @click="comment(courseId,'comment')" type="primary">发表</el-button>
         </div>
       </div>
       <el-divider></el-divider>
       <div style="text-align:left;margin-left:20px;">
-        <div v-for="obj in comment" :key="obj.id">
+        <div v-for="obj in comments" :key="obj.id">
           <div style="font-size:10px;color:grey;text-align:right">举报</div>
 
           <div style="display:flex;height:50px;">
@@ -143,7 +143,7 @@ export default {
       far: 0, //视频最远进度
       //---------------------------------
       input: "", //输入框内容
-      comment: [
+      comments: [
         {
           id: 0,
           type: 1, //      1  或者 0   表达这是一条评论 或者 是一条回复
@@ -177,6 +177,60 @@ export default {
     };
   },
   methods: {
+
+getAllComments(courseId){
+   var parmas = new URLSearchParams();
+   parmas.append("courseId", courseId);
+      var that = this;
+      axios
+        .post("/comm/getAllRepliedByCourseId", parmas)
+        .then(function(response) {
+            console.log(response)
+            that.comments = response.data.object
+        });
+
+},
+
+comment(targetId,targetType){
+
+   var parmas = new URLSearchParams();
+      parmas.append("targetId", targetId);
+      parmas.append("targetType", targetType);
+      parmas.append("courseId", this.courseId);
+      parmas.append("content", this.input);
+      parmas.append("avatar",JSON.parse(localStorage.getItem("userInfo")).info.avatar)
+
+      var that = this;
+      axios
+        .post("/comm/addReplied", parmas)
+        .then(function(response) {
+            console.log(response)
+            alert("发送成功。")
+            
+        });
+
+
+},
+
+liked(targetId,targetType){
+  console.log(targetId)
+  console.log(targetType)
+
+     var parmas = new URLSearchParams();
+      parmas.append("targetId", targetId);
+      parmas.append("targetType", targetType);
+
+      var that = this;
+      axios
+        .post("/comm/addLiked", parmas)
+        .then(function(response) {
+            console.log(response)
+            that.course.likeNum++;
+        });
+
+   
+},
+
     jumpVideo(videoId) {
       this.$router.push({
         name: "VideoCourse",
@@ -240,8 +294,8 @@ export default {
             }
           }
           var rightTime = (Number(Media.currentTime) / Number(Media.duration)).toFixed(3)
-          if (rightTime==0.100||rightTime==0.20||rightTime==0.300||rightTime==0.400||rightTime==0.500
-          ||rightTime==0.600||rightTime==0.700||rightTime==0.800||rightTime==0.900||rightTime==0.990
+          if (rightTime==0.100||rightTime==0.200||rightTime==0.300||rightTime==0.400||rightTime==0.500
+          ||rightTime==0.600||rightTime==0.700||rightTime==0.800||rightTime==0.900||rightTime==0.999
           )
            {
                //上传
@@ -417,6 +471,9 @@ export default {
     // console.log("接受到：" + this.$route.query.courseId);
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
+
+     this.getAllComments(this.courseId);
+
     this.reqCourseRes(this.courseId, this.videoId);
 
     this.preventDragAhead();
