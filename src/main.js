@@ -94,7 +94,6 @@ axios.interceptors.response.use(function (response) {
     if (error.response.status == 403) {
       console.log("权限不允许访问")
     }
-    console.log(error.response)
     //  console.log("错误响应码："+error.response.status)
     return "请求异常";
   }

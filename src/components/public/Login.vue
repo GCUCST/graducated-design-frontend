@@ -6,10 +6,10 @@
 
     <el-form label-width="100px" class="demo-ruleForm">
       <el-form-item label="账号">
-        <el-input type="text" v-model="account"></el-input>
+        <el-input placeholder="请输入账号" type="text" v-model="account"></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input placeholder="123" type="password" v-model="password"></el-input>
+        <el-input placeholder="请输入密码" type="password" v-model="password"></el-input>
       </el-form-item>
 
       <el-form-item label="验证码">
@@ -17,20 +17,14 @@
         <el-button @click="reflashCode" style="margin-left:20px" size="mini">刷新</el-button>
       </el-form-item>
 
-      <el-form-item label="输入验证码">
-        <el-input v-model="comfirmCode"></el-input>
+      <el-form-item label="验证码">
+        <el-input placeholder="请输入验证码" v-model="comfirmCode"></el-input>
       </el-form-item>
-
-      <!-- <el-form-item>
-          <el-radio v-model="role" label="1">教务员</el-radio>
-          <el-radio v-model="role" label="2">教师</el-radio>
-          <el-radio v-model="role" label="3">学生</el-radio>
-      </el-form-item>-->
 
       <el-form-item>
         <el-button type="primary" @click="getToken">
-          <span v-show="!commit">登录</span>
-          <i style="width:28px" v-show="commit" class="el-icon-loading" />
+          <span v-show="!commited">登录</span>
+          <i style="width:28px" v-show="commited" class="el-icon-loading" />
         </el-button>
         <el-button @click="reset">清空</el-button>
         <span style="color:grey;font-size:13px;text-decoration:underline;">忘记密码</span>
@@ -43,8 +37,8 @@
 <script>
 import axios from "axios";
 import VueBus from "@/utils/VueBus.js";
-import UrlConfig from "../../config/UrlConfig.js"
-import LoginStatus from "../../utils/LoginStatus.js"
+import UrlConfig from "../../config/UrlConfig.js";
+import LoginStatus from "../../utils/LoginStatus.js";
 export default {
   data() {
     return {
@@ -52,27 +46,36 @@ export default {
       password: "123",
       code: null,
       comfirmCode: null,
-      commit: false
+      commited: false
     };
   },
 
   methods: {
     //根据用户跳转页面
-    JumpToIndex(ROLE)
-    {
-      switch (ROLE)
-      {
-        case "ROLE_student":  VueBus.$emit("role", "student"); break;
-        case "ROLE_teacher":VueBus.$emit("role", "teacher"); break;
-        case "ROLE_dean":VueBus.$emit("role", "dean"); break;
+    JumpToIndex(ROLE) {
+      switch (ROLE) {
+        case "ROLE_student":
+          VueBus.$emit("role", "student");
+          break;
+        case "ROLE_teacher":
+          VueBus.$emit("role", "teacher");
+          break;
+        case "ROLE_dean":
+          VueBus.$emit("role", "dean");
+          break;
       }
-        this.$router.push({ name: "Homebody" });
+      this.$router.push({ name: "Homebody" });
     },
 
-    //获刷新且保存userinfo
+    //获刷新且保存userinfo，然后根据角色做一个跳转页面
     reflashAndSetUserInfo(ROLE) {
       LoginStatus.reflashAndSetUserInfo();
-      this.JumpToIndex(ROLE)
+
+      setTimeout(() => {
+        this.JumpToIndex(ROLE);
+      }, 2000);
+
+
     },
 
     //令牌校验
@@ -84,6 +87,10 @@ export default {
         .post(UrlConfig.getApi().checkToken, params)
         .then(function(response) {
           console.log("校验成功");
+            that.$message({
+              message: "登录成功,正在跳转",
+              type: "success"
+      });
           that.reflashAndSetUserInfo(response.data.authorities[0]);
         })
         .catch(function(error) {
@@ -92,14 +99,23 @@ export default {
     },
     //获取通行令牌
     getToken() {
+      //账号密码为空判断
+      if (this.account == "" || this.password == "") {
+        this.$message.error("请输入账号和密码!");
+        return;
+      }
+
       //1.验证码判断
       if (this.code != this.comfirmCode) {
-        alert("验证码有误");
+        this.$message.error("验证码有误");
         this.comfirmCode = null;
         this.reflashCode();
         return;
       }
       //2.带上账号密码请求数据库，回调token
+      //点击了提交，进入读取状态
+         this.$message('正在校验。。');
+      this.commited = true;
       var that = this;
       var params = new URLSearchParams();
       params.append("username", this.account);
@@ -113,22 +129,25 @@ export default {
         .post(UrlConfig.getApi().getToken, params)
         .then(function(response) {
           //判断登录是否成功
-          if (response.data.access_token) {
-            console.log("登录成功");
+          if (response == "请求异常") {
+            that.comfirmCode = null;
+            that.commited = false;
+            that.password = null;
+            that.reflashCode();
+            that.$message.error("登录失败！账户或者密码错误。");
+          } else if (response.data.access_token) {
+            console.log("登录成功");          
             //保存令牌和刷新令牌
             localStorage.setItem("access_token", response.data.access_token);
             localStorage.setItem("refresh_token", response.data.refresh_token);
             that.checkToken(response.data.access_token);
-          } else {
-            console.log("登录失败" + response.data.errors[1]);
           }
         })
         .catch(function(error) {
+          that.commited = false;
           console.log(error);
         });
-
       return;
-
     },
     reset() {
       this.account = "";

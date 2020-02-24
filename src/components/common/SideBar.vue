@@ -12,9 +12,9 @@
       leave-active-class="animated fadeOutUp"
     >
       <!-- 这个是侧边栏 -->
-      <div v-if="ifShowSideBar"  style="height:100%;min-width:64px">
+      <div v-if="ifShowSideBar" style="height:100%;min-width:64px">
         <el-menu
-           style="height:100%;"
+          style="height:100%;"
           unique-opened
           text-color="white"
           background-color="#2A333C"
@@ -44,29 +44,39 @@
             v-if="role!=null"
             index="1.1"
           >
-            <img
-              v-show="isCollapse"
-              :src="src"
-              style="height:25px;width:25px;"
-            />
+            <img v-show="isCollapse" :src="src" style="height:25px;width:25px;" />
             <span slot="title">
-              <img   :src="src" style="height:100px;width:100px;" />
+              <img :src="src" style="height:100px;width:100px;" />
             </span>
           </el-menu-item>
 
+          <el-menu-item index="2-1" @click="routeJump('Homebody')">
+            <i class="el-icon-s-home"></i>
+            <span slot="title">学习主页</span>
+          </el-menu-item>
+
           <!-- 视频学习 -->
-          <el-submenu index="2">
+          <el-submenu index="2" v-if="role=='student'||role=='teacher'">
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i class="el-icon-film"></i>
               <span slot="title">视频系统</span>
             </template>
             <el-menu-item-group>
-              <span slot="title">视频系统</span>
-              <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item>
-              <el-menu-item index="2-2" v-if="role=='student'" @click="routeJump('MyCourse')">我的课程（学生）</el-menu-item>
-              <el-menu-item index="2-6" v-if="role=='student'">笔记本（学生）</el-menu-item>
-              <el-menu-item index="2-4" v-if="role=='teacher'" @click="routeJump('VideoLibrary')"   >我的视频库（教师）</el-menu-item>
-              <el-menu-item index="2-5" v-if="role=='teacher'" @click="routeJump('MyTeach')"  >我教的课程（教师）</el-menu-item>
+              <!-- <span slot="title">视频系统</span> -->
+              <!-- <el-menu-item index="2-1" @click="routeJump('Homebody')">视频主页(所有，无需登录)</el-menu-item> -->
+              <el-menu-item index="2-2" v-if="role=='student'" @click="routeJump('MyCourse')">
+               <i class="el-icon-reading"/>我的课程</el-menu-item>
+              <el-menu-item index="2-6" v-if="role=='student'">
+              <i class="el-icon-notebook-2"></i>我的笔记</el-menu-item>
+              <el-menu-item
+                index="2-4"
+                v-if="role=='teacher'"
+                @click="routeJump('VideoLibrary')"
+              ><i class="el-icon-folder"></i>
+              我的视频库</el-menu-item>
+              <el-menu-item index="2-5" v-if="role=='teacher'" @click="routeJump('MyTeach')">
+                 <i class="el-icon-reading"></i> 我教的课程
+                </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -96,26 +106,57 @@
             </template>
             <el-menu-item-group>
               <span slot="title">考试系统</span>
-              <el-menu-item index="4-1" v-if="role=='student'" @click="routeJump('ChapterPractice')">章节自由练习（学生）</el-menu-item>
-              <el-menu-item index="4-2" v-if="role=='student'" @click="routeJump('ChapterTest')">章节测试（学生）</el-menu-item>
+              <el-menu-item
+                index="4-1"
+                v-if="role=='student'"
+                @click="routeJump('ChapterPractice')"
+              >章节自由练习（学生）</el-menu-item>
+              <el-menu-item
+                index="4-2"
+                v-if="role=='student'"
+                @click="routeJump('ChapterTest')"
+              >章节测试（学生）</el-menu-item>
               <el-menu-item index="4-3" v-if="role=='student'" @click="routeJump('Exam')">考试（学生）</el-menu-item>
-              <el-menu-item index="4-4" v-if="role=='student'" @click="routeJump('ErrorSet')">错题集（学生）</el-menu-item>
-              <el-menu-item index="4-5" v-if="role=='teacher'" @click="routeJump('Courses')">我的课程（教师）</el-menu-item>
-              <el-menu-item index="4-6" v-if="role=='teacher'" @click="routeJump('QuestionBank')">我的试题库（教师，添加试题）</el-menu-item>
-              <el-menu-item index="4-7" v-if="role=='teacher'" @click="routeJump('LearnProgress')">学生章节练习进度（教师，查看进度情况）</el-menu-item>
-              <el-menu-item index="4-8" v-if="role=='teacher'" @click="routeJump('TestSetting')">设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
+              <el-menu-item
+                index="4-4"
+                v-if="role=='student'"
+                @click="routeJump('ErrorSet')"
+              >错题集（学生）</el-menu-item>
+              <el-menu-item
+                index="4-5"
+                v-if="role=='teacher'"
+                @click="routeJump('Courses')"
+              >我的课程（教师）</el-menu-item>
+              <el-menu-item
+                index="4-6"
+                v-if="role=='teacher'"
+                @click="routeJump('QuestionBank')"
+              >我的试题库（教师，添加试题）</el-menu-item>
+              <el-menu-item
+                index="4-7"
+                v-if="role=='teacher'"
+                @click="routeJump('LearnProgress')"
+              >学生章节练习进度（教师，查看进度情况）</el-menu-item>
+              <el-menu-item
+                index="4-8"
+                v-if="role=='teacher'"
+                @click="routeJump('TestSetting')"
+              >设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
               <el-menu-item index="4-9" v-if="role=='teacher'" @click="routeJump('Marking')">阅卷（教师）</el-menu-item>
-              <el-menu-item index="4-10" v-if="role=='teacher'" @click="routeJump('ExportPaper')">导出学生考试卷（教师）</el-menu-item>
+              <el-menu-item
+                index="4-10"
+                v-if="role=='teacher'"
+                @click="routeJump('ExportPaper')"
+              >导出学生考试卷（教师）</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
-          <el-menu-item index="8"  v-if="role=='admin'" @click="routeJump('ManageDean')">
+          <el-menu-item index="8" v-if="role=='admin'" @click="routeJump('ManageDean')">
             <i class="el-icon-setting"></i>
             <span slot="title">管理教务员（超级管理员）</span>
           </el-menu-item>
 
-
-          <el-menu-item index="5" v-if="role!=null"  @click="routeJump('Message')">
+          <el-menu-item index="5" v-if="role!=null" @click="routeJump('Message')">
             <!-- 小红点提示消息未读 -->
             <el-badge :value="3" class="item">
               <i class="el-icon-setting"></i>
@@ -129,12 +170,10 @@
             <span slot="title">帮助反馈</span>
           </el-menu-item>
 
-
           <el-menu-item index="9" v-if="role" @click="logout">
             <i class="el-icon-setting"></i>
             <span slot="title">退出登录（所有，需登录）</span>
           </el-menu-item>
-
         </el-menu>
       </div>
     </transition>
@@ -143,9 +182,9 @@
 
 <script>
 import VueBus from "@/utils/VueBus.js";
-import axios from 'axios' 
-import LoginStatus from "@/utils/LoginStatus.js"
-import UrlConfig from "../../config/UrlConfig.js"
+import axios from "axios";
+import LoginStatus from "@/utils/LoginStatus.js";
+import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "Sidebar",
   data() {
@@ -157,16 +196,15 @@ export default {
       role: localStorage.getItem("userInfo")
         ? JSON.parse(localStorage.getItem("userInfo")).role
         : null,
-        src:localStorage.getItem("userInfo")
-        ? UrlConfig.getQiniuyunUrl()+ JSON.parse(localStorage.getItem("userInfo")).info.avatar
-        : null  //图片地址
-
+      src: localStorage.getItem("userInfo")
+        ? UrlConfig.getQiniuyunUrl() +
+          JSON.parse(localStorage.getItem("userInfo")).info.avatar
+        : null //图片地址
     };
   },
   methods: {
     //退出登录
     logout() {
-      console.log(JSON.parse(localStorage.getItem("userInfo")).role);
       this.$confirm("确定退出？", "消息提示", {
         distinguishCancelAndClose: true,
         confirmButtonText: "确定",
@@ -191,8 +229,7 @@ export default {
     },
     //路由跳转
     routeJump(e) {
-      console.log(e);
-
+      // console.log(e);
       if (e == "Login") this.$router.push({ name: "Login" });
       if (e == "ManageStudent") this.$router.push({ name: "ManageStudent" });
       if (e == "Homebody") this.$router.push({ name: "Homebody" });
@@ -209,11 +246,11 @@ export default {
       if (e == "TestSetting") this.$router.push({ name: "TestSetting" });
       if (e == "Marking") this.$router.push({ name: "Marking" });
       if (e == "ExportPaper") this.$router.push({ name: "ExportPaper" });
-      if (e == "ChapterPractice") this.$router.push({ name: "ChapterPractice" });
+      if (e == "ChapterPractice")
+        this.$router.push({ name: "ChapterPractice" });
       if (e == "ChapterTest") this.$router.push({ name: "ChapterTest" });
       if (e == "Exam") this.$router.push({ name: "Exam" });
       if (e == "ErrorSet") this.$router.push({ name: "ErrorSet" });
-
     },
     //传值侧边栏状态
     SideBarStatusChange() {
@@ -235,9 +272,10 @@ export default {
       console.log("侧边栏收到：" + data);
       that.role = data;
       that.src = localStorage.getItem("userInfo")
-        ? UrlConfig.getQiniuyunUrl()+JSON.parse(localStorage.getItem("userInfo")).info.avatar:null
+        ? UrlConfig.getQiniuyunUrl() +
+          JSON.parse(localStorage.getItem("userInfo")).info.avatar
+        : null;
     });
-
   }
 };
 </script>

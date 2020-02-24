@@ -34,7 +34,7 @@ var LoginStatus = {
               console.log("登录教务员：" + name + "\n账号：" + account);
               break;
             default:
-              console.log("获取角色错误，情练习管理员。");
+              console.log("获取角色错误，请联系管理员。");
               break;
           }
           //保存角色信息
