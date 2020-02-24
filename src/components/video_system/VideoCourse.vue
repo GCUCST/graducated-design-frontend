@@ -33,8 +33,12 @@
               <br />
               <div style="display:flex;justify-content:space-between">
                 <span>
-                  <el-button plain type="primary" @click="liked(course.courseId,'course')">{{course?course.likeNum:0}}点赞</el-button>
-                  <el-button plain type="primary" > {{course?course.replyNum:0}}评论</el-button>
+                  <el-button
+                    plain
+                    type="primary"
+                    @click="liked(course.courseId,'course')"
+                  >{{course?course.likeNum:0}}点赞</el-button>
+                  <el-button plain type="primary">{{course?course.replyNum:0}}评论</el-button>
                 </span>
                 <el-button
                   style="margin-right:10%;"
@@ -111,12 +115,42 @@
           <br />
 
           <div style="text-align:right;">
-            赞 {{obj.likeNum}}
+             <div  style="text-align:left;" v-for="(item,index) in sonReplies.replies" :key="index">
+                <span v-if="sonReplies.parentId==obj.id">
+                   {{"编号："+item.A.id+ item.A.nickName+"@"+item.B.nickName+"："+item.A.content}} 
+                  <el-button  @click="liked(item.A.id,'comment')">赞</el-button> {{item.A.likeNum}}
+                  <el-button @click="showRepliedInputId=item.A.id" >回复</el-button> {{item.A.replyNum}}
+                       <el-input style="width:500px;" 
+            v-if="item.A.id==showRepliedInputId?true:false" 
+            v-model="repliedContent" />
+            <el-button    @click="comment(item.A.id,'replied')"
+             v-if="item.A.id==showRepliedInputId?true:false">确定</el-button >
+             <el-button @click="showRepliedInputId=0" 
+             v-if="item.A.id==showRepliedInputId?true:false">
+               取消</el-button>
+                 
+                </span> 
+               </div>
+
+             <el-button  @click="diguiComments(obj.id,obj)" >展开</el-button> 
+
+             <el-button  @click="liked(obj.id,'comment')">赞</el-button> {{obj.likeNum}}
             &nbsp;
-            回复 {{obj.replyNum}}
+            <el-button @click="showRepliedInputId=obj.id">回复</el-button> {{obj.replyNum}}
+           <br>
+
+            <el-input style="width:500px;" 
+            v-if="obj.id==showRepliedInputId?true:false" 
+            v-model="repliedContent" />
+            <el-button    @click="comment(obj.id,'replied')"
+             v-if="obj.id==showRepliedInputId?true:false">确定</el-button >
+             <el-button @click="showRepliedInputId=0" 
+             v-if="obj.id==showRepliedInputId?true:false">
+               取消</el-button>
+          
           </div>
 
-          <el-divider></el-divider>
+          <el-divider ></el-divider>
         </div>
       </div>
       <!-- -----------/作为评论分割线----------------------- -->
@@ -135,9 +169,11 @@ export default {
     return {
       courseId: null, //第一次进来课程id
       videoId: null, //第一次进来当前视频id
-
+      repliedContent:"",
+      showRepliedInputId:null,
+      showSonReplies:true,
       videoSrc: null, //视频地址
-      duration:0,
+      duration: 0,
       video_full: false, //全屏模式
       course: null, //当前的课程
       far: 0, //视频最远进度
@@ -170,6 +206,8 @@ export default {
         children: "children",
         label: "label"
       },
+      allReplies:[],
+      sonReplies:{parentId:null,replies:[]},
       //------------最新
       catalogData: null, //当前目录数据
 
@@ -177,59 +215,102 @@ export default {
     };
   },
   methods: {
+    
+    diguiComments(id,obj){
 
-getAllComments(courseId){
-   var parmas = new URLSearchParams();
-   parmas.append("courseId", courseId);
+      if(id!=null){
+          this.sonReplies.parentId = id;
+          this.sonReplies.replies=[]
+      }
+      this.allReplies.forEach(element => {
+         if(element.targetId == obj.id){
+            console.log(element.nickName +"回复" +obj.nickName+" :"+element.content)
+            this.diguiComments(null,element)
+
+            this.sonReplies.replies.push({A:element,B:obj})
+            
+       }
+      });
+      
+    },
+
+    dealComments(comments){
+      var commentsJSON = [];  //评论
+      var repliesJSON = [];    //回复
+      comments.forEach(element => {
+        if(element.targetType=="comment"){
+          commentsJSON.push(element)
+        }else{
+          repliesJSON.push(element)
+        }
+      });
+      this.comments = commentsJSON
+       console.log(commentsJSON)
+       console.log(repliesJSON)
+    },
+
+
+    getAllComments(courseId) {
+      var parmas = new URLSearchParams();
+      parmas.append("courseId", courseId);
       var that = this;
       axios
         .post("/comm/getAllRepliedByCourseId", parmas)
         .then(function(response) {
-            console.log(response)
-            that.comments = response.data.object
+          // console.log(response);
+          that.allReplies = response.data.object;
+          that.dealComments(that.allReplies)
         });
+    },
 
-},
+    comment(targetId, targetType) {
 
-comment(targetId,targetType){
+      console.log(targetId);
+      console.log(targetType);
 
-   var parmas = new URLSearchParams();
+
+      var parmas = new URLSearchParams();
       parmas.append("targetId", targetId);
       parmas.append("targetType", targetType);
       parmas.append("courseId", this.courseId);
-      parmas.append("content", this.input);
-      parmas.append("avatar",JSON.parse(localStorage.getItem("userInfo")).info.avatar)
+      parmas.append("content",targetType=='comment'?this.input:this.repliedContent);
+      parmas.append(
+        "avatar",
+        JSON.parse(localStorage.getItem("userInfo")).info.avatar
+      );
 
       var that = this;
-      axios
-        .post("/comm/addReplied", parmas)
-        .then(function(response) {
-            console.log(response)
-            alert("发送成功。")
-            
-        });
+      axios.post("/comm/addReplied", parmas).then(function(response) {
+        console.log(response);
+        alert("发送成功。");
+        location.reload();
+      });
+    },
 
-
-},
-
-liked(targetId,targetType){
-  console.log(targetId)
-  console.log(targetType)
-
-     var parmas = new URLSearchParams();
+    liked(targetId, targetType) {
+      console.log(targetId);
+      console.log(targetType);
+   
+      var parmas = new URLSearchParams();
       parmas.append("targetId", targetId);
       parmas.append("targetType", targetType);
 
       var that = this;
-      axios
-        .post("/comm/addLiked", parmas)
-        .then(function(response) {
-            console.log(response)
-            that.course.likeNum++;
-        });
-
-   
-},
+      axios.post("/comm/addLiked", parmas).then(function(response) {
+        console.log(response);
+        if(targetType=='course')
+        that.course.likeNum++;
+        if(targetType=='comment')
+        {
+          for(var i =0;i<that.allReplies.length;i++){
+              if(that.allReplies[i].id==targetId)
+              {
+                that.allReplies[i].likeNum++;
+              }
+          }
+        }
+      });
+    },
 
     jumpVideo(videoId) {
       this.$router.push({
@@ -250,7 +331,7 @@ liked(targetId,targetType){
             videoId: data[i].id,
             url: data[i].url,
             far: 0,
-            percent:0
+            percent: 0
           });
         }
       }
@@ -283,34 +364,44 @@ liked(targetId,targetType){
           //--------设置进度---------------
           for (var i = 0; i < that.progress.catalog.length; i++) {
             if (that.progress.catalog[i].videoId == that.videoId) {
-              
-               that.progress.catalog[i].far = that.far
-               if(that.progress.catalog[i].percent==0)
-              that.progress.catalog[i].percent = that.far / Number(Media.duration)*100
-               else that.progress.catalog[i].percent = ((that.far / Number(Media.duration)) *100).toFixed(2);
+              that.progress.catalog[i].far = that.far;
+              if (that.progress.catalog[i].percent == 0)
+                that.progress.catalog[i].percent =
+                  (that.far / Number(Media.duration)) * 100;
+              else
+                that.progress.catalog[i].percent = (
+                  (that.far / Number(Media.duration)) *
+                  100
+                ).toFixed(2);
 
               //  localStorage.setItem("progress",JSON.stringify(that.progress))
-
             }
           }
-          var rightTime = (Number(Media.currentTime) / Number(Media.duration)).toFixed(3)
-          if (rightTime==0.100||rightTime==0.200||rightTime==0.300||rightTime==0.400||rightTime==0.500
-          ||rightTime==0.600||rightTime==0.700||rightTime==0.800||rightTime==0.900||rightTime==0.999
-          )
-           {
-               //上传
-               localStorage.setItem("progress",JSON.stringify(that.progress))
+          var rightTime = (
+            Number(Media.currentTime) / Number(Media.duration)
+          ).toFixed(3);
+          if (
+            rightTime == 0.1 ||
+            rightTime == 0.2 ||
+            rightTime == 0.3 ||
+            rightTime == 0.4 ||
+            rightTime == 0.5 ||
+            rightTime == 0.6 ||
+            rightTime == 0.7 ||
+            rightTime == 0.8 ||
+            rightTime == 0.9 ||
+            rightTime == 0.999
+          ) {
+            //上传
+            localStorage.setItem("progress", JSON.stringify(that.progress));
             var parmas = new URLSearchParams();
-              parmas.append("courseId", that.courseId);
-              parmas.append("progress", JSON.stringify(that.progress));
-          
-            axios
-             .post("/comm/updTeachClass", parmas)
-             .then(function(response) {
-            console.log(response)
-             });
+            parmas.append("courseId", that.courseId);
+            parmas.append("progress", JSON.stringify(that.progress));
 
-           }
+            axios.post("/comm/updTeachClass", parmas).then(function(response) {
+              console.log(response);
+            });
+          }
           //----------------
         },
         true
@@ -339,83 +430,71 @@ liked(targetId,targetType){
       }, 500);
     },
 
-    getMyProgress(videoId)
-    {     
-          
-     var parmas = new URLSearchParams();
+    getMyProgress(videoId) {
+      var parmas = new URLSearchParams();
       parmas.append("courseId", this.courseId);
       var that = this;
       axios
         .post("/comm/getTeachClassByUsernameAndCourseId", parmas)
         .then(function(response) {
-
           var progress = response.data.object.progress;
-          if(response.data.object.progress==0){
-              progress=null;
+          if (response.data.object.progress == 0) {
+            progress = null;
           }
-           if(progress==null)
-            {
-              console.log("目前没有目录")
-               //不存在就创建
-               that.findVideoIdUrl(that.catalogData);
-               //做更新
-          var parmas = new URLSearchParams();
-           parmas.append("courseId", that.courseId);
-           parmas.append("progress", JSON.stringify(that.progress));
-          
-          axios
-          .post("/comm/updTeachClass", parmas)
-          .then(function(response) {
-            console.log(response)
-          });
-             
-                //updTeachClass
-                //localStorage.setItem("progress",JSON.stringify(that.progress))
+          if (progress == null) {
+            console.log("目前没有目录");
+            //不存在就创建
+            that.findVideoIdUrl(that.catalogData);
+            //做更新
+            var parmas = new URLSearchParams();
+            parmas.append("courseId", that.courseId);
+            parmas.append("progress", JSON.stringify(that.progress));
 
-            }
-            else{
+            axios.post("/comm/updTeachClass", parmas).then(function(response) {
+              console.log(response);
+            });
 
-                            //存在就写入
-          that.progress = JSON.parse(progress)
-          //点击封面进来，不携带videoId
-          //进来时候拿到的videoId
-          that.videoId = videoId?videoId:(that.progress.videoId?that.progress.videoId: that.progress.catalog[0].videoId);
-         that.progress.videoId = that.videoId
-         for (var i = 0; i < that.progress.catalog.length; i++) {
-            if (that.progress.catalog[i].videoId == that.videoId) {
-              //根据进度id定位到该url
-              that.videoSrc = UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
+            //updTeachClass
+            //localStorage.setItem("progress",JSON.stringify(that.progress))
+          } else {
+            //存在就写入
+            that.progress = JSON.parse(progress);
+            //点击封面进来，不携带videoId
+            //进来时候拿到的videoId
+            that.videoId = videoId
+              ? videoId
+              : that.progress.videoId
+              ? that.progress.videoId
+              : that.progress.catalog[0].videoId;
+            that.progress.videoId = that.videoId;
+            for (var i = 0; i < that.progress.catalog.length; i++) {
+              if (that.progress.catalog[i].videoId == that.videoId) {
+                //根据进度id定位到该url
+                that.videoSrc =
+                  UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
 
-                that.far =   that.progress.catalog[i].far 
-      
-
+                that.far = that.progress.catalog[i].far;
+              }
             }
           }
-
-            }
-
-
         })
         .catch(function(error) {
           console.log(error);
         });
 
+      //去后端获取
+      //  var progress =localStorage.getItem("progress")?
+      //   JSON.parse(localStorage.getItem("progress"))
+      //   :null
 
-
-          //去后端获取
-          //  var progress =localStorage.getItem("progress")?
-          //   JSON.parse(localStorage.getItem("progress"))
-          //   :null
-
-
-            // if(progress==null)
-            // {
-            //   console.log("目前没有目录")
-            //    // 可获取课程中的视频进度
-            //    //不存在就创建
-            //    this.findVideoIdUrl(this.catalogData);
-            //    localStorage.setItem("progress",JSON.stringify(this.progress))
-            // }
+      // if(progress==null)
+      // {
+      //   console.log("目前没有目录")
+      //    // 可获取课程中的视频进度
+      //    //不存在就创建
+      //    this.findVideoIdUrl(this.catalogData);
+      //    localStorage.setItem("progress",JSON.stringify(this.progress))
+      // }
       //       else{
 
       //         //存在就写入
@@ -429,15 +508,11 @@ liked(targetId,targetType){
       //         //根据进度id定位到该url
       //         this.videoSrc = UrlConfig.getQiniuyunUrl() + this.progress.catalog[i].url;
 
-      //           this.far =   this.progress.catalog[i].far 
-           
-
+      //           this.far =   this.progress.catalog[i].far
 
       //       }
       //     }
       //  }
-
-
     },
     //请求课程资源和目录
     reqCourseRes(courseId, videoId) {
@@ -461,24 +536,24 @@ liked(targetId,targetType){
   },
 
   mounted() {
-    var that = this
+    var that = this;
     var myVideo = document.getElementById("qnv");
     if (myVideo != null) {
       myVideo.oncanplay = function() {
-        console.log("准备就绪"+myVideo.duration);
+        console.log("准备就绪" + myVideo.duration);
       };
     }
     // console.log("接受到：" + this.$route.query.courseId);
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
 
-     this.getAllComments(this.courseId);
+    this.getAllComments(this.courseId);
 
     this.reqCourseRes(this.courseId, this.videoId);
 
     this.preventDragAhead();
     this.setProgress();
-    
+
     //   //监听播放开始
     //   myVideo.addEventListener("play", function() {
     //     console.log("开始播放");
