@@ -7,7 +7,9 @@
     <el-tab-pane label="我的头像">
       <v-MyAvatar></v-MyAvatar>  
      </el-tab-pane>
-    <el-tab-pane label="账户安全">账户安全</el-tab-pane>
+    <el-tab-pane label="账户安全">
+      <v-AccountSafe></v-AccountSafe>
+    </el-tab-pane>
   </el-tabs>
   </div>
 </template>
@@ -15,6 +17,8 @@
 
 <script>
 import MyInfo from "@/components/public/personal_center/MyInfo.vue"
+import AccountSafe from "@/components/public/personal_center/AccountSafe.vue"
+
 import MyAvatar from "@/components/public/personal_center/MyAvatar.vue"
 export default {
   name: "PersonalCenter",
@@ -26,7 +30,8 @@ export default {
   },
   components:{
     "v-MyInfo":MyInfo,
-    "v-MyAvatar":MyAvatar
+    "v-MyAvatar":MyAvatar,
+    "v-AccountSafe":AccountSafe
   }
 };
 </script>
