@@ -1,18 +1,32 @@
 <template>
   <div>
     <div>
-      <div>
-        <el-avatar :size="100" :src="srcBase+user.info.avatar"></el-avatar>
+      <div style="margin:0 auto;width:300px;text-align:center;margin-bottom:200px">
+        <input
+        @change="change()"
+          type="file"
+          id="select"
+          style="opacity: 0;
+    border: 1px solid;
+    height: 80px;
+    width: 90px;
+    position: relative;
+    top: 120px;"
+        />
+
+        <br />
+        <el-avatar :size="120" :src="img"></el-avatar>
+        <br />
+        <br />
+        <span>{{file==null?null:file.name}}</span>
+        <div id="box">
+
+          <el-button @click="updateAvatar" v-if="file!=null">上传头像</el-button>
+          <el-button @click="reflashAvatar">刷新头像</el-button>
+        </div>
       </div>
     </div>
-    地址：{{srcBase+user.info.avatar}}
-    <br />
-
-    <div id="box">
-      <input type="file" id="select" /><br>
-      <el-button @click="updateAvatar">上传头像</el-button>
-        <el-button @click="reflashAvatar">刷新头像</el-button>
-    </div>
+    <!-- 地址：{{srcBase+user.info.avatar}} -->
   </div>
 </template>
 
@@ -21,25 +35,38 @@
 import UrlConfig from "../../../config/UrlConfig.js";
 import * as qiniu from "qiniu-js";
 import axios from "axios";
-import LoginStatus from "../../../utils/LoginStatus.js"
-import UploadUtil from "../../../utils/UploadUtil.js"
+import LoginStatus from "../../../utils/LoginStatus.js";
+import UploadUtil from "../../../utils/UploadUtil.js";
 
 export default {
   name: "myavatar",
   data() {
     return {
-      msg: "个人中心",
       user: JSON.parse(localStorage.getItem("userInfo")),
-      srcBase:UrlConfig.getQiniuyunUrl()
+      img:null,
+      file:null
     };
   },
+  mounted(){
+    this.img = UrlConfig.getQiniuyunUrl()+this.user.info.avatar
+  },
   methods: {
-    reflashAvatar(){
+    reflashAvatar() {
       LoginStatus.getUserInfoByToken();
       setInterval(() => {
         this.user = JSON.parse(localStorage.getItem("userInfo"));
+        this.img = UrlConfig.getQiniuyunUrl()+this.user.info.avatar
       }, 2000);
-      console.log("刷新完成。")
+      console.log("刷新完成。");
+    },
+    change(){
+          var file = document.getElementById("select").files[0];
+          this.file = file;
+          if(!file.type.startsWith("image"))
+          {
+            alert("请选择图片！")
+             this.file = null;
+          }
     },
     async updateAvatar() {
       //上传文件
@@ -50,11 +77,15 @@ export default {
       }
       var username = JSON.parse(localStorage.getItem("userInfo")).account;
       var midType = "avatar";
-      var suffix = ".jpg";
+      var suffix = "";
       var targetType = "updateAvatar";
-      
-      UploadUtil.upload(file,midType,suffix,username,targetType)
 
+      UploadUtil.upload(file, midType, suffix, username, targetType);
+      setTimeout(()=>
+      {
+        alert("上传成功！")
+        this.file = null
+      },3000)
     }
   }
 };
