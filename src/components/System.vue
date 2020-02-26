@@ -43,6 +43,10 @@
                   <router-view  name="ManageGrade"></router-view>
                   <router-view  name="ManageMajor"></router-view>
                   <router-view  name="ManageAdminClass"></router-view>
+                  <router-view  name="ManageTeacher"></router-view>
+
+
+                  
 
                   
 

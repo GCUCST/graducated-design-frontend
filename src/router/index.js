@@ -44,6 +44,9 @@ const ManageDean = () => import('@/components/manage/ManageDean') //懒加载
 const ManageGrade = () => import('@/components/manage/ManageGrade') //懒加载
 const ManageMajor = () => import('@/components/manage/ManageMajor') //懒加载
 const ManageAdminClass = () => import('@/components/manage/ManageAdminClass') //懒加载
+const ManageTeacher = () => import('@/components/manage/ManageTeacher') //懒加载
+
+
 
 
 
@@ -172,7 +175,16 @@ export default new Router({
           path:'managestudent',
           name:"ManageStudent",
           components:{ManageStudent} 
+        } ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'manageteacher',
+          name:"ManageTeacher",
+          components:{ManageTeacher} 
         }
+        
         ,
         {
           meta:{

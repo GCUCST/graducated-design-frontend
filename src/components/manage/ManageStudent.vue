@@ -33,7 +33,7 @@
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -104,7 +104,7 @@ export default {
       oneStudent: { stuId: "", name: "",gender:1, major:"",grade:"",adminClass:""},  //一个学生对象
       showEditor: false, //显示添加表单
       adminClassJson: [],  //班级数组
-      className: null, //新建班级的名称
+      // className: null, //新建班级的名称
       // students: [], //添加的学生
       allStudents: [], //全体学生数据
       // multipleSelection: [] //临时多选的变量
@@ -150,8 +150,31 @@ export default {
       console.log(index, row);
     },
     handleDelete(index, row) {
-      console.log(index, row);
-      this.allStudents.splice(index, 1);
+      // console.log(index, row.stuId);
+      var params = new URLSearchParams();
+      params.append("stuId",row.stuId);
+      var that = this;
+      axios
+        .post("/comm/delStudent",params)
+        .then(function(response) {
+          console.log(response.data.object);
+          if(response.data.object==1)
+          {
+            alert("删除成功。")
+            that.allStudents.splice(index, 1);
+          }
+          else{
+            alert("删除失败。")
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+      
+
+
+
     },
     filterHandler(value, row, column) {
       const property = column["property"];

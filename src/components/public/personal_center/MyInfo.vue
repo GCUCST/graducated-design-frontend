@@ -129,12 +129,13 @@
                 v-model="admissionDate"
                 type="date"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
               <br />身份证号：
               <el-input style="width:50%" v-model="idcard"></el-input>
               <br />出生日期：
               <!-- <el-input style="width:50%" v-model="birthday"></el-input> -->
-              <el-date-picker style="width:50%" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker value-format="yyyy-MM-dd" style="width:50%" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>
               <br />政治面貌：
               <el-input style="width:50%" v-model="political"></el-input>
               <br />
@@ -239,7 +240,8 @@ export default {
         parmas.append("adminClass", this.adminClass);
         parmas.append("dorm", this.dorm);
         parmas.append("city", this.city);
-        parmas.append("idcard", this.idcard);
+        parmas.append("admissionDate", this.admissionDate);
+        parmas.append("IDcard", this.idcard);
         parmas.append("birthday", this.birthday);
         parmas.append("political", this.political);
         axios
@@ -270,10 +272,14 @@ export default {
         parmas.append("technicalTitle", this.technicalTitle);
         parmas.append("dorm", this.dorm);
         parmas.append("dept", this.dept);
+        parmas.append("admissionDate", this.admissionDate);
+
+        
         parmas.append("city", this.city);
-        parmas.append("idcard", this.idcard);
+        parmas.append("IDcard", this.idcard);
         parmas.append("birthday", this.birthday);
         parmas.append("political", this.political);
+        // alert(new Date(this.birthday ))
         axios
           .post("/comm/updateStaff", parmas)
           .then(function(response) {

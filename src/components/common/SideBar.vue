@@ -89,7 +89,7 @@
             <el-menu-item-group>
               <span slot="title">管理系统</span>
               <el-menu-item index="3-1" @click="routeJump('ManageStudent')">学生管理（教务员）</el-menu-item>
-              <el-menu-item index="3-2">教师管理（教务员）</el-menu-item>
+              <el-menu-item index="3-2"   @click="routeJump('ManageTeacher')"  >教师管理（教务员）</el-menu-item>
               <el-menu-item index="3-4" @click="routeJump('ManageAdminClass')">班级管理（教务员）</el-menu-item>
               <el-menu-item index="3-5" @click="routeJump('ManageMajor')" >专业管理（教务员）</el-menu-item>
               <el-menu-item index="3-6" @click="routeJump('ManageGrade')">年级管理（教务员）</el-menu-item>
@@ -254,6 +254,9 @@ export default {
       if (e == "ManageGrade") this.$router.push({ name: "ManageGrade" });
       if (e == "ManageMajor") this.$router.push({ name: "ManageMajor" });
       if (e == "ManageAdminClass") this.$router.push({ name: "ManageAdminClass" });
+      if (e == "ManageTeacher") this.$router.push({ name: "ManageTeacher" });
+
+      
 
       
 
