@@ -41,6 +41,14 @@ const VideoCourse = () => import('@/components/video_system/VideoCourse') //懒�
 
 const ManageStudent = () => import('@/components/manage/ManageStudent') //懒加载
 const ManageDean = () => import('@/components/manage/ManageDean') //懒加载
+const ManageGrade = () => import('@/components/manage/ManageGrade') //懒加载
+const ManageMajor = () => import('@/components/manage/ManageMajor') //懒加载
+const ManageAdminClass = () => import('@/components/manage/ManageAdminClass') //懒加载
+
+
+
+
+
 
 
 //考试系统
@@ -164,6 +172,33 @@ export default new Router({
           path:'managestudent',
           name:"ManageStudent",
           components:{ManageStudent} 
+        }
+        ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'managemajor',
+          name:"ManageMajor",
+          components:{ManageMajor} 
+        }
+        ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'manageadminclass',
+          name:"ManageAdminClass",
+          components:{ManageAdminClass} 
+        }
+        ,
+        {
+          meta:{
+            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path:'managegrade',
+          name:"ManageGrade",
+          components:{ManageGrade} 
         }
         ,
         {

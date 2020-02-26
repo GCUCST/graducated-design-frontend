@@ -40,6 +40,14 @@
                   <router-view  name="ChapterTest"></router-view>
                   <router-view  name="Exam"></router-view>
                   <router-view  name="ErrorSet"></router-view>
+                  <router-view  name="ManageGrade"></router-view>
+                  <router-view  name="ManageMajor"></router-view>
+                  <router-view  name="ManageAdminClass"></router-view>
+
+                  
+
+                  
+
 
 
 
