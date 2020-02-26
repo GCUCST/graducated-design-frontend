@@ -160,7 +160,7 @@ export default {
         .post("/comm/getAllTeachers")
         .then(function(response) {
           console.log("res:", response);
-          that.allTeachers = response.data.object
+         that.allTeachers = response.data.object
 
          
         })
@@ -181,6 +181,11 @@ export default {
         alert("请输入姓名！")
         return ;
       }
+    if(this.gender==""||this.gender==null)
+      {
+        alert("请输入性别！")
+        return ;
+      }
 
 
       var params = new URLSearchParams();
@@ -193,8 +198,16 @@ export default {
         .post("/comm/addTeacher",params)
         .then(function(response) {
           console.log("res:", response);
-          alert("添加成功！请刷新")
-         
+          if(response.data.code==200)
+          {
+            that.allTeachers.push({staId:that.staId,name:that.name,gender:that.gender})
+            // alert("添加成功！请刷新")
+          }
+          else{
+            alert("添加失败。"+response.data.message)
+          }
+          that.staId=null;
+            that.name=null;         
         })
         .catch(function(error) {
           console.log(error);
