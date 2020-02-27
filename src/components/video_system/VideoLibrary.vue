@@ -1,12 +1,7 @@
 <template>
   <div>
-
-    
     <!-- 上传面板---------------------- -->
-    <div
-      v-show="showUploadPanel"
-      class="upload-panel"
-    >
+    <div v-show="showUploadPanel" class="upload-panel">
       <div style="text-align:left;display:flex;justify-content:space-between">
         <div style="margin:0 auto;">
           <input
@@ -19,7 +14,8 @@
           <div :class="file==null?'el-icon-upload':'el-icon-finished'" style="font-size: 150px" />
         </div>
         <div v-if="file!=null">
-          <br />  <br />
+          <br />
+          <br />
           文件名：{{file.name}}
           <br />
           大小：{{file.size/1024}}KB
@@ -68,13 +64,31 @@
           </div>
 
           <div v-if="showDetail" style="width:300px;text-align:left;text-indent:2em">
-            <div>名称：{{PathAndAxis.obj.path}}  <br /> <br /></div>
-            <div v-if="PathAndAxis.obj.type==1">个数：{{PathAndAxis.obj.content.length}}   <br /><br /></div>
-            <div
-              v-if="PathAndAxis.obj.type==0"
-            >大小：{{parseFloat(PathAndAxis.obj.size/1024).toFixed(2)}}KB  <br /> <br /></div>
-            <div v-if="PathAndAxis.obj.type==0">类型：{{PathAndAxis.obj.mimeType}}  <br /> <br /></div>
-            <div>日期：{{PathAndAxis.obj.date}} <br /> <br /></div>
+            <div>
+              名称：{{PathAndAxis.obj.path}}
+              <br />
+              <br />
+            </div>
+            <div v-if="PathAndAxis.obj.type==1">
+              个数：{{PathAndAxis.obj.content.length}}
+              <br />
+              <br />
+            </div>
+            <div v-if="PathAndAxis.obj.type==0">
+              大小：{{parseFloat(PathAndAxis.obj.size/1024).toFixed(2)}}KB
+              <br />
+              <br />
+            </div>
+            <div v-if="PathAndAxis.obj.type==0">
+              类型：{{PathAndAxis.obj.mimeType}}
+              <br />
+              <br />
+            </div>
+            <div>
+              日期：{{PathAndAxis.obj.date}}
+              <br />
+              <br />
+            </div>
           </div>
         </div>
         <!-- /右击文件或者文件夹 -->
@@ -343,15 +357,15 @@ export default {
       false
     );
 
-    VueBus.$on("uploadPrecent", function(data) {
+    VueBus.$on("uploadPrecentVideoLibrary", function(data) {
       console.log("视频库收到进度：" + data);
       that.progress = data;
     });
-    VueBus.$on("uploadError", function(data) {
+    VueBus.$on("uploadErrorVideoLibrary", function(data) {
       console.log("视频库收到错误：", data);
     });
 
-    VueBus.$on("uploadFinish", function(data) {
+    VueBus.$on("uploadFinishVideoLibrary", function(data) {
       console.log("视频库收到上传完成：", data);
       that.tempForUpload.newFile.url = data.object.key;
       that.tempForUpload.newFile.size = data.object.fsize;
@@ -362,6 +376,7 @@ export default {
         type: "success",
         message: "新建文件成功！ " + that.tempForUpload.value
       });
+      that.save();
     });
   },
   beforeMount() {
@@ -382,7 +397,9 @@ export default {
   },
   beforeDestroy() {
     //防止被多次触发。
-    VueBus.$off("uploadFinish");
+    VueBus.$off("uploadPrecentVideoLibrary");
+    VueBus.$off("uploadErrorVideoLibrary");
+    VueBus.$off("uploadFinishVideoLibrary");
   },
 
   methods: {
@@ -415,7 +432,14 @@ export default {
       var midType = "upload";
       var suffix = "";
       var targetType = "uploadFile";
-      UploadUtil.upload(file, midType, suffix, username, targetType);
+      UploadUtil.upload(
+        file,
+        midType,
+        suffix,
+        username,
+        targetType,
+        "VideoLibrary"
+      );
     },
 
     //-----------------------------------------
@@ -776,17 +800,17 @@ export default {
 </script>
 
 <style scoped>
-.upload-panel{
+.upload-panel {
   width: 50%;
-    height: 280px;
-    margin: 1px auto;
-    background: white;
-    position: fixed;
-    margin-left: 20%;
-    margin-right: 20%;
-    margin-top: 12%;
-    z-index: 9999;
-    border: 1px solid;
+  height: 280px;
+  margin: 1px auto;
+  background: white;
+  position: fixed;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 12%;
+  z-index: 9999;
+  border: 1px solid;
 }
 .back {
   text-align: center;

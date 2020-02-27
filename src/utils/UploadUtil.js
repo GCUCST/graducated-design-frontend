@@ -6,8 +6,6 @@ import * as qiniu from "qiniu-js";
 import VueBus from "@/utils/VueBus.js";
 
 
-
-
 var UploadUtil = {
         //从服务器获取本次上传的名称
         getUploadKey(type, suffix) {
@@ -34,7 +32,8 @@ var UploadUtil = {
       });
     },
 
-    async upload(file,minType,suffix,username,targeType) {
+    //文件   ,  命名类型  ， 后缀 ，用户名，回调的目标方法
+    async upload(file,minType,suffix,username,targetType,vueName) {
       var tokenResult = await this.getQiniuyunUpToken();
       var keyResult = await this.getUploadKey(minType,suffix);
       var token = tokenResult.data.token;
@@ -54,21 +53,19 @@ var UploadUtil = {
          params:{
            //这里到时候要改成请求回来的数据username。否则可以通过修改localstorage来改别人的头像
            'x:username':username,
-           "x:target":targeType
+           "x:target":targetType
         }
       };
       var observer = {
         next(res) {
-          console.log("上传... ");
-          VueBus.$emit("uploadPrecent", res.total.percent); 
+          VueBus.$emit("uploadPrecent"+vueName, res.total.percent); 
         },
         error(err) {
-          console.log("上传错误！");
-          VueBus.$emit("uploadError", err); 
+          VueBus.$emit("uploadError"+vueName, err); 
         },
         complete(res) {
           console.log("上传完成!"); 
-          VueBus.$emit("uploadFinish", res);      
+          VueBus.$emit("uploadFinish"+vueName, res);      
           
         }
       };
