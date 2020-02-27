@@ -1,60 +1,73 @@
 <template>
-  <div class="setting-share">
-    <el-tabs tab-position="up">
-      <el-tab-pane :label="msg">
-        封面: {{cover}}
-        <br />
-        标题: {{title}}
-        <br />
-        介绍: {{introduce}}
-        <br />
-        学时 :{{courseHour}}
-        <br />
-        学分: {{credit}}
-        <br />
-        时间 :{{date}}
-        <br />
-        标签: {{tags}}
-        <br />
-        课程类型：{{courseType}}
-        <hr />
-        <br />目录：
-        <br />
-      </el-tab-pane>
-      <el-tree :data="catalogData" :props="defaultProps"></el-tree>
-      <hr>该课程可以被其他任课老师添加？
-      <el-switch
-        v-model="switchValue"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="1"
-        inactive-value="0"
-      ></el-switch>
-      <br />生成考试系统目录： 是？ 否？
-      <br />填写考试时间： ？ ？ ？
-      <br />课程状态：默认未发布
-      <br />
+  <div class="preview">
+  <el-divider content-position="center">预览</el-divider>
 
-      <br />
-      <br />
-      <br />
-      <div style="display:flex;justify-content:space-between">
-        <el-button type="primary" @click="lastStep" plain>上一步</el-button>
-        <el-button type="primary" @click="create" plain>确定创建</el-button>
+    <el-tab-pane style="line-height:26px;display:flex;width:100%;padding:20px;">
+      <!-- 封面: {{cover}} -->
+      
+      <div style="width:70%">
+        <div style="font-size:16px;text-align:left;font-weight:700">标题：{{title}}</div>
+        <div style="text-align:left;font-size:16px;font-weight:bold">学时：{{courseHour}}</div>
+        <div style="text-align:left;font-size:16px;font-weight:bold">学分：{{credit?credit.toFixed(2):null}}</div>
+        <div
+          style="text-align:left;font-size:16px;font-weight:bold"
+        >时间：{{ !date?null:new Date(date[0]).toLocaleDateString()+" - "+new Date(date[1]).toLocaleDateString()}}</div>
+        <div style="text-align:left;font-size:16px;font-weight:bold">标签：{{tags}}</div>
+        <div style="text-align:left;font-size:16px;font-weight:bold">
+          类型：{{courseType=="public"?"公开课":courseType=="required"?"必修课":
+          courseType=="electives"?"选修课":courseType=="generalElective"?"通选课":
+          courseType=="other"?"其他":null
+          }}
+        </div>
+        <div style="text-align:left;font-size:16px;font-weight:bold">介绍：{{introduce}}</div>
       </div>
-    </el-tabs>
+      <div style="width:30%">
+        <img width="150" height="150" :src="QiniuyunUrl+cover" />
+      </div>
+    </el-tab-pane>
+
+
+  <el-divider content-position="center">目录</el-divider>
+  <br>
+    <div style="border:1px ;width:50%;margin:0 auto;">
+      <el-tree :data="catalogData" :props="defaultProps" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"></el-tree>
+    </div>
+
+    <br />
+
+    <div style="text-align:center;font-size:16px;font-weight:700">该课程可以是一个模板？
+   
+    <el-switch
+      v-model="switchValue"
+      active-color="#13ce66"
+      inactive-color="#ff4949"
+      active-value="1"
+      inactive-value="0"
+    ></el-switch>
+    </div>
+    <!-- <br />生成考试系统目录： 是？ 否？ -->
+
+    <br />
+    <br />
+    <div style="display:flex;justify-content:space-between">
+      <el-button type="primary" @click="lastStep" plain>上一步</el-button>
+      <el-button type="primary" @click="create" plain>确定创建</el-button>
+    </div>
+    <!-- </el-tabs> -->
   </div>
 </template>
 
 
 
 <script>
+import UrlConfig from "../../../../config/UrlConfig";
 import VueBus from "@/utils/VueBus.js";
 import axios from "axios";
 export default {
   name: "PreviewAndRelease",
   data() {
     return {
+      QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       msg: "预览",
       switchValue: false,
       cover: null,
@@ -75,7 +88,6 @@ export default {
   methods: {
     create() {
       console.log("创建成功。");
-
       // 一堂普通课程
       var courseObject = {
         courseShare: this.switchValue == "1" ? true : false, //共享
@@ -98,7 +110,7 @@ export default {
         className: null, //班级名称
         students: [], //学生
         tips: null, //提示
-        refCourse: this.switchValue == "1" ? -1 : 0, //共享
+        refCourse: this.switchValue == "1" ? -1 : 0 //共享
       };
 
       var that = this;
@@ -130,17 +142,15 @@ export default {
         .post("/comm/addCourse", params)
         .then(function(response) {
           console.log(response);
-                if (that.switchValue == "1") {
-        alert("成功！请去共享课程添加学生吧！");
-      } else {
-        alert("成功！请去我的课程添加学生！");
-      }
+          if (that.switchValue == "1") {
+            alert("成功！请去共享课程添加学生吧！");
+          } else {
+            alert("成功！请去我的课程添加学生！");
+          }
         })
         .catch(function(error) {
           console.log(error);
         });
-
-
     },
     lastStep() {
       VueBus.$emit("jump", 1);
@@ -164,11 +174,11 @@ export default {
 </script>
 
 <style scoped>
-.setting-share {
+.preview {
   margin: 20px auto;
-  padding: 30px;
+  padding: 20px;
   background: white;
   width: 95%;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>
