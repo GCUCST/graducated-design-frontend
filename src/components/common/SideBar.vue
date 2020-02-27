@@ -83,18 +83,18 @@
           <!-- 信息管理 -->
           <el-submenu index="3" v-if="role=='dean'">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">成员管理（教务员）</span>
+              <i class="el-icon-thumb"></i>
+              <span slot="title">成员管理</span>
             </template>
             <el-menu-item-group>
-              <span slot="title">管理系统</span>
-              <el-menu-item index="3-1" @click="routeJump('ManageStudent')">学生管理（教务员）</el-menu-item>
-              <el-menu-item index="3-2"   @click="routeJump('ManageTeacher')"  >教师管理（教务员）</el-menu-item>
-              <el-menu-item index="3-4" @click="routeJump('ManageAdminClass')">班级管理（教务员）</el-menu-item>
-              <el-menu-item index="3-5" @click="routeJump('ManageMajor')" >专业管理（教务员）</el-menu-item>
-              <el-menu-item index="3-6" @click="routeJump('ManageGrade')">年级管理（教务员）</el-menu-item>
-              <el-menu-item index="3-7"   >课程管理（教务员）</el-menu-item>
-              <el-menu-item index="3-8">授课任务管理（教务员）</el-menu-item>
+              <!-- <span slot="title">管理系统</span> -->
+             <el-menu-item index="3-1"   @click="routeJump('ManageStudent')"><i class="el-icon-user-solid"/>学生管理</el-menu-item>
+              <el-menu-item index="3-2"   @click="routeJump('ManageTeacher')"><i class="el-icon-s-custom"/>教师管理</el-menu-item>
+              <el-menu-item index="3-4" @click="routeJump('ManageAdminClass')"><i class="el-icon-coin"/>班级管理</el-menu-item>
+              <el-menu-item index="3-5" @click="routeJump('ManageMajor')" ><i class="el-icon-position"/>专业管理</el-menu-item>
+              <el-menu-item index="3-6" @click="routeJump('ManageGrade')"><i class="el-icon-user"/>年级管理</el-menu-item>
+              <!-- <el-menu-item index="3-7"   >课程管理（教务员）</el-menu-item> -->
+              <el-menu-item index="3-8" @click="routeJump('ManageTeachTask')"><i class="el-icon-paperclip"/>授课任务管理</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -255,6 +255,9 @@ export default {
       if (e == "ManageMajor") this.$router.push({ name: "ManageMajor" });
       if (e == "ManageAdminClass") this.$router.push({ name: "ManageAdminClass" });
       if (e == "ManageTeacher") this.$router.push({ name: "ManageTeacher" });
+      if (e == "ManageTeachTask") this.$router.push({ name: "ManageTeachTask" });
+
+      
 
       
 

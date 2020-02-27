@@ -64,12 +64,12 @@
           班级：&nbsp;
           {{oneStudent.adminClass}}&nbsp;&nbsp;&nbsp;&nbsp;
           </span>
-        选择班级：  <el-select @change="selClass()" v-model="temp_item" placeholder="请选择">
+        选择班级：  <el-select @change="selClass()" v-model="temp_item_id" placeholder="请选择">
     <el-option
       v-for="item in adminClassJson"
       :key="item.id"
       :label="item.grade+item.major+item.name+'班'"
-      :value="item">
+      :value="item.id">
     </el-option>
   </el-select>
 <br>
@@ -100,7 +100,7 @@ export default {
     return {
       majorFileter:[],  //过滤专业
       gradeFilter:[],  //过滤年级
-      temp_item:null,  //temp变量
+      temp_item_id:null,  //temp变量
       oneStudent: { stuId: "", name: "",gender:1, major:"",grade:"",adminClass:""},  //一个学生对象
       showEditor: false, //显示添加表单
       adminClassJson: [],  //班级数组
@@ -117,10 +117,16 @@ export default {
   methods: {
 
     selClass(){
-      this.oneStudent.grade = this.temp_item.grade
-      this.oneStudent.adminClass = this.temp_item.name
-      this.oneStudent.major = this.temp_item.major
-      console.log("stu",this.oneStudent)
+      this.adminClassJson.forEach(element => {
+        if(element.id==this.temp_item_id){
+          this.oneStudent.grade = element.grade
+          this.oneStudent.adminClass = element.name
+          this.oneStudent.major = element.major
+          console.log("stu",this.oneStudent)
+
+        }
+      });
+
     },
     getGSMA() {
       // var params = new URLSearchParams();
