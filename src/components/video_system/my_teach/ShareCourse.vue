@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div >
+    <div v-loading="loading">
+     <div v-if="noCourses" style="margin-top:200px;text-align:center">暂模板课程。</div>
       <div v-for="(item,i) in shareCourseObjects" :key="i">
         <div
-           v-loading="loading"
           v-if="item.courseShare==true"
           style="justify-content:space-between ;padding:2%;display:flex"
         >
@@ -97,8 +97,10 @@ export default {
   name: "ShareClass",
   data() {
     return {
-      users:{courseId:null,staff:[]},
       loading:true,
+      noCourses:true,
+
+      users:{courseId:null,staff:[]},
       shareCourseObjects: null,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       defaultProps: {
@@ -143,7 +145,11 @@ parmas.append("courseId",courseId);
       .then(function(response) {
         console.log(response);
         that.shareCourseObjects = response.data.object;
-        that.loading = false;
+        that.noCourses = true;
+        if(response.data.object.length>0){
+          that.noCourses = false;
+          }
+          that.loading = false;
       })
       .catch(function(error) {
         console.log(error);

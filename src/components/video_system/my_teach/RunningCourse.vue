@@ -4,6 +4,7 @@
     <v-AddClass v-show="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
     <div class="content"  v-loading="loading">
+      <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无进行中的课程。</div>
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
           v-if="item.courseStatus=='进行中'"
@@ -113,7 +114,8 @@ export default {
       loading:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       showAddClassPanel: false,
-      courseObjects: null
+      courseObjects: null,
+      noCourses:true
     };
   },
   mounted() {
@@ -139,6 +141,13 @@ export default {
           console.log(response);
           that.courseObjects = response.data.object;
           that.loading = false;
+          that.noCourses = true
+           that.courseObjects.forEach(element => {
+             if(element.courseStatus=='进行中'){
+               that.noCourses=false
+             }
+           });
+
         })
         .catch(function(error) {
           console.log(error);

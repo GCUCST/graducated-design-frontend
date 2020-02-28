@@ -3,10 +3,12 @@
     <!-- 学生添加版块 -->
     <v-AddClass v-show="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
-    <div class="content"   >
+    <div class="content"   v-loading="loading" >
+      <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无课程。</div>
+
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
-        v-loading="loading"
+       
           v-if="item.courseStatus=='待发布'"
           style="justify-content:space-between;height:100%;padding:2%;display:flex"
         >
@@ -206,6 +208,7 @@ export default {
   name: "ShareClass",
   data() {
     return {
+      noCourses:true,
        loading:true,
       //用于更新。
       curCourseId: null,
@@ -352,7 +355,14 @@ export default {
         .then(function(response) {
           console.log(response);
           that.courseObjects = response.data.object;
+
+         that.courseObjects.forEach(element => {
+           if(element.courseStatus=='待发布'){
+             that.noCourses=false
+             }
+           });
           that.loading = false;
+
         })
         .catch(function(error) {
           console.log(error);
