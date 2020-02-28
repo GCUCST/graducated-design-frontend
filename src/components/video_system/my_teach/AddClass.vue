@@ -6,7 +6,7 @@
           <!-- 开始。。。。。。。。。。。。。。。。。 -->
           <el-table
             ref="multipleTable"
-            :data="tableData"
+            :data="allStudents"
             tooltip-effect="dark"
             @selection-change="handleSelectionChange"
             height="350"
@@ -17,15 +17,25 @@
 
             <el-table-column
               prop="grade"
-              :filters="[{text: '2016', value: '2016'}, {text: '2017', value: '2017'}, {text: '2018', value: '2018'}, {text: '2019', value: '2019'}]"
+              :filters="gradeFilter"
               :filter-method="filterHandler"
               label="年级"
             ></el-table-column>
 
-            <el-table-column prop="department" label="院系"></el-table-column>
-
-            <el-table-column prop="major" sortable label="专业"></el-table-column>
-            <el-table-column prop="class" sortable label="班级" show-overflow-tooltip></el-table-column>
+            <el-table-column
+              prop="major"
+              :filters="majorFileter"
+              :filter-method="filterHandler"
+              label="专业"
+            ></el-table-column>
+            <el-table-column
+              prop="adminClass"
+              :filters="[{text: 1, value: 1},{text: 2, value: 2},{text: 3, value: 3},{text: 4, value: 4},{text: 5, value: 5},{text: 6, value: 6},{text: 7, value: 7},{text: 8, value: 8},{text: 9, value: 9}]"
+              :filter-method="filterHandler"
+              sortable
+              label="班级"
+              show-overflow-tooltip
+            ></el-table-column>
           </el-table>
           <br />
           <div>
@@ -34,9 +44,9 @@
           </div>
         </div>
       </el-tab-pane>
-          <!-- /结束。。。。。。。。。。。。。。。 -->
+      <!-- /结束。。。。。。。。。。。。。。。 -->
 
-          <!-- 开始。。。。。。。。。。。。。。。。。 -->
+      <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-tab-pane label="已选择学生">
         <div style="text-align:canter">
           <el-table
@@ -47,12 +57,17 @@
             height="350"
           >
             <el-table-column sortable prop="stuId" label="学号"></el-table-column>
-            <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-            <el-table-column prop="grade" sortable label="年级"></el-table-column>
-            <el-table-column prop="department" label="院系"></el-table-column>
+            <el-table-column prop="name" label="姓名" width="150"></el-table-column>
+            <el-table-column prop="grade" 
+              :filters="gradeFilter"
+              :filter-method="filterHandler"
+             label="年级"></el-table-column>
 
-            <el-table-column prop="major" sortable label="专业"></el-table-column>
-            <el-table-column prop="class" sortable label="班级" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="major" 
+              :filters="majorFileter"
+              :filter-method="filterHandler"
+             label="专业"></el-table-column>
+            <el-table-column prop="adminClass" sortable label="班级" show-overflow-tooltip></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
@@ -65,12 +80,11 @@
           </el-table>
 
           <div>
-            共{{students.length }} 名学生，班级名称：
+            共{{students.length}} 名学生，班级名称：
             <el-input v-model="className" style="width:200px;"></el-input>
           </div>
           <el-button @click="save">保存</el-button>
           <el-button @click="cancel">取消</el-button>
-
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -88,9 +102,11 @@ export default {
   name: "AddClass",
   data() {
     return {
+      majorFileter: [], //过滤专业
+      gradeFilter: [], //过滤年级
       className: null, //新建班级的名称
       students: [], //添加的学生
-      tableData: [
+      allStudents: [
         {
           stuId: "201610098268",
           name: "王小虎",
@@ -199,7 +215,51 @@ export default {
       multipleSelection: [] //临时多选的变量
     };
   },
+
+  mounted() {
+    this.getAllStudents();
+    this.getGSMA();
+  },
   methods: {
+    getGSMA() {
+      // var params = new URLSearchParams();
+      // params.append("GSMAJson", JSON.stringify(GSMAJson));
+      var that = this;
+      axios
+        .post("/comm/getGSMA")
+        .then(function(response) {
+          console.log("res:", response);
+          var majorJson = JSON.parse(response.data.object.gsmajson).major;
+          for (var i = 0; i < majorJson.length; i++) {
+            that.majorFileter.push({
+              text: majorJson[i].name,
+              value: majorJson[i].name
+            });
+          }
+          var gradeJson = JSON.parse(response.data.object.gsmajson).grade;
+          for (var i = 0; i < gradeJson.length; i++) {
+            that.gradeFilter.push({
+              text: gradeJson[i].name,
+              value: gradeJson[i].name
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getAllStudents() {
+      var that = this;
+      axios
+        .post("/comm/getAllStudents")
+        .then(function(response) {
+          console.log(response.data.object.object);
+          that.allStudents = response.data.object.object;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     add() {
       for (var i = 0; i < this.multipleSelection.length; i++) {
         this.students.push(this.multipleSelection[i]);
@@ -208,7 +268,12 @@ export default {
       const res = new Map();
       arr = arr.filter(arr => !res.has(arr.stuId) && res.set(arr.stuId, 1));
       this.students = arr;
+        this.$message({
+          message: '添加成功！',
+          type: 'success'
+        });
       console.log("添加成功！");
+
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -260,18 +325,16 @@ export default {
         .post("/comm/addTeachClass", params)
         .then(function(response) {
           console.log(response);
-          if (response.data.code == 200) 
-            {
-              that.students = []  //清空当前学生
-              that.className = null  //清空当前学生
+          if (response.data.code == 200) {
+            that.students = []; //清空当前学生
+            that.className = null; //清空当前学生
 
-              VueBus.$emit("closeAddClass", true);  //关闭该面板
-            }
+            VueBus.$emit("closeAddClass", true); //关闭该面板
+          }
         })
         .catch(function(error) {
           console.log(error);
         });
-
     }
   }
 };

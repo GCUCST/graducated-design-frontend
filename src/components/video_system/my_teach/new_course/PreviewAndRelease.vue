@@ -96,7 +96,7 @@ export default {
         introduce: this.introduce, //介绍
         courseHour: this.courseHour, //学时
         credit: this.credit, //学分
-        courseDate: this.date, //学习时间
+        courseDate: JSON.stringify(this.date), //学习时间
         tags: this.tags, //标签
         courseType: this.courseType, //课程类型
         catalogData: JSON.parse(localStorage.getItem("catalog")), //目录json

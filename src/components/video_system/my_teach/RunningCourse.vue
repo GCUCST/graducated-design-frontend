@@ -1,84 +1,88 @@
 <template>
   <div>
-    <!-- 学生 -->
+    <!-- 学生添加版块 -->
     <v-AddClass v-show="showAddClassPanel"></v-AddClass>
-
-    <!--  学生 -->
     <!-- 整个内容区 -->
     <div class="content">
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
           v-if="item.courseStatus=='进行中'"
-          style="justify-content:space-between ;padding:2%;display:flex"
+          style="justify-content:space-between;height:100%;padding:2%;display:flex"
         >
-          <el-card shadow="hover" style="width:24%;" class="box-card">
-            <el-tabs stretch>
+          <el-card shadow="hover" style="width:24%;height:100%" class="box-card">
+            <el-tabs style="width:100%;height:100%" stretch>
               <el-tab-pane label="封面">
                 <!-- 一个课程 -->
-                <div>
+                <div style="height:100%">
                   <div>
-                    <img style="width:100%;height:150px;" :src="item.cover" />
+                    <img style="width:100%;height:200px;" :src="QiniuyunUrl+item.cover" />
                   </div>
                   <!-- 标题 -->
                   <div class="title">{{item.title}}</div>
-                  <div class="bottom-content">
-                    <div>{{item.author}}</div>
-                    <div style="display:flex;">
-                      <div>赞{{item.likeNum}}</div>&ensp;
-                      <div>回复{{item.replyNum}}</div>
-                    </div>
-                  </div>
                 </div>
+
+                <footer class="bottom-content">
+                  <div>赞{{item.likeNum}}</div>
+                  <div>回{{item.replyNum}}</div>
+                </footer>
+
                 <!-- /一个课程 -->
               </el-tab-pane>
               <el-tab-pane label="目录">
-                <el-tree :data="JSON.parse(item.catalogData)" :props="defaultProps"></el-tree>
+                <el-tree
+                  @node-click="handleNodeClick"
+                  :data="JSON.parse(item.catalogData)"
+                  :props="defaultProps"
+                ></el-tree>
               </el-tab-pane>
             </el-tabs>
           </el-card>
 
           <div style="width:70%;">
-            <el-card class="box-card" shadow="never" style="width:100%">
+            <el-card class="box-card" shadow="hover" style="width:100%">
               <div slot="header">
                 <span>{{item.title}}</span>
                 <el-button
                   @click="unRelease(item.courseId)"
-                  style="float: right; padding: 3px 0"
+                  style="float: right; padding: 3px 10px"
                   type="text"
                 >挂起</el-button>
               </div>
-              <div style="font-size:14px">
-                介&emsp;&emsp;绍：{{item.introduce}}
-                <br />
+              <div style="font-size:16px;font-weight:500;line-height:26px;">
                 创建&emsp;者：{{item.author}}
+                <br />学&emsp;&emsp;时：
+                <span>{{item.courseHour}}</span>
+                <br />学&emsp;&emsp;分：
+                <span>{{item.credit.toFixed(2)}}</span>
+                <br />性&emsp;&emsp;质：
+                <span>
+                  {{item.courseType=="public"?"公开课":item.courseType=="required"?"必修课":
+                  item.courseType=="electives"?"选修课":item.courseType=="generalElective"?"通选课":
+                  item.courseType=="other"?"其他":null
+                  }}
+                </span>
+                <br />课程时间：
+                <span>{{!item.courseDate?null:new Date(JSON.parse(item.courseDate)[0]).toLocaleDateString()+"——"+ new Date(JSON.parse(item.courseDate)[1]).toLocaleDateString()}}</span>
                 <br />
-                学&emsp;&emsp;时：{{item.courseHour}}
-                <br />
-                学&emsp;&emsp;分：{{item.credit}}
-                <br />
-                性&emsp;&emsp;质：{{item.courseType}}
-                <br />
-                创建时间：{{item.createTime}}
-                <br />
-                课程时间：{{item.courseDate}}
-                <hr />
-                <br />
+                创建时间：
+                {{new Date(item.createTime).toLocaleString() }}
+                <br />介&emsp;&emsp;绍：
+                <span>{{!item.introduce?null:item.introduce}}</span>
+                <el-divider></el-divider>
                 课程状态：{{item.courseStatus}}
-                <br />其他提示：{{item.tips}}
-
-                <br />考试时间：{{item.examTime}}
-             
+                <br />其他提示：
+                <span>{{item.tips=='null'?"未设置":item.tips}}</span>
+                <br />考试时间：
+                <span>{{item.examTime=='null'?"未设置":item.examTime}}</span>
                 <br />
-                教&emsp;&emsp;师：{{item.author}}
+                任课教师：{{item.username}}
                 <br />教学班级：
                 <span v-if="item.className!='null'">
                   {{item.className}}
                   <el-button @click="lookClass(item.students)">查看</el-button>
                 </span>
-              
                 <br />
                 课程共享：{{item.courseShare?'是':'否'}}
-                <br />
                 <br />
               </div>
             </el-card>
@@ -87,8 +91,6 @@
       </div>
     </div>
     <!-- /整个内容区  -->
-
-    <!--  -->
   </div>
 </template>
 
@@ -99,7 +101,7 @@
 import VueBus from "../../../utils/VueBus.js";
 import AddClass from "../my_teach/AddClass.vue";
 import axios from "axios";
-
+import UrlConfig from "../../../config/UrlConfig.js";
 export default {
   name: "ShareClass",
   data() {
@@ -108,22 +110,27 @@ export default {
         children: "children",
         label: "label"
       },
-      msg: "1",
+      QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       showAddClassPanel: false,
-      courseObjects: null 
+      courseObjects: null
     };
   },
   mounted() {
-
     var that = this;
     VueBus.$on("closeAddClass", function(data) {
       that.showAddClassPanel = false;
-     that.reflashTeachClass();
-     localStorage.removeItem("courseId")
+      that.reflashTeachClass();
+      localStorage.removeItem("courseId");
     });
     this.reflashTeachClass();
   },
   methods: {
+    handleNodeClick(data) {
+      if (data.url)
+        window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
+      else console.log(data.label);
+    },
+
     reflashTeachClass() {
       var that = this;
       axios
@@ -136,16 +143,14 @@ export default {
           console.log(error);
         });
     },
+
     unRelease(courseId) {
-
-          //还需再加一个判断添加班级没有
-        var that = this;
-        var parmas = new URLSearchParams()
-        parmas.append("courseStatus","待发布")
-        parmas.append("courseId",courseId)
-
-      axios 
-        .post("/comm/updCourse",parmas)
+      var that = this;
+      var parmas = new URLSearchParams();
+      parmas.append("courseStatus", "待发布");
+      parmas.append("courseId", courseId);
+      axios
+        .post("/comm/updCourseStatus", parmas)
         .then(function(response) {
           console.log(response);
           that.reflashTeachClass();
@@ -153,12 +158,9 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-
-     
     },
-
     lookClass(array) {
-      console.log(array)
+      console.log(array);
     }
   },
   components: {
@@ -171,7 +173,6 @@ export default {
 <style scoped>
 .detail {
   width: 400px;
-  /* height: 220px; */
   z-index: 99999;
   background: white;
   border: 1px solid;
@@ -181,7 +182,8 @@ export default {
 .bottom-content {
   font-size: 12px;
   display: flex;
-  margin-top: 20px;
+  margin-top: 30px;
+  height: 15px;
   justify-content: space-between;
 }
 
@@ -194,3 +196,17 @@ export default {
   width: 300px;
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
