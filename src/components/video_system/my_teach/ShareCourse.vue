@@ -68,7 +68,10 @@
                         <el-carousel height="50px" style="text-align:center">
                              <el-carousel-item  v-for="(item,index) in users.staff" :key="index">
                                   {{item.staId+" : "+item.name}}  
-                               </el-carousel-item>
+                             </el-carousel-item>
+                              <el-carousel-item v-if="users.staff.length==0" >
+                                  无
+                             </el-carousel-item>
                          </el-carousel>
                      </div>
                 </div>
@@ -127,7 +130,7 @@ parmas.append("courseId",courseId);
     axios
       .post("/comm/getUsersByShareCourseId",parmas)
       .then(function(response) {
-         console.log(response.data.object[0].name)
+         console.log(response.data.object)
          that.users.courseId = courseId;
          that.users.staff  = response.data.object
       })
