@@ -1,12 +1,12 @@
 //教师
-<template>
-  <div class="my-teach" @click="visible=false" @contextmenu.prevent>
+<template >
+  <div  class="my-teach" @click="visible=false" @contextmenu.prevent>
     <el-tabs tab-position="up" v-model="activeName" >
       
 
       
        <el-tab-pane label="进行中课程" name='0'>   
-          <v-RunningCourse v-if="activeName=='0'"></v-RunningCourse>
+          <v-RunningCourse  v-if="activeName=='0'"></v-RunningCourse>
       </el-tab-pane>
 
 
@@ -21,11 +21,6 @@
       <el-tab-pane label="新建课程" name='3'>
         <v-NewCourse v-if="activeName=='3'"> </v-NewCourse>
       </el-tab-pane>
-
-
-
-      
-
 
     </el-tabs>
   </div>
@@ -81,6 +76,7 @@ export default {
   padding: 30px;
   background: white;
   width: 95%;
+  min-height: 600px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 5px
 }

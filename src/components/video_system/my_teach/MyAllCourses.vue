@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div  >
     <!-- 学生添加版块 -->
     <v-AddClass v-show="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
-    <div class="content">
+    <div class="content"   >
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
+        v-loading="loading"
           v-if="item.courseStatus=='待发布'"
           style="justify-content:space-between;height:100%;padding:2%;display:flex"
         >
@@ -38,8 +39,8 @@
             </el-tabs>
           </el-card>
 
-          <div style="width:70%;">
-            <el-card class="box-card" shadow="hover" style="width:100%">
+          <div style="width:70%;" >
+            <el-card  class="box-card" shadow="hover" style="width:100%">
               <div slot="header">
                 <span>{{item.title}}</span>
                 <el-button
@@ -205,6 +206,7 @@ export default {
   name: "ShareClass",
   data() {
     return {
+       loading:true,
       //用于更新。
       curCourseId: null,
       title: null,
@@ -350,6 +352,7 @@ export default {
         .then(function(response) {
           console.log(response);
           that.courseObjects = response.data.object;
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);

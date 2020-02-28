@@ -1,9 +1,9 @@
-<template>
-  <div>
+<template >
+  <div >
     <!-- 学生添加版块 -->
     <v-AddClass v-show="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
-    <div class="content">
+    <div class="content"  v-loading="loading">
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
           v-if="item.courseStatus=='进行中'"
@@ -110,6 +110,7 @@ export default {
         children: "children",
         label: "label"
       },
+      loading:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       showAddClassPanel: false,
       courseObjects: null
@@ -130,7 +131,6 @@ export default {
         window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
       else console.log(data.label);
     },
-
     reflashTeachClass() {
       var that = this;
       axios
@@ -138,6 +138,7 @@ export default {
         .then(function(response) {
           console.log(response);
           that.courseObjects = response.data.object;
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);
