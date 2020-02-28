@@ -355,7 +355,7 @@ export default {
         .then(function(response) {
           console.log(response);
           that.courseObjects = response.data.object;
-
+          that.noCourses=true;
          that.courseObjects.forEach(element => {
            if(element.courseStatus=='待发布'){
              that.noCourses=false
