@@ -128,8 +128,6 @@ export default {
       axios
         .post("/comm/getStudentCourse")
         .then(function(response) {
-
-
           that.courses = response.data.object;
           //更新进度
           that.courses.forEach(element => {

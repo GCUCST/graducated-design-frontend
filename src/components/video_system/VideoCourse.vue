@@ -1,13 +1,23 @@
 <template>
   <div class="video-course">
-    <el-page-header @back="goBack"></el-page-header>
-
-    <div style="width:100%">
-      <div style="display:flex; justify-content:space-between">
-        <div style="width:20%;text-align:left;line-height:45px;">{{course?course.title:'加载中..'}}</div>
-        <div style="width:20%;text-align:center">
-          <img style="line-height:60px;height:45px;width:45px;" :src="course?course.cover:'null'" />
-          <span style="line-height:45px;">{{course?course.author:'加载中'}}</span>
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: 'MyCourse' }">我的课程</el-breadcrumb-item>
+      <el-breadcrumb-item>{{course?course.title:'加载中...'}}</el-breadcrumb-item>
+      <el-breadcrumb-item>{{getVideoTitleByVideoId(videoId)}}</el-breadcrumb-item>
+    </el-breadcrumb>
+    <div style="width:99%">
+      <div>
+        <!-- <div style="text-indent:5em;">{{course?course.title:'加载中..'}}</div> -->
+        <div
+          style="width: 10%;
+    text-align: center;
+    position: absolute;
+    right: 50px;
+    top: 28px;"
+        >
+          <el-avatar :src="course?QiniuyunUrl+course.cover:'null'"></el-avatar>
+          <span style="font-size:12px;height:15px;line-height:15px;">{{course?course.author:'加载中'}}</span>
         </div>
       </div>
 
@@ -25,10 +35,7 @@
                 id="qnv"
                 :src="videoSrc"
                 type="video/mp4"
-              >
-                您的浏览器不支持播放该视频！
-                <!-- https://www.w3school.com.cn/i/movie.ogg -->
-              </video>
+              >您的浏览器不支持播放该视频！</video>
 
               <br />
               <div style="display:flex;justify-content:space-between">
@@ -53,7 +60,6 @@
           <transition name="custom-classes-transition" enter-active-class="animated bounceInRight">
             <div style="width:35%" v-show="!video_full">
               <el-tabs style="height:100%" type="border-card" stretch>
-                <!-- :default-checked-keys="[this.progress.locateId]"  show-checkbox  -->
                 <el-tab-pane label="章节">
                   <el-tree
                     node-key="id"
@@ -64,96 +70,26 @@
                   ></el-tree>
                 </el-tab-pane>
 
-                <el-tab-pane label="我的进度">
-                  <span v-for=" (item,index) in progress.catalog" :key="index">
-                    <span style="cursor:pointer;" @click="jumpVideo(item.videoId)">{{item.label}}</span>
-                    <!-- {{item.far}}---- -->
-                    {{ item.percent+'%'}}
-                    <br />
-                    <br />
-                  </span>
+                <el-tab-pane label="我的进度" style="overflow:auto">
+                  <div
+                    style="font-size:12px;line-height:30px;font-weigth:700"
+                    v-for=" (item,index) in progress.catalog"
+                    :key="index"
+                  >
+                    <span style="cursor:pointer;">{{item.label}}</span>
+                    <el-progress
+                      :stroke-width="2"
+                      :show-text="true"
+                      :percentage="Number(item.percent)"
+                    ></el-progress>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
             </div>
           </transition>
         </div>
       </div>
-
-      <!-- -----------作为评论分割线----------------------- -->
-      <el-divider></el-divider>
-      <el-tabs>
-        <el-tab-pane label="热度排序" name="first"></el-tab-pane>
-        <el-tab-pane label="时间排序" name="second"></el-tab-pane>
-      </el-tabs>
-      <div style="display:flex;margin:20px;line-height:40px;height:40px;">
-        <div>
-          <el-avatar src="http://134.175.238.145:80/example.jpg"></el-avatar>
-        </div>
-        <div style="margin-left:40px">
-          <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
-        </div>
-        <div style="margin-left:20px;">
-          <el-button @click="comment(courseId,'comment')" type="primary">发表</el-button>
-        </div>
-      </div>
-      <el-divider></el-divider>
-      <div style="text-align:left;margin-left:20px;">
-        <div v-for="obj in comments" :key="obj.id">
-          <div style="font-size:10px;color:grey;text-align:right">举报</div>
-
-          <div style="display:flex;height:50px;">
-            <span>
-              <el-avatar
-                style="height:50px;width:50px;"
-                src="http://134.175.238.145:80/example.jpg"
-              ></el-avatar>
-            </span>
-            <span style="height:50px;line-height:50px;margin-left:20px">{{obj.nickName}}</span>
-          </div>
-          <br />
-          <div style="margin-left:70px">{{obj.content}}</div>
-          <br />
-
-          <div style="text-align:right;">
-             <div  style="text-align:left;" v-for="(item,index) in sonReplies.replies" :key="index">
-                <span v-if="sonReplies.parentId==obj.id">
-                   {{"编号："+item.A.id+ item.A.nickName+"@"+item.B.nickName+"："+item.A.content}} 
-                  <el-button  @click="liked(item.A.id,'comment')">赞</el-button> {{item.A.likeNum}}
-                  <el-button @click="showRepliedInputId=item.A.id" >回复</el-button> {{item.A.replyNum}}
-                       <el-input style="width:500px;" 
-            v-if="item.A.id==showRepliedInputId?true:false" 
-            v-model="repliedContent" />
-            <el-button    @click="comment(item.A.id,'replied')"
-             v-if="item.A.id==showRepliedInputId?true:false">确定</el-button >
-             <el-button @click="showRepliedInputId=0" 
-             v-if="item.A.id==showRepliedInputId?true:false">
-               取消</el-button>
-                 
-                </span> 
-               </div>
-
-             <el-button  @click="diguiComments(obj.id,obj)" >展开</el-button> 
-
-             <el-button  @click="liked(obj.id,'comment')">赞</el-button> {{obj.likeNum}}
-            &nbsp;
-            <el-button @click="showRepliedInputId=obj.id">回复</el-button> {{obj.replyNum}}
-           <br>
-
-            <el-input style="width:500px;" 
-            v-if="obj.id==showRepliedInputId?true:false" 
-            v-model="repliedContent" />
-            <el-button    @click="comment(obj.id,'replied')"
-             v-if="obj.id==showRepliedInputId?true:false">确定</el-button >
-             <el-button @click="showRepliedInputId=0" 
-             v-if="obj.id==showRepliedInputId?true:false">
-               取消</el-button>
-          
-          </div>
-
-          <el-divider ></el-divider>
-        </div>
-      </div>
-      <!-- -----------/作为评论分割线----------------------- -->
+      <v-Comments></v-Comments>
     </div>
   </div>
 </template>
@@ -162,16 +98,22 @@
 
 <script>
 import axios from "axios";
+import Comments from "./Comments";
+
 import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "VideoCourse",
+  components: {
+    "v-Comments": Comments
+  },
   data() {
     return {
+      QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       courseId: null, //第一次进来课程id
       videoId: null, //第一次进来当前视频id
-      repliedContent:"",
-      showRepliedInputId:null,
-      showSonReplies:true,
+      repliedContent: "",
+      showRepliedInputId: null,
+      showSonReplies: true,
       videoSrc: null, //视频地址
       duration: 0,
       video_full: false, //全屏模式
@@ -206,8 +148,8 @@ export default {
         children: "children",
         label: "label"
       },
-      allReplies:[],
-      sonReplies:{parentId:null,replies:[]},
+      allReplies: [],
+      sonReplies: { parentId: null, replies: [] },
       //------------最新
       catalogData: null, //当前目录数据
 
@@ -215,82 +157,10 @@ export default {
     };
   },
   methods: {
-    
-    diguiComments(id,obj){
-
-      if(id!=null){
-          this.sonReplies.parentId = id;
-          this.sonReplies.replies=[]
-      }
-      this.allReplies.forEach(element => {
-         if(element.targetId == obj.id){
-            console.log(element.nickName +"回复" +obj.nickName+" :"+element.content)
-            this.diguiComments(null,element)
-
-            this.sonReplies.replies.push({A:element,B:obj})
-            
-       }
-      });
-      
-    },
-
-    dealComments(comments){
-      var commentsJSON = [];  //评论
-      var repliesJSON = [];    //回复
-      comments.forEach(element => {
-        if(element.targetType=="comment"){
-          commentsJSON.push(element)
-        }else{
-          repliesJSON.push(element)
-        }
-      });
-      this.comments = commentsJSON
-       console.log(commentsJSON)
-       console.log(repliesJSON)
-    },
-
-
-    getAllComments(courseId) {
-      var parmas = new URLSearchParams();
-      parmas.append("courseId", courseId);
-      var that = this;
-      axios
-        .post("/comm/getAllRepliedByCourseId", parmas)
-        .then(function(response) {
-          // console.log(response);
-          that.allReplies = response.data.object;
-          that.dealComments(that.allReplies)
-        });
-    },
-
-    comment(targetId, targetType) {
-
-      console.log(targetId);
-      console.log(targetType);
-
-
-      var parmas = new URLSearchParams();
-      parmas.append("targetId", targetId);
-      parmas.append("targetType", targetType);
-      parmas.append("courseId", this.courseId);
-      parmas.append("content",targetType=='comment'?this.input:this.repliedContent);
-      parmas.append(
-        "avatar",
-        JSON.parse(localStorage.getItem("userInfo")).info.avatar
-      );
-
-      var that = this;
-      axios.post("/comm/addReplied", parmas).then(function(response) {
-        console.log(response);
-        alert("发送成功。");
-        location.reload();
-      });
-    },
-
     liked(targetId, targetType) {
       console.log(targetId);
       console.log(targetType);
-   
+
       var parmas = new URLSearchParams();
       parmas.append("targetId", targetId);
       parmas.append("targetType", targetType);
@@ -298,15 +168,12 @@ export default {
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
         console.log(response);
-        if(targetType=='course')
-        that.course.likeNum++;
-        if(targetType=='comment')
-        {
-          for(var i =0;i<that.allReplies.length;i++){
-              if(that.allReplies[i].id==targetId)
-              {
-                that.allReplies[i].likeNum++;
-              }
+        if (targetType == "course") that.course.likeNum++;
+        if (targetType == "comment") {
+          for (var i = 0; i < that.allReplies.length; i++) {
+            if (that.allReplies[i].id == targetId) {
+              that.allReplies[i].likeNum++;
+            }
           }
         }
       });
@@ -318,6 +185,16 @@ export default {
         query: { courseId: this.courseId, videoId: videoId }
       });
       location.reload();
+    },
+
+    getVideoTitleByVideoId(videoId) {
+      var title = null;
+      this.progress.catalog.forEach(element => {
+        if (element.videoId == videoId) {
+          title = element.label;
+        }
+      });
+      return title;
     },
 
     //第一次进来，获取目录中所有的视频，并且设置进度
@@ -349,7 +226,9 @@ export default {
     },
     //点击了目录菜单
     handleNodeClick(data) {
-      // console.log(data);
+      if (data.level == 3) {
+        this.jumpVideo(data.id);
+      }
     },
     //设置进度
     setProgress() {
@@ -373,8 +252,6 @@ export default {
                   (that.far / Number(Media.duration)) *
                   100
                 ).toFixed(2);
-
-              //  localStorage.setItem("progress",JSON.stringify(that.progress))
             }
           }
           var rightTime = (
@@ -449,17 +326,13 @@ export default {
             var parmas = new URLSearchParams();
             parmas.append("courseId", that.courseId);
             parmas.append("progress", JSON.stringify(that.progress));
-
             axios.post("/comm/updTeachClass", parmas).then(function(response) {
               console.log(response);
             });
-
-            //updTeachClass
-            //localStorage.setItem("progress",JSON.stringify(that.progress))
           } else {
             //存在就写入
             that.progress = JSON.parse(progress);
-            //点击封面进来，不携带videoId
+            //d第一次点击封面进来，不携带videoId
             //进来时候拿到的videoId
             that.videoId = videoId
               ? videoId
@@ -472,7 +345,6 @@ export default {
                 //根据进度id定位到该url
                 that.videoSrc =
                   UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
-
                 that.far = that.progress.catalog[i].far;
               }
             }
@@ -481,38 +353,6 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-
-      //去后端获取
-      //  var progress =localStorage.getItem("progress")?
-      //   JSON.parse(localStorage.getItem("progress"))
-      //   :null
-
-      // if(progress==null)
-      // {
-      //   console.log("目前没有目录")
-      //    // 可获取课程中的视频进度
-      //    //不存在就创建
-      //    this.findVideoIdUrl(this.catalogData);
-      //    localStorage.setItem("progress",JSON.stringify(this.progress))
-      // }
-      //       else{
-
-      //         //存在就写入
-      //     this.progress = progress
-      //     //点击封面进来，不携带videoId
-      //     //进来时候拿到的videoId
-      //     this.videoId = videoId?videoId:(this.progress.videoId?this.progress.videoId: this.progress.catalog[0].videoId);
-      //    this.progress.videoId = this.videoId
-      //    for (var i = 0; i < this.progress.catalog.length; i++) {
-      //       if (this.progress.catalog[i].videoId == this.videoId) {
-      //         //根据进度id定位到该url
-      //         this.videoSrc = UrlConfig.getQiniuyunUrl() + this.progress.catalog[i].url;
-
-      //           this.far =   this.progress.catalog[i].far
-
-      //       }
-      //     }
-      //  }
     },
     //请求课程资源和目录
     reqCourseRes(courseId, videoId) {
@@ -537,59 +377,29 @@ export default {
 
   mounted() {
     var that = this;
-    var myVideo = document.getElementById("qnv");
-    if (myVideo != null) {
-      myVideo.oncanplay = function() {
-        console.log("准备就绪" + myVideo.duration);
-      };
-    }
-    // console.log("接受到：" + this.$route.query.courseId);
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
 
-    this.getAllComments(this.courseId);
-
     this.reqCourseRes(this.courseId, this.videoId);
-
-    this.preventDragAhead();
     this.setProgress();
-
-    //   //监听播放开始
-    //   myVideo.addEventListener("play", function() {
-    //     console.log("开始播放");
-    //   });
-
-    //   //监听播放结束
-    //   myVideo.addEventListener("pause", function() {
-    //     console.log("播放暂停");
-    //   });
-
-    //   //监听播放结束
-    //   myVideo.addEventListener("ended", function() {
-    //     console.log("播放结束");
-    //   });
-    // }
+    this.preventDragAhead();
   }
 };
 </script>
 
 <style scoped>
 .video-course {
-  margin: 20px auto;
-  padding: 30px;
+  min-height: 600px;
+  margin: 0px auto;
+  padding: 20px;
   background: white;
   width: 100%;
-  min-height: 600px;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
-/* .head-div {
-  border: 1px solid;
-  height: 150px;
-  width: 100%;
-  text-align: center;
-} */
 .body-div {
+  min-height: 800px;
   border: 1px solid;
   height: 700px;
   width: 100%;
