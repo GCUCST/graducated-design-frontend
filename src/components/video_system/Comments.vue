@@ -21,8 +21,7 @@
       <el-divider></el-divider>
 
       <el-tabs>
-        <el-tab-pane label="热度排序" name="first"></el-tab-pane>
-        <el-tab-pane label="时间排序" name="second"></el-tab-pane>
+        <el-tab-pane label="热门评论" name="first"></el-tab-pane>
       </el-tabs>
 
       <div style="text-align:left;margin-left:20px;">
@@ -152,11 +151,7 @@ export default {
       this.allReplies.forEach(element => {
         //避免死循环
         if (element.targetId == obj.id&&element.targetType!='comment') {
-          console.log(
-            element.nickName + "回复" + obj.nickName + " :" + element.content
-          );
           this.diguiComments(null, element);
-
           this.sonReplies.replies.push({ A: element, B: obj });
         }
       });
@@ -174,8 +169,10 @@ export default {
         }
       });
       this.comments = commentsJSON;
-      console.log(commentsJSON);
-      console.log(repliesJSON);
+      // console.log(commentsJSON);
+      // console.log(repliesJSON);
+      console.log("评论获取完毕。")
+
     },
     //获取所有评论和回复
     getAllComments(courseId) {
@@ -191,21 +188,31 @@ export default {
     },
     //评论
     comment(targetId, targetType) {
-      console.log(targetId);
-      console.log(targetType);
+      var  content = targetType == "comment" ? this.commentContent : this.repliedContent
+      if( content==null||content==""){
+         alert("内容不允许为空哦~")
+         return ;
+      }
       var parmas = new URLSearchParams();
       parmas.append("targetId", targetId);
       parmas.append("targetType", targetType);
       parmas.append("courseId", this.courseId);
       parmas.append(
         "content",
-         targetType == "comment" ? this.commentContent : this.repliedContent
+         content
       );
       var that = this;
       axios.post("/comm/addReplied", parmas).then(function(response) {
         console.log(response);
-        alert("发送成功。");
-        location.reload();
+        that.$message({
+          message: '发送成功',
+          type: 'success'
+        });
+        that.getAllComments(that.courseId);
+        that.commentContent = null;
+        that.repliedContent = null;
+        that.showRepliedInputId=0;
+           that.sonReplies.parentId = false;
       });
     },
 
