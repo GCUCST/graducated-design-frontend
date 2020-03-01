@@ -1,4 +1,4 @@
-<template>
+<template >
   <div>
     <!-- 上传面板---------------------- -->
     <div v-show="showUploadPanel" class="upload-panel">
@@ -106,7 +106,7 @@
         v-loading="loading"
       >
         <template>
-          <el-tabs tab-position="up">
+          <el-tabs v-loading="showLoading" tab-position="up">
             <el-tab-pane :label="msg">
               <div style="text-align:right">
                 <el-button type="primary" plain @click="uploadFile">上传文件</el-button>
@@ -263,6 +263,7 @@ export default {
   data() {
     return {
       msg: "视频库",
+      showLoading: true, //展示loading刷新
       showDetail: false, //展示详情页面
       tempForUpload: {}, //上传视频完成需要传递这临时变量
       progress: 0, //上传进度
@@ -390,6 +391,7 @@ export default {
         localStorage.setItem("folders", response.data.object.libraryJson);
         that.folders = JSON.parse(response.data.object.libraryJson);
         that.resolveCurPathToContent();
+        that.showLoading = false;
       })
       .catch(function(error) {
         console.log(error);
@@ -737,9 +739,52 @@ export default {
           break;
         }
       }
-      tempContent = tempContent.splice(i, 1);
-      this.curContent = tempContent;
-      this.resolveCurPathToContent();
+
+      var that = this;
+      console.log("要删除：", tempContent[i]);
+      if (tempContent[i].type == 1) {
+        if (tempContent[i].content.length > 0) {
+          this.$message.error("该文件夹非空，不允许删除。");
+          return;
+        }
+      }
+
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          if (tempContent[i].type == 0) {
+            var params = new URLSearchParams();
+            params.append("key", tempContent[i].url);
+            axios
+              .post(UrlConfig.getApi().delKey, params)
+              .then(function(response) {
+                console.log("成功删除。", response);
+                tempContent = tempContent.splice(i, 1);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          } else {
+            tempContent = tempContent.splice(i, 1);
+          }
+
+          this.curContent = tempContent;
+          this.resolveCurPathToContent();
+
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
 
     //鼠标点击右键
@@ -810,7 +855,8 @@ export default {
   margin-right: 20%;
   margin-top: 12%;
   z-index: 9999;
-  border: 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .back {
   text-align: center;
@@ -903,6 +949,7 @@ export default {
   background: white;
   width: 95%;
   min-height: 600px;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

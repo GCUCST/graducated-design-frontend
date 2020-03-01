@@ -30,6 +30,9 @@ const MyCourse = () => import('@/components/video_system/MyCourse') //懒加载
 const MyTeach = () => import('@/components/video_system/MyTeach') //懒加载
 const VideoLibrary = () => import('@/components/video_system/VideoLibrary') //懒加载
 const VideoCourse = () => import('@/components/video_system/VideoCourse') //懒加载
+const MyTask = () => import('@/components/video_system/MyTask') //懒加载
+
+
 
 
 
@@ -137,6 +140,12 @@ export default new Router({
           name:"MyTeach",
           components:{MyTeach} 
         },
+        {
+          path:'Mytask',
+          name:"MyTask",
+          components:{MyTask} 
+        },
+
         {
           meta:{
             requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员

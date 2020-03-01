@@ -45,6 +45,9 @@
                   <router-view  name="ManageAdminClass"></router-view>
                   <router-view  name="ManageTeacher"></router-view>
                   <router-view  name="ManageTeachTask"></router-view>
+                  <router-view  name="MyTask"></router-view>
+
+                  
 
                   
 

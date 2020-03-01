@@ -19,7 +19,8 @@ const api = {
      getQiniuyunUploadToken:'/comm/getUploadToken',  //获取七牛云上传令牌
      getKey:"/comm/getKey",          //获取后端回来用于上传的文件名
      getLibraryJson:"/comm/getLibrary" ,    //教师端获取  视频库内容
-     updateLibrary:"/comm/updateLibrary"   //更新视频库  
+     updateLibrary:"/comm/updateLibrary",   //更新视频库 
+     delKey:"/comm/delKey"                //删除文件夹  
 
 }
 
