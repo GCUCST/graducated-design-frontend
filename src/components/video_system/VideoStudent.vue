@@ -73,7 +73,7 @@
                     :key="index"
                   >
                     <span style="cursor:pointer;">{{item.label}}</span>
-                    <el-progress :stroke-width="2" :percentage="Number(item.percent)"></el-progress>
+                    <el-progress  :stroke-width="2" :percentage="Number(item.percent?item.percent:0)"></el-progress>
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -136,12 +136,6 @@ export default {
 
     //视频跳转
     jumpVideo(videoId) {
-      this.$router.push({
-        name: "VideoCourse",
-        query: { courseId: this.courseId, videoId: videoId }
-      });
-      this.courseId = this.$route.query.courseId;
-      this.videoId = this.$route.query.videoId;
       // this.reqCourseRes(this.courseId, this.videoId);
       // location.reload();
       var that = this;
@@ -152,6 +146,14 @@ export default {
           that.videoSrc = that.QiniuyunUrl + element.url;
         }
       });
+
+                          this.$router.push({
+                            name: "VideoCourse",
+                            query: { courseId: this.courseId, videoId: videoId }
+                          });
+                          this.courseId = this.$route.query.courseId;
+                          this.videoId = this.$route.query.videoId;
+
     },
 
     //获取小标题
@@ -202,7 +204,7 @@ export default {
     setProgress() {
       var that = this;
       var Media = document.getElementById("qnv");
-
+   
       Media.addEventListener(
         "timeupdate",
         function() {
@@ -212,17 +214,26 @@ export default {
           //--------设置进度---------------
           for (var i = 0; i < that.progress.catalog.length; i++) {
             if (that.progress.catalog[i].videoId == that.videoId) {
+              
               that.progress.catalog[i].far = Number(that.far);
               if (that.progress.catalog[i].percent == 0) {
                 that.progress.catalog[i].percent =
                   (Number(that.far) / Number(Media.duration)) * 100;
               } else {
+                 
                 if (Media.duration) {
                   that.progress.catalog[i].percent = (
                     Number(that.far / Media.duration) * 100
                   ).toFixed(2);
+                  if( that.progress.catalog[i].percent>98){
+                      that.progress.catalog[i].percent = 100
+                  }
+                  
+                }
+                else{
                 }
               }
+
             }
           }
           var rightTime = (
@@ -238,10 +249,12 @@ export default {
             rightTime == 0.7 ||
             rightTime == 0.8 ||
             rightTime == 0.9 ||
-            rightTime == 0.999
+            rightTime == 0.95||
+            rightTime == 1.00
+
           ) {
             //上传
-            localStorage.setItem("progress", JSON.stringify(that.progress));
+            // localStorage.setItem("progress", JSON.stringify(that.progress));
             var parmas = new URLSearchParams();
             parmas.append("courseId", that.courseId);
             parmas.append("progress", JSON.stringify(that.progress));
@@ -298,6 +311,7 @@ export default {
             parmas.append("progress", JSON.stringify(that.progress));
             axios.post("/comm/updTeachClass", parmas).then(function(response) {
               console.log(response);
+              location.reload();
             });
           } else {
             //存在就写入

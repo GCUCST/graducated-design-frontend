@@ -21,7 +21,7 @@
       <el-divider></el-divider>
 
       <el-tabs>
-        <el-tab-pane label="热门评论" name="first"></el-tab-pane>
+        <el-tab-pane :label="'热门评论（'+allReplies.length +'）'" name="first"></el-tab-pane>
       </el-tabs>
 
       <div style="text-align:left;margin-left:20px;">
@@ -52,7 +52,7 @@
                     <span style="color:gainsboro"> {{"：“ "+item.B.content.substr(0,3)+"...”："}}</span>
                </div>
                <div >
-                <el-button size="mini" type="danger"  circle @click="liked(item.A.id,'comment')">赞{{item.A.likeNum}}</el-button>
+                <el-button size="mini" type="danger"  circle @click="liked(item.A.id,'replied')">赞{{item.A.likeNum}}</el-button>
               </div>
 
               
@@ -224,7 +224,8 @@ export default {
       parmas.append("targetType", targetType);
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
-        console.log(response);
+        console.log(response.data.object);
+        if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
         if (targetType == "comment") {
           for (var i = 0; i < that.allReplies.length; i++) {
@@ -233,6 +234,8 @@ export default {
             }
           }
         }
+        }
+
       });
     }
   },
