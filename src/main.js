@@ -27,6 +27,12 @@ axios.interceptors.request.use(function (config) {
   //网址前缀
   config.baseURL = UrlConfig.getBaseUrl()
 
+  if(config.url=="/comm/getAllPublicCourses"){
+    console.log("这个东西主页需要，放行。")
+    return config;
+  }
+
+
   if (config.url == UrlConfig.getApi().getToken) {
     console.log("这是要去申请令牌,不拦截")
     return config;

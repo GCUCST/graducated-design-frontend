@@ -47,6 +47,9 @@
                   <router-view  name="ManageTeachTask"></router-view>
                   <router-view  name="MyTask"></router-view>
                   <router-view  name="ManagePassword"></router-view>
+                  <router-view  name="PublicCourse"></router-view>
+
+                  
 
                   
 

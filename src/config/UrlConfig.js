@@ -6,7 +6,7 @@ const baseUrl = "/api"               //url前缀，供代理使用
 //一整串的url
 const url = {
     callbackUrl: WebServerUrl + "/comm/callback",  //七牛云上传完成回调的地址
-    getDefaultAvatarUrl:QiniuyunUrl+"/avatar/default/example.jpg"  //七牛云默认的头像
+    getDefaultAvatarUrl:QiniuyunUrl+"/default/avatar/user"  //七牛云默认的头像
 }
 
 //仅仅只有api

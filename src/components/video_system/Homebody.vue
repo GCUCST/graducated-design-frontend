@@ -2,60 +2,55 @@
   <div class="homebody" @click="visible=false" @contextmenu.prevent>
     <el-tabs tab-position="up">
       <el-tab-pane :label="msg">
-        <!--  -->
-
-        <!-- 右击详情 -->
         <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
           <div style="font-size:14px">
-          <span>名称：JAVA入门基础{{Axis.index}}</span><br>
-          介绍：一个 Java 程序可以认为是一系列对象的
-          集合，而这些对的集。 简要介绍下类、对 象
-          、方法和实个 Java 程序可以认为是一系列对象的
-          集合，而这些对的集。简要介绍下类、对象、
-          方法和实例变量的概括。<br><br>
-          任课老师：陈一一<br>
-          学时：64<br>
-          学分：0.0<br>
-          性质：公开课<br>
-          创建时间：20200115 01:15:22<br>
-          课程时间：永久20200101-20201122<br>
-          课程状态：进行<br>
+            名称：{{Axis.item.title}}
+            <br />
+            学时：{{Axis.item.courseHour}}
+            <br />
+            性质：
+            {{Axis.item.courseType=="public"?"公开课":Axis.item.courseType=="required"?"必修课":
+            Axis.item.courseType=="electives"?"选修课":Axis.item.courseType=="generalElective"?"通选课":
+            Axis.item.courseType=="other"?"其他":null
+            }}
+            <br />
+            任课老师：{{ Axis.item.author}}
+            <br />
+            课程时间：
+            {{!Axis.item.courseDate?null: new Date(JSON.parse(Axis.item.courseDate)[0]).toLocaleDateString()+" - "+ new Date(JSON.parse(Axis.item.courseDate)[1]).toLocaleDateString()}}
+            <br />
+            创建时间：
+            {{ new Date(Axis.item.createTime).toLocaleString() }}
+            <br />
+            其他提示：{{Axis.item.tips=='null'?'未设置':Axis.item.tips}}
+            <br />
+            介绍：{{Axis.item.introduce=='null'?'未设置':Axis.item.introduce}}
+            <br />
           </div>
         </div>
 
-        <!-- 整个内容区 -->
         <div class="content">
-          <el-card
-            shadow="hover"
-            style="width:29%;margin:2%"
-            v-for="i in 3"
-            :key="i"
-            class="box-card"
-          >
-            <!-- 一个课程 -->
-            <div @contextmenu.prevent @click.right="rightClick($event,i)">
-              <div>
-                <img style="width:100%;height:200px;" :src="src" />
-              </div>
-              <!-- 标题 -->
-              <div class="title" @click="intoCourse(i)">JAVA入门基础{{i}}</div>
+          <div v-if="noCourses" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
 
-              <div class="bottom-content">
-                <div>陈老师</div>
-                <div style="display:flex;">
-                  <div>赞2664</div>&ensp;
-                  <div>回复7654</div>
+          <div style="width:25%;margin:3%" v-for="(item,index) in publicCourses" :key="index">
+            <el-card style="width:100%" shadow="hover" class="box-card" v-if="item.courseStatus">
+              <div @contextmenu.prevent @click.right="rightClick($event,item)">
+                <div>
+                  <img style="width:100%;height:200px;" :src="QiniuyunUrl+item.cover" />
+                </div>
+                <div @click="intoCourse(item.courseId)" class="title">{{item.title}}</div>
+                <div class="bottom-content">
+                  <div>{{ item.author}}</div>
+                  <div style="display:flex;">
+                    <div>赞{{item.likeNum}}</div>&ensp;
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-card>
+            </el-card>
+          </div>
         </div>
-        <!--  -->
       </el-tab-pane>
 
-      <div style="text-align:center">
-        <el-pagination layout="prev, pager, next" :total="50"></el-pagination>
-      </div>
     </el-tabs>
   </div>
 </template>
@@ -64,53 +59,65 @@
 
 
 <script>
-import axios from 'axios' 
-import UrlConfig from "../../config/UrlConfig.js"
+import axios from "axios";
+import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "Homebody",
   data() {
     return {
-      msg: "公开课(右击查看详情)",
-      Axis: { x: 0, y: 0, index: null }, //坐标和对象
-      visible: false, //展示右击菜单
-      src:null       //图片地址
+      msg: "主界面",
+      noCourses: false, //当前无课程
+      publicCourses: [], //公共课程
+      QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
+      Axis: { x: 0, y: 0, item: null }, //坐标和对象
+      visible: false //展示右击菜单
     };
   },
   methods: {
-    intoCourse(index){
-      console.log("进入某节课"+index)
-      this.$router.push({ name: 'VideoCourse', query: { "courseId": index }})
+    intoCourse(courseId) {
+      console.log("进入某节课" + courseId);
+      this.$router.push({
+        name: "PublicCourse",
+        query: { courseId: courseId }
+      });
     },
-    rightClick(e, index) {
-      this.Axis = { x: e.x, y: e.y, index: index };
+    rightClick(e, item) {
+      this.Axis = { x: e.x, y: e.y, item: item };
       this.visible = true;
+    },
+    getAllPublicCourses() {
+      var that = this;
+      axios
+        .post("/comm/getAllPublicCourses")
+        .then(function(response) {
+          that.publicCourses = response.data.object;
+          that.noCourses = false;
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
-  mounted(){
-    this.src = UrlConfig.getUrl().getDefaultAvatarUrl
-    //  var that = this
-    //  axios.get(UrlConfig.getApi().getQiniuyunUrl)
-    //     .then(function (response) {
-    //       console.log(response)
-    //       that.src = response.data.url + "/test/pics/1.jpg"  //获取图片地址
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-
+  mounted() {
+    this.getAllPublicCourses();
   }
 };
 </script>
 
 <style scoped>
 .detail {
-  width: 400px;
-  /* height: 220px; */
+  width: 500px;
+  font-size: 18px;
+  font-weight: 540;
+  line-height: 26px;
   z-index: 99999;
   background: white;
-  border: 1px solid;
-  position:fixed
-
+  position: fixed;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 10px;
+  border-radius: 3px;
 }
 
 .homebody {
@@ -118,13 +125,15 @@ export default {
   padding: 30px;
   background: white;
   width: 95%;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  min-height: 600px;
 }
 .content {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  cursor:pointer
+  cursor: pointer;
 }
 
 .bottom-content {
@@ -138,6 +147,9 @@ export default {
   font-size: 18px;
   text-align: center;
   margin-top: 10px;
+}
+.title:hover {
+  color: #409eff;
 }
 .box-card {
   width: 300px;

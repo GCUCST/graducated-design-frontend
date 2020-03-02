@@ -25,6 +25,7 @@ const Message = () => import('@/components/public/Message') //懒加载
 // import VideoLibrary from '@/components/video_system/VideoLibrary'
 // import VideoCourse from '@/components/video_system/VideoCourse'
 
+const PublicCourse = () => import('@/components/video_system/PublicCourse') //懒加载
 const Homebody = () => import('@/components/video_system/Homebody') //懒加载
 const MyCourse = () => import('@/components/video_system/MyCourse') //懒加载
 const MyTeach = () => import('@/components/video_system/MyTeach') //懒加载
@@ -132,6 +133,15 @@ export default new Router({
           name: "Homebody",
           components: { Homebody }
         },
+        {
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path: 'publiccourse',
+          name: "PublicCourse",
+          components: { PublicCourse }
+        },
+        
         {
           path: 'videolibrary',
           name: "VideoLibrary",
