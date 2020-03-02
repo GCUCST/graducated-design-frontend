@@ -42,7 +42,7 @@
                 <div class="bottom-content">
                   <div>{{ item.author}}</div>
                   <div style="display:flex;">
-                    <div>赞{{item.likeNum}}</div>&ensp;
+                    <div> <img width="12px;" height="12px" src="../../assets/icons/like.png"/>{{item.likeNum}}</div>&ensp;
                   </div>
                 </div>
               </div>

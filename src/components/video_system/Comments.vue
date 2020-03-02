@@ -34,7 +34,7 @@
                &nbsp;&nbsp;&nbsp;&nbsp;{{obj.nickName==null?obj.name:obj.nickName}}
            </div>
            
-            <el-button  style="height:40px"  @click="liked(obj.id,'comment')">赞 {{obj.likeNum}}</el-button>
+            <el-button  style="height:40px" type="text"  @click="liked(obj.id,'comment')"><img src="../../assets/icons/like.png" /> {{obj.likeNum}}</el-button>
             
           </div>
           <br />
@@ -52,7 +52,7 @@
                     <span style="color:gainsboro"> {{"：“ "+item.B.content.substr(0,3)+"...”："}}</span>
                </div>
                <div >
-                <el-button size="mini" type="danger"  circle @click="liked(item.A.id,'replied')">赞{{item.A.likeNum}}</el-button>
+                <el-button size="mini"   type="text" @click="liked(item.A.id,'replied')"><img src="../../assets/icons/like.png" />{{item.A.likeNum}}</el-button>
               </div>
 
               

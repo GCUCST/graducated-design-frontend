@@ -43,9 +43,12 @@
                 <span>
                   <el-button
                     plain
-                    type="primary"
+                    type="text"
                     @click="liked(course.courseId,'course')"
-                  >{{course?course.likeNum:0}}赞</el-button>
+                  ><img src="../../assets/icons/like.png" />
+                  {{course?course.likeNum:0}}
+                  </el-button>
+
                   <!-- <el-button plain type="text">{{course?course.replyNum:0}}评论</el-button> -->
                 </span>
                 <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
