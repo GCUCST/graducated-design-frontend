@@ -1,5 +1,7 @@
 <template >
-  <div class="add-class">
+  <div class="add-class" v-loading="loading">
+       <el-tabs tab-position="up">
+      <el-tab-pane :label="'教师管理'">
     <div style="text-align:center">
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
@@ -33,15 +35,14 @@
           工号：
           <el-input v-model="staId" style="width:100px" />&nbsp;姓名：
           <el-input v-model="name" style="width:100px" />&nbsp;性别：
- <el-select  style="width:100px" v-model="gender" placeholder="请选择">
-    <el-option
-      v-for="item in [{label:'男',value:1},{label:'女',value:0},{label:'未设置',value:-1}]"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
-
+          <el-select style="width:100px" v-model="gender" placeholder="请选择">
+            <el-option
+              v-for="item in [{label:'男',value:1},{label:'女',value:0},{label:'未设置',value:-1}]"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </div>
         <br />
         <el-button v-show="!showEditor" @click="showEditor = !showEditor">添加老师</el-button>
@@ -54,6 +55,8 @@
     <!-- /结束。。。。。。。。。。。。。。。 -->
 
     <br />
+      </el-tab-pane>
+       </el-tabs>
   </div>
 </template>
 
@@ -66,12 +69,13 @@ export default {
   name: "teacher",
   data() {
     return {
-      staId:null,
-      name:null,
-      gender:1,
+      loading: true,
+      staId: null,
+      name: null,
+      gender: 1,
       temp_item: null, //temp变量
       showEditor: false, //显示添加表单
-      allTeachers:[]  //所有老师
+      allTeachers: [] //所有老师
     };
   },
   mounted() {
@@ -115,20 +119,18 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row.staId);
-            var params = new URLSearchParams();
-      params.append("staId",row.staId);
+      var params = new URLSearchParams();
+      params.append("staId", row.staId);
       var that = this;
       axios
-        .post("/comm/delTeacher",params)
+        .post("/comm/delTeacher", params)
         .then(function(response) {
           console.log(response.data.object);
-          if(response.data.object==1)
-          {
-            alert("删除成功。")
+          if (response.data.object == 1) {
+            alert("删除成功。");
             that.allTeachers.splice(index, 1);
-          }
-          else{
-            alert("删除失败。")
+          } else {
+            alert("删除失败。");
           }
         })
         .catch(function(error) {
@@ -154,39 +156,33 @@ export default {
     },
 
     getAllTeachers() {
-      
-    var that = this;
+      var that = this;
       axios
         .post("/comm/getAllTeachers")
         .then(function(response) {
           console.log("res:", response);
-         that.allTeachers = response.data.object
-
-         
+          that.allTeachers = response.data.object;
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);
         });
-
     },
 
     save() {
-      if(this.staId==""||this.staId==null)
-      {
-        alert("请输入工号！")
-        return ;
+      if (this.staId == "" || this.staId == null) {
+        alert("请输入工号！");
+        return;
       }
-      if(this.name==""||this.name==null)
-      {
-        alert("请输入姓名！")
-        return ;
+      if (this.name == "" || this.name == null) {
+        alert("请输入姓名！");
+        return;
       }
-    if(this.gender==""||this.gender==null)
-      {
-        alert("请输入性别！")
-        return ;
-      }
-
+      // if(this.gender==""||this.gender==null)
+      //   {
+      //     alert("请输入性别！")
+      //     return ;
+      //   }
 
       var params = new URLSearchParams();
       params.append("staId", this.staId);
@@ -195,31 +191,25 @@ export default {
 
       var that = this;
       axios
-        .post("/comm/addTeacher",params)
+        .post("/comm/addTeacher", params)
         .then(function(response) {
           console.log("res:", response);
-          if(response.data.code==200)
-          {
-            that.allTeachers.push({staId:that.staId,name:that.name,gender:that.gender})
+          if (response.data.code == 200) {
+            that.allTeachers.push({
+              staId: that.staId,
+              name: that.name,
+              gender: that.gender
+            });
             // alert("添加成功！请刷新")
+          } else {
+            alert("添加失败。" + response.data.message);
           }
-          else{
-            alert("添加失败。"+response.data.message)
-          }
-          that.staId=null;
-            that.name=null;         
+          that.staId = null;
+          that.name = null;
         })
         .catch(function(error) {
           console.log(error);
         });
-
-
-
-
-
-
-
-
     }
   }
 };
@@ -229,10 +219,12 @@ export default {
 .add-class {
   text-align: center;
   width: 100%;
-  box-shadow: 1px 0px 10px 1px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 20px; */
+ box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+ border-radius: 5px;
+    margin: 20px auto;
   background: white;
   z-index: 999;
   overflow: auto;
+    padding: 30px;
 }
 </style>

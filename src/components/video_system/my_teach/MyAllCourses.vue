@@ -1,7 +1,8 @@
+//这个是待发布课程
 <template>
   <div  >
     <!-- 学生添加版块 -->
-    <v-AddClass v-show="showAddClassPanel"></v-AddClass>
+    <v-AddClass v-if="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
     <div class="content"   v-loading="loading" >
       <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无课程。</div>
@@ -167,8 +168,8 @@
                 <br />教学班级：
                 <span v-if="item.className!='null'">
                   {{item.className}}
-                  <el-button v-if="editorId==false" @click="lookClass(item.students)">查看</el-button>
-                  <el-button disabled v-if="editorId!=false" @click="lookClass(item.students)">查看</el-button>
+                  <el-button v-if="editorId==false" @click="lookClass(item.students,item.courseId,item.className)">查看</el-button>
+                  <el-button disabled v-if="editorId!=false" @click="lookClass(item.students,item.courseId,item.className)">查看</el-button>
                   <el-button v-if="editorId==false" @click="delClass(item.courseId)">删除</el-button>
                   <el-button disabled v-if="editorId!=false" @click="delClass(item.courseId)">删除</el-button>
                 </span>
@@ -244,8 +245,10 @@ export default {
     var that = this;
     VueBus.$on("closeAddClass", function(data) {
       that.showAddClassPanel = false;
-      that.reflashTeachClass();
+      localStorage.removeItem("students_"+localStorage.getItem("courseId"))
       localStorage.removeItem("courseId");
+      localStorage.removeItem("className");
+      that.reflashTeachClass();
     });
     this.reflashTeachClass();
   },
@@ -380,15 +383,40 @@ export default {
       parmas.append("courseStatus", "进行中");
       parmas.append("courseId", courseId);
 
-      axios
+     this.$confirm('确认发布？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+
+
+     axios
         .post("/comm/updCourseStatus", parmas)
         .then(function(response) {
           console.log(response);
           that.reflashTeachClass();
+          that.$message({
+            type: 'success',
+            message: '发布成功!'
+          });
+
         })
         .catch(function(error) {
           console.log(error);
         });
+
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+
+ 
+
+
     },
 
     addClass(courseId) {
@@ -439,7 +467,7 @@ export default {
       this.$confirm("删除该课程？")
         .then(_ => {
           if (className != "null") {
-            alert("请先清空班级:" + className);
+           that.$message.error("失败！请先删除班级:" + className);
             return;
           }
           var parmas = new URLSearchParams();
@@ -448,6 +476,10 @@ export default {
             .post("/comm/delCourse", parmas)
             .then(function(response) {
               console.log(response);
+                that.$message({
+          message: '删除成功！',
+          type: 'success'
+        });
               that.reflashTeachClass();
             })
             .catch(function(error) {
@@ -457,14 +489,21 @@ export default {
         .catch(_ => {});
     },
 
-    lookClass(array) {
-      console.log(array);
+    lookClass(array,courseId,className) {
+      // console.log(array,courseId)
+      localStorage.setItem("courseId",courseId)
+      localStorage.setItem("students_"+courseId,array)
+         localStorage.setItem("className",className)
+    //  console.log(localStorage.getItem("students_"+courseId))
+      this.showAddClassPanel = true;
     }
   },
   components: {
     "v-AddClass": AddClass
   },
-  beforeDestroy() {}
+  beforeDestroy() {
+      VueBus.$off("closeAddClass");
+  }
 };
 </script>
 

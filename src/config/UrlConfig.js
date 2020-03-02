@@ -6,7 +6,7 @@ const baseUrl = "/api"               //url前缀，供代理使用
 //一整串的url
 const url = {
     callbackUrl: WebServerUrl + "/comm/callback",  //七牛云上传完成回调的地址
-    getDefaultAvatarUrl:QiniuyunUrl+"/avatar/default/example.jpg"  //七牛云默认的头像
+    getDefaultAvatarUrl:QiniuyunUrl+"/default/avatar/user"  //七牛云默认的头像
 }
 
 //仅仅只有api
@@ -19,7 +19,8 @@ const api = {
      getQiniuyunUploadToken:'/comm/getUploadToken',  //获取七牛云上传令牌
      getKey:"/comm/getKey",          //获取后端回来用于上传的文件名
      getLibraryJson:"/comm/getLibrary" ,    //教师端获取  视频库内容
-     updateLibrary:"/comm/updateLibrary"   //更新视频库  
+     updateLibrary:"/comm/updateLibrary",   //更新视频库 
+     delKey:"/comm/delKey"                //删除文件夹  
 
 }
 

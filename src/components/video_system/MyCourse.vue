@@ -59,7 +59,7 @@
                   <div>{{ getTeacherNameByStaId(item.course.username)}}</div>
                   <div>{{item.teachClass.allPercent}}%</div>
                   <div style="display:flex;">
-                    <div>赞{{item.course.likeNum}}</div>&ensp;
+                    <div><img width="12px;" height="12px" src="../../assets/icons/like.png"/>{{item.course.likeNum}}</div>&ensp;
                     <div>回{{item.course.replyNum}}</div>
                   </div>
                 </div>

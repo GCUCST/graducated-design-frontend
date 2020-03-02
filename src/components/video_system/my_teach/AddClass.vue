@@ -1,5 +1,5 @@
 <template >
-  <div class="add-class">
+  <div class="add-class" v-loading="loading">
     <el-tabs stretch>
       <el-tab-pane label="所有学生">
         <div style="text-align:center">
@@ -39,8 +39,9 @@
           </el-table>
           <br />
           <div>
-            <el-button @click="add()">添加</el-button>
-            <el-button @click="toggleSelection()">清空选择</el-button>
+            <el-button @click="add()">选择</el-button>
+            <el-button @click="toggleSelection()">清空</el-button>
+              <el-button @click="cancel">取消</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -102,6 +103,7 @@ export default {
   name: "AddClass",
   data() {
     return {
+      loading:true,
       majorFileter: [], //过滤专业
       gradeFilter: [], //过滤年级
       className: null, //新建班级的名称
@@ -228,7 +230,7 @@ export default {
       axios
         .post("/comm/getGSMA")
         .then(function(response) {
-          console.log("res:", response);
+          // console.log("res:", response);
           var majorJson = JSON.parse(response.data.object.gsmajson).major;
           for (var i = 0; i < majorJson.length; i++) {
             that.majorFileter.push({
@@ -253,8 +255,31 @@ export default {
       axios
         .post("/comm/getAllStudents")
         .then(function(response) {
-          console.log(response.data.object.object);
+          // console.log(response.data.object.object);
           that.allStudents = response.data.object.object;
+          that.loading = false;
+
+
+          if(localStorage.getItem("students_"+localStorage.getItem("courseId")))
+          {
+              //that.students.push()
+              var tempStudents =  JSON.parse(localStorage.getItem("students_"+localStorage.getItem("courseId")))
+
+              tempStudents.forEach(element => {
+                 that.allStudents.forEach(element2 => {
+                   if(element==element2.stuId){
+                     console.log(element2)
+                     that.students.push(element2)
+                   }
+                   
+                 });
+              });
+              var className = localStorage.getItem("className");
+              that.className = className
+
+         
+         }
+
         })
         .catch(function(error) {
           console.log(error);
@@ -328,7 +353,6 @@ export default {
           if (response.data.code == 200) {
             that.students = []; //清空当前学生
             that.className = null; //清空当前学生
-
             VueBus.$emit("closeAddClass", true); //关闭该面板
           }
         })
@@ -352,5 +376,8 @@ export default {
   overflow: auto;
   height: 500px;
   top: 75px;
+  padding: 5px;
+  border-radius: 5px;
+  
 }
 </style>

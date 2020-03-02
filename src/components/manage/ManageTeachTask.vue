@@ -1,5 +1,7 @@
 <template >
-  <div class="add-class">
+  <div class="add-class" v-loading="loading">
+           <el-tabs tab-position="up">
+      <el-tab-pane :label="'教学任务管理'">
     <div style="text-align:center">
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
@@ -54,6 +56,8 @@
     <!-- /结束。。。。。。。。。。。。。。。 -->
 
     <br />
+      </el-tab-pane>
+           </el-tabs>
   </div>
 </template>
 
@@ -66,6 +70,7 @@ export default {
   name: "teacher",
   data() {
     return {
+      loading:true,
       courseName: null,
       content: null,
       teacherId: null,
@@ -93,6 +98,7 @@ export default {
         .then(function(response) {
           console.log("getAllTasks:", response);
           that.teachTaskList = response.data.object;
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);
@@ -248,10 +254,12 @@ export default {
 .add-class {
   text-align: center;
   width: 100%;
-  box-shadow: 1px 0px 10px 1px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 20px; */
+ box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+ border-radius: 5px;
+    margin: 20px auto;
   background: white;
   z-index: 999;
   overflow: auto;
+    padding: 30px;
 }
 </style>
