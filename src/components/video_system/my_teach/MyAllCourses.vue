@@ -2,7 +2,7 @@
 <template>
   <div  >
     <!-- 学生添加版块 -->
-    <v-AddClass v-show="showAddClassPanel"></v-AddClass>
+    <v-AddClass v-if="showAddClassPanel"></v-AddClass>
     <!-- 整个内容区 -->
     <div class="content"   v-loading="loading" >
       <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无课程。</div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-loading="loading">
-     <div v-if="noCourses" style="margin-top:200px;text-align:center">暂模板课程。</div>
+     <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无模板课程。</div>
       <div v-for="(item,i) in shareCourseObjects" :key="i">
         <div
           v-if="item.courseShare==true"
@@ -32,7 +32,7 @@
               <div slot="header" style="height:100%;">
                 <span>{{item.title}}</span>
                 <!--  做一个判断，如果是作者自己就显示这个按钮 -->
-                <el-button    @click="delCourse(item.courseId)" style="float: right; padding: 3px 3px" type="text">删除课程</el-button>
+                <el-button  v-show="item.username==curUsername"  @click="delCourse(item.courseId)" style="float: right; padding: 3px 3px" type="text">删除课程</el-button>
                 <el-button
                   @click="addCourse(item.courseId)"
                   style="float: right; padding: 3px 3px"
@@ -100,6 +100,7 @@ export default {
   name: "ShareClass",
   data() {
     return {
+      curUsername:JSON.parse(localStorage.getItem('userInfo')).account,
       loading:true,
       noCourses:true,
 
@@ -160,19 +161,46 @@ parmas.append("courseId",courseId);
     },
 
     delCourse(courseId){
+
+
+
        var parmas = new URLSearchParams();
       parmas.append("courseId", courseId);
       var that = this;
-      axios
+
+       this.$confirm('删除该模板?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+    axios
         .post("/comm/delCourse", parmas)
         .then(function(response) {
           console.log(response);
            that.reflashCourses()
+          that.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
       
         })
         .catch(function(error) {
           console.log(error);
         });
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+
+  
+
 
     },
     addCourse(courseId) {
@@ -186,10 +214,13 @@ parmas.append("courseId",courseId);
         .then(function(response) {
           console.log(response);
           if(response.data.status){
-            alert("添加成功！请去库里查看！")
+             that.$message({
+          message: '添加成功！请去库里查看！',
+          type: 'success'
+        });
           }
           else{
-            alert("该课程已经存在！请勿重复添加！")
+             that.$message.error('该课程已经存在！请勿重复添加！');
           }
         })
         .catch(function(error) {
