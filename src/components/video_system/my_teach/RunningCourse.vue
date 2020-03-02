@@ -1,7 +1,96 @@
 <template >
   <div >
+    <div v-if="showDetails" style="
+    text-align: center;
+    position: fixed;
+    background: white;
+    width: 75%;
+    top: 11%;
+    height: 70%;
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: 500;
+    overflow: auto;
+    z-index: 9999;
+    padding: 20px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+   
+    ">
+    <div>
+      <!-- <el-table
+        ref="multipleTable"
+          @selection-change="handleSelectionChange"
+           tooltip-effect="dark"
+      :data=" CourseProgress"
+      sortable
+      height="400px"
+      style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
+      <el-table-column
+        prop="username"
+        label="账号"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        label="姓名"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="allPercent"
+        label="进度">
+      </el-table-column>
+    </el-table> -->
+
+
+      <el-table
+    ref="multipleTable"
+    :data="CourseProgress"
+    tooltip-effect="dark"
+ style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
+    @selection-change="handleSelectionChange"
+    >
+       <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+     <el-table-column
+        prop="username"
+        label="账号"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        label="姓名"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="allPercent"
+        label="进度">
+      </el-table-column>
+
+  
+  </el-table>
+  
+  <div style="margin-top: 20px">
+  </div>
+
+
+    <div style="margin:10px auto;">
+        <el-button @click="showDetails = !showDetails"> 返回 </el-button>
+    </div>
+    </div>
+        <!-- <div  style=" display: flex;
+  flex-wrap: wrap;width:100%">
+        <span  style="width:32%;border:1px solid"
+         v-for="(item,index) in CourseProgress" :key="index">
+           {{item.username}}  : {{item.allPercent}} % 
+        </span>
+         </div> -->
+    </div>
+
+
     <!-- 学生添加版块 -->
-    <v-AddClass v-if="showAddClassPanel"></v-AddClass>
+    <!-- <v-AddClass v-if="showAddClassPanel"></v-AddClass> -->
     <!-- 整个内容区 -->
     <div class="content"  v-loading="loading">
       <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无进行中的课程。</div>
@@ -80,7 +169,7 @@
                 <br />教学班级：
                 <span v-if="item.className!='null'">
                   {{item.className}}
-                  <el-button @click="lookClass(item.students)">查看</el-button>
+                  <el-button @click="lookClass(item.students,item.courseId)">查看</el-button>
                 </span>
                 <br />
                 课程共享：{{item.courseShare?'是':'否'}}
@@ -107,6 +196,9 @@ export default {
   name: "ShareClass",
   data() {
     return {
+      multipleSelection:[],
+      showDetails:false,
+      CourseProgress:[],
       defaultProps: {
         children: "children",
         label: "label"
@@ -128,6 +220,10 @@ export default {
     this.reflashTeachClass();
   },
   methods: {
+     handleSelectionChange(val) {
+        this.multipleSelection = val;
+        console.log(val)
+      },
     handleNodeClick(data) {
       if (data.url)
         window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
@@ -194,8 +290,46 @@ export default {
 
 
     },
-    lookClass(array) {
-      console.log(array);
+    lookClass(array,id) {
+
+      var parmas = new URLSearchParams()
+      parmas.append("courseId",id)
+      var that = this
+      axios
+        .post("/comm/getTeachClassByCourseId",parmas)
+        .then(function(response) {
+          // console.log(response.data.object);
+          that.CourseProgress = response.data.object
+          that.showDetails = true 
+
+          //更新进度
+           that.CourseProgress.forEach(element => {
+             if(element.progress==0){
+               return;
+             }
+            var n = 0; //个数
+            var p = 0; //总量
+            //当学生第一次进入该课程。并不存在进度
+            if(element.progress==0)return;
+            JSON.parse(element.progress).catalog.forEach(ec => {
+              p += Number(ec.percent);
+              n++;
+            });
+            element.allPercent = (p / n).toFixed(2);
+          });
+      
+
+          
+
+
+
+
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+      
     }
   },
   components: {
