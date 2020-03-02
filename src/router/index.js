@@ -72,6 +72,7 @@ const ManageTeachTask = () => import('@/components/manage/ManageTeachTask') //�
 
 const Courses = () => import('@/components/exam_system/Courses') //懒加载
 const QuestionBank = () => import('@/components/exam_system/QuestionBank') //懒加载
+const AddQuestion = () => import('@/components/exam_system/bankAction/addQuestion')  //添加试题
 const LearnProgress = () => import('@/components/exam_system/LearnProgress') //懒加载
 const TestSetting = () => import('@/components/exam_system/TestSetting') //懒加载
 const Marking = () => import( '@/components/exam_system/Marking') //懒加载
