@@ -1,5 +1,5 @@
 <template >
-  <div class="add-class">
+  <div class="add-class" v-loading="loading">
     <div style="text-align:center">
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
@@ -98,6 +98,7 @@ export default {
   name: "Student",
   data() {
     return {
+      loading:true,
       majorFileter:[],  //过滤专业
       gradeFilter:[],  //过滤年级
       temp_item_id:null,  //temp变量
@@ -211,6 +212,7 @@ export default {
         .then(function(response) {
           console.log(response.data.object.object)
           that.allStudents = response.data.object.object
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);

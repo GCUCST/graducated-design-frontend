@@ -13,12 +13,12 @@
           />
           <div :class="file==null?'el-icon-upload':'el-icon-finished'" style="font-size: 150px" />
         </div>
-        <div v-if="file!=null">
+        <div v-if="file!=null" style="width:60%;font-size:17px">
           <br />
           <br />
           文件名：{{file.name}}
           <br />
-          大小：{{file.size/1024}}KB
+          大小：{{(file.size/1024).toFixed(2)}}KB
           <br />
           格式：{{file.type}}
         </div>
@@ -763,6 +763,7 @@ export default {
               .then(function(response) {
                 console.log("成功删除。", response);
                 tempContent = tempContent.splice(i, 1);
+                that.save();
               })
               .catch(function(error) {
                 console.log(error);

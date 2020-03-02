@@ -1,5 +1,5 @@
 <template >
-  <div class="add-class">
+  <div class="add-class" v-loading="loading">
     <div style="text-align:center">
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
@@ -66,6 +66,7 @@ export default {
   name: "teacher",
   data() {
     return {
+      loading:true,
       courseName: null,
       content: null,
       teacherId: null,
@@ -93,6 +94,7 @@ export default {
         .then(function(response) {
           console.log("getAllTasks:", response);
           that.teachTaskList = response.data.object;
+          that.loading = false;
         })
         .catch(function(error) {
           console.log(error);

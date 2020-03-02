@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-student">
+  <div class="manage-student" v-loading="loading">
     <el-tabs tab-position="up">
       <el-tab-pane :label="msg">
         <div style="width:40%;text-align:right;margin:0 auto;font-size:16px">
@@ -60,6 +60,7 @@ export default {
   name: "ManageStudent",
   data() {
     return {
+      loading:true,
       msg: "管理班级",
       adminClass:{id:null,name:null,grade:"",major:""},
       GSMAJson: null,
@@ -140,7 +141,7 @@ export default {
           that.majorJson = that.GSMAJson.major;
           that.gradeJson = that.GSMAJson.grade;
           that.adminClassJson = that.GSMAJson.adminClass;
-
+          that.loading = false;
           console.log(that.gradeJson);
           console.log(that.majorJson);
           console.log(that.adminClassJson);
