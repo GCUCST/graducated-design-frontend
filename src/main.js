@@ -32,7 +32,6 @@ axios.interceptors.request.use(function (config) {
     return config;
   }
 
-
   if (config.url == UrlConfig.getApi().getToken) {
     console.log("这是要去申请令牌,不拦截")
     return config;
@@ -51,6 +50,9 @@ axios.interceptors.request.use(function (config) {
   return Promise.reject(error)
 }
 )
+
+
+
 
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
