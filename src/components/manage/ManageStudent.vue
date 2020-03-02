@@ -1,5 +1,8 @@
 <template >
-  <div class="add-class" v-loading="loading">
+  <div class="manage-student" v-loading="loading">
+     <el-tabs tab-position="up">
+      <el-tab-pane :label="'学生管理'">
+     
     <div style="text-align:center">
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
@@ -86,6 +89,8 @@
     <!-- /结束。。。。。。。。。。。。。。。 -->
 
     <br />
+     </el-tab-pane>
+     </el-tabs>
   </div>
 </template>
 
@@ -270,13 +275,15 @@ export default {
 </script>
 
 <style scoped>
-.add-class {
+.manage-student {
   text-align: center;
   width: 100%;
-  box-shadow: 1px 0px 10px 1px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 20px; */
+ box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+ border-radius: 5px;
+    margin: 20px auto;
   background: white;
   z-index: 999;
   overflow: auto;
+    padding: 30px;
 }
 </style>

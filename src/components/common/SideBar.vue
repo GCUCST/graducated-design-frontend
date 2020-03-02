@@ -97,6 +97,9 @@
               <el-menu-item index="3-2" @click="routeJump('ManageTeacher')">
                 <i class="el-icon-s-custom" />教师管理
               </el-menu-item>
+               <el-menu-item index="3-9" @click="routeJump('ManagePassword')">
+                <i class="el-icon-s-custom" />密码重置
+              </el-menu-item>
               <el-menu-item index="3-4" @click="routeJump('ManageAdminClass')">
                 <i class="el-icon-coin" />班级管理
               </el-menu-item>
@@ -275,6 +278,8 @@ export default {
         this.$router.push({ name: "ManageTeachTask" });
          if (e == "MyTask")
         this.$router.push({ name: "MyTask" });
+             if (e == "ManagePassword")
+        this.$router.push({ name: "ManagePassword" });
 
 
 

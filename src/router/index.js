@@ -49,6 +49,8 @@ const ManageMajor = () => import('@/components/manage/ManageMajor') //懒加载
 const ManageAdminClass = () => import('@/components/manage/ManageAdminClass') //懒加载
 const ManageTeacher = () => import('@/components/manage/ManageTeacher') //懒加载
 const ManageTeachTask = () => import('@/components/manage/ManageTeachTask') //懒加载
+const ManagePassword = () => import('@/components/manage/ManagePassword') //懒加载
+
 
 
 
@@ -77,7 +79,7 @@ const Courses = () => import('@/components/exam_system/Courses') //懒加载
 const QuestionBank = () => import('@/components/exam_system/QuestionBank') //懒加载
 const LearnProgress = () => import('@/components/exam_system/LearnProgress') //懒加载
 const TestSetting = () => import('@/components/exam_system/TestSetting') //懒加载
-const Marking = () => import( '@/components/exam_system/Marking') //懒加载
+const Marking = () => import('@/components/exam_system/Marking') //懒加载
 const ExportPaper = () => import('@/components/exam_system/ExportPaper') //懒加载
 
 const ChapterPractice = () => import('@/components/exam_system/stu/ChapterPractice') //懒加载
@@ -105,207 +107,216 @@ Vue.use(Router)
 //解决相同路由跳转报错问题
 const routerPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error=> error)
+  return routerPush.call(this, location).catch(error => error)
 }
 
 export default new Router({
 
-    //该方法用于切换路有时候，滚动条太长，页面再置顶
-    scrollBehavior (to, from, savedPosition) {
-      if (savedPosition) {
-        return savedPosition
-      } else {
-        return { x: 0, y: 0 }
-      }
-    },
+  //该方法用于切换路有时候，滚动条太长，页面再置顶
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
 
   routes: [
     {
       path: '/index',
       name: 'System',
       component: System,
-      children:[
+      children: [
         {
-          path:'homebody',
-          name:"Homebody",
-          components:{Homebody} 
+          path: 'homebody',
+          name: "Homebody",
+          components: { Homebody }
         },
         {
-          path:'videolibrary',
-          name:"VideoLibrary",
-          components:{VideoLibrary} 
+          path: 'videolibrary',
+          name: "VideoLibrary",
+          components: { VideoLibrary }
         },
         {
-          path:'myteach',
-          name:"MyTeach",
-          components:{MyTeach} 
+          path: 'myteach',
+          name: "MyTeach",
+          components: { MyTeach }
         },
         {
-          path:'Mytask',
-          name:"MyTask",
-          components:{MyTask} 
+          path: 'Mytask',
+          name: "MyTask",
+          components: { MyTask }
         },
 
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'videocourse',
-          name:"VideoCourse",
-          components:{VideoCourse} 
+          path: 'videocourse',
+          name: "VideoCourse",
+          components: { VideoCourse }
         },
         {
-          path:'mycourse',
-          name:"MyCourse",
-          components:{MyCourse} 
+          path: 'mycourse',
+          name: "MyCourse",
+          components: { MyCourse }
         },
         {
-          path:'login',
-          name:"Login",
-          components:{Login} 
+          path: 'login',
+          name: "Login",
+          components: { Login }
         }
         ,
         {
-          path:'adminlogin',
-          name:"AdminLogin",
-          components:{AdminLogin} 
+          path: 'adminlogin',
+          name: "AdminLogin",
+          components: { AdminLogin }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'managesdean',
-          name:"ManageDean",
-          components:{ManageDean} 
+          path: 'managesdean',
+          name: "ManageDean",
+          components: { ManageDean }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'managestudent',
-          name:"ManageStudent",
-          components:{ManageStudent} 
-        } ,
+          path: 'managestudent',
+          name: "ManageStudent",
+          components: { ManageStudent }
+        },
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'manageteachtask',
-          name:"ManageTeachTask",
-          components:{ManageTeachTask} 
-        } ,
-        
+          path: 'manageteachtask',
+          name: "ManageTeachTask",
+          components: { ManageTeachTask }
+        },
+
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'manageteacher',
-          name:"ManageTeacher",
-          components:{ManageTeacher} 
-        }
-        
-        ,
-        {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
-          },
-          path:'managemajor',
-          name:"ManageMajor",
-          components:{ManageMajor} 
+          path: 'manageteacher',
+          name: "ManageTeacher",
+          components: { ManageTeacher }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'manageadminclass',
-          name:"ManageAdminClass",
-          components:{ManageAdminClass} 
+          path: 'managepassword',
+          name: "ManagePassword",
+          components: { ManagePassword }
+        }
+
+        ,
+        {
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path: 'managemajor',
+          name: "ManageMajor",
+          components: { ManageMajor }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'managegrade',
-          name:"ManageGrade",
-          components:{ManageGrade} 
+          path: 'manageadminclass',
+          name: "ManageAdminClass",
+          components: { ManageAdminClass }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'personalcenter',
-          name:"PersonalCenter",
-          components:{PersonalCenter} 
+          path: 'managegrade',
+          name: "ManageGrade",
+          components: { ManageGrade }
         }
         ,
         {
-          meta:{
-            requiresAuth:true, //本页面需要登录权限，还需进一步判断是教务员
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
           },
-          path:'message',
-          name:"Message",
-          components:{Message} 
+          path: 'personalcenter',
+          name: "PersonalCenter",
+          components: { PersonalCenter }
         }
         ,
         {
-          path:'helpfreeback',
-          name:"HelpFreeback",
-          components:{HelpFreeback} 
+          meta: {
+            requiresAuth: true, //本页面需要登录权限，还需进一步判断是教务员
+          },
+          path: 'message',
+          name: "Message",
+          components: { Message }
+        }
+        ,
+        {
+          path: 'helpfreeback',
+          name: "HelpFreeback",
+          components: { HelpFreeback }
         },
         {
-          path:'courses',  //考试系统的课程
-          name:"Courses",
-          components:{Courses}
+          path: 'courses',  //考试系统的课程
+          name: "Courses",
+          components: { Courses }
         },
         {
-          path:'questionbank',  //考试系统的试题库
-          name:"QuestionBank",
-          components:{QuestionBank}
+          path: 'questionbank',  //考试系统的试题库
+          name: "QuestionBank",
+          components: { QuestionBank }
         },
         {
-          path:'learnprogress',  //考试系统的学生测试进度
-          name:"LearnProgress",
-          components:{LearnProgress}
+          path: 'learnprogress',  //考试系统的学生测试进度
+          name: "LearnProgress",
+          components: { LearnProgress }
         },
         {
-          path:'testsetting',  //考试系统的试卷设置
-          name:"TestSetting",
-          components:{TestSetting}
+          path: 'testsetting',  //考试系统的试卷设置
+          name: "TestSetting",
+          components: { TestSetting }
         },
         {
-          path:'marking',  //考试系统的阅卷
-          name:"Marking",
-          components:{Marking}
+          path: 'marking',  //考试系统的阅卷
+          name: "Marking",
+          components: { Marking }
         },
         {
-          path:'exportpaper',  //考试系统的导出试卷
-          name:"ExportPaper",
-          components:{ExportPaper}
+          path: 'exportpaper',  //考试系统的导出试卷
+          name: "ExportPaper",
+          components: { ExportPaper }
         },
         {
-          path:'chapterpractice',  //考试系统学生的章节练习
-          name:"ChapterPractice",
-          components:{ChapterPractice}
+          path: 'chapterpractice',  //考试系统学生的章节练习
+          name: "ChapterPractice",
+          components: { ChapterPractice }
         },
         {
-          path:'chaptertest',  //考试系统学生的章节测试
-          name:"ChapterTest",
-          components:{ChapterTest}
+          path: 'chaptertest',  //考试系统学生的章节测试
+          name: "ChapterTest",
+          components: { ChapterTest }
         },
         {
-          path:'exam',    //考试系统学生的考试
-          name:"Exam",
-          components:{Exam}
+          path: 'exam',    //考试系统学生的考试
+          name: "Exam",
+          components: { Exam }
         },
         {
-          path:'errorset',    //考试系统学生的错题集
-          name:"ErrorSet",
-          components:{ErrorSet}
+          path: 'errorset',    //考试系统学生的错题集
+          name: "ErrorSet",
+          components: { ErrorSet }
         }
       ]
     },
