@@ -258,6 +258,28 @@ export default {
           // console.log(response.data.object.object);
           that.allStudents = response.data.object.object;
           that.loading = false;
+
+
+          if(localStorage.getItem("students_"+localStorage.getItem("courseId")))
+          {
+              //that.students.push()
+              var tempStudents =  JSON.parse(localStorage.getItem("students_"+localStorage.getItem("courseId")))
+
+              tempStudents.forEach(element => {
+                 that.allStudents.forEach(element2 => {
+                   if(element==element2.stuId){
+                     console.log(element2)
+                     that.students.push(element2)
+                   }
+                   
+                 });
+              });
+              var className = localStorage.getItem("className");
+              that.className = className
+
+         
+         }
+
         })
         .catch(function(error) {
           console.log(error);
@@ -331,7 +353,6 @@ export default {
           if (response.data.code == 200) {
             that.students = []; //清空当前学生
             that.className = null; //清空当前学生
-
             VueBus.$emit("closeAddClass", true); //关闭该面板
           }
         })

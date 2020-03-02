@@ -168,8 +168,8 @@
                 <br />教学班级：
                 <span v-if="item.className!='null'">
                   {{item.className}}
-                  <el-button v-if="editorId==false" @click="lookClass(item.students)">查看</el-button>
-                  <el-button disabled v-if="editorId!=false" @click="lookClass(item.students)">查看</el-button>
+                  <el-button v-if="editorId==false" @click="lookClass(item.students,item.courseId,item.className)">查看</el-button>
+                  <el-button disabled v-if="editorId!=false" @click="lookClass(item.students,item.courseId,item.className)">查看</el-button>
                   <el-button v-if="editorId==false" @click="delClass(item.courseId)">删除</el-button>
                   <el-button disabled v-if="editorId!=false" @click="delClass(item.courseId)">删除</el-button>
                 </span>
@@ -245,8 +245,10 @@ export default {
     var that = this;
     VueBus.$on("closeAddClass", function(data) {
       that.showAddClassPanel = false;
-      that.reflashTeachClass();
+      localStorage.removeItem("students_"+localStorage.getItem("courseId"))
       localStorage.removeItem("courseId");
+      localStorage.removeItem("className");
+      that.reflashTeachClass();
     });
     this.reflashTeachClass();
   },
@@ -487,14 +489,21 @@ export default {
         .catch(_ => {});
     },
 
-    lookClass(array) {
-      console.log(array);
+    lookClass(array,courseId,className) {
+      // console.log(array,courseId)
+      localStorage.setItem("courseId",courseId)
+      localStorage.setItem("students_"+courseId,array)
+         localStorage.setItem("className",className)
+    //  console.log(localStorage.getItem("students_"+courseId))
+      this.showAddClassPanel = true;
     }
   },
   components: {
     "v-AddClass": AddClass
   },
-  beforeDestroy() {}
+  beforeDestroy() {
+      VueBus.$off("closeAddClass");
+  }
 };
 </script>
 
