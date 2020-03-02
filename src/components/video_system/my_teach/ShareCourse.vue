@@ -22,7 +22,7 @@
                 <!-- /一个课程 -->
               </el-tab-pane>
               <el-tab-pane label="目录">
-                <el-tree :data="JSON.parse(item.catalogData)" :props="defaultProps"></el-tree>
+                <el-tree   @node-click="handleNodeClick" :data="JSON.parse(item.catalogData)" :props="defaultProps"></el-tree>
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -202,6 +202,11 @@ parmas.append("courseId",courseId);
   
 
 
+    },
+     handleNodeClick(data) {
+      if (data.url)
+        window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
+      else console.log(data.label);
     },
     addCourse(courseId) {
       console.log(courseId)
