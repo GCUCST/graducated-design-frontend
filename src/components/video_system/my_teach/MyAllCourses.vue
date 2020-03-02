@@ -1,3 +1,4 @@
+//这个是待发布课程
 <template>
   <div  >
     <!-- 学生添加版块 -->
@@ -380,15 +381,40 @@ export default {
       parmas.append("courseStatus", "进行中");
       parmas.append("courseId", courseId);
 
-      axios
+     this.$confirm('确认发布？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+
+
+     axios
         .post("/comm/updCourseStatus", parmas)
         .then(function(response) {
           console.log(response);
           that.reflashTeachClass();
+          that.$message({
+            type: 'success',
+            message: '发布成功!'
+          });
+
         })
         .catch(function(error) {
           console.log(error);
         });
+
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+
+ 
+
+
     },
 
     addClass(courseId) {
@@ -439,7 +465,7 @@ export default {
       this.$confirm("删除该课程？")
         .then(_ => {
           if (className != "null") {
-            alert("请先清空班级:" + className);
+           that.$message.error("失败！请先删除班级:" + className);
             return;
           }
           var parmas = new URLSearchParams();
@@ -448,6 +474,10 @@ export default {
             .post("/comm/delCourse", parmas)
             .then(function(response) {
               console.log(response);
+                that.$message({
+          message: '删除成功！',
+          type: 'success'
+        });
               that.reflashTeachClass();
             })
             .catch(function(error) {

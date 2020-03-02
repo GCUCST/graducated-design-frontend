@@ -10,7 +10,7 @@
       </el-tab-pane>
 
 
-       <el-tab-pane label="我所有课程" name='1'>   
+       <el-tab-pane label="待发布课程" name='1'>   
           <v-MyAllCourses v-if="activeName=='1'"></v-MyAllCourses>
       </el-tab-pane>
 

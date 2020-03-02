@@ -155,19 +155,44 @@ export default {
     },
 
     unRelease(courseId) {
+
+
       var that = this;
       var parmas = new URLSearchParams();
       parmas.append("courseStatus", "待发布");
       parmas.append("courseId", courseId);
-      axios
+
+ this.$confirm('确定暂停该课程?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            axios
         .post("/comm/updCourseStatus", parmas)
         .then(function(response) {
           console.log(response);
           that.reflashTeachClass();
+             that.$message({
+            type: 'success',
+            message: '挂起成功!'
+          });
         })
         .catch(function(error) {
           console.log(error);
         });
+
+       
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+
+
+    
+
+
     },
     lookClass(array) {
       console.log(array);

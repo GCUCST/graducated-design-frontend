@@ -1,14 +1,16 @@
 <template>
   <div class="preview">
-  <el-divider content-position="center">预览</el-divider>
+    <el-divider content-position="center">预览</el-divider>
 
     <el-tab-pane style="line-height:26px;display:flex;width:100%;padding:20px;">
       <!-- 封面: {{cover}} -->
-      
+
       <div style="width:70%">
         <div style="font-size:16px;text-align:left;font-weight:700">标题：{{title}}</div>
         <div style="text-align:left;font-size:16px;font-weight:bold">学时：{{courseHour}}</div>
-        <div style="text-align:left;font-size:16px;font-weight:bold">学分：{{credit?credit.toFixed(2):null}}</div>
+        <div
+          style="text-align:left;font-size:16px;font-weight:bold"
+        >学分：{{credit?credit.toFixed(2):null}}</div>
         <div
           style="text-align:left;font-size:16px;font-weight:bold"
         >时间：{{ !date?null:new Date(date[0]).toLocaleDateString()+" - "+new Date(date[1]).toLocaleDateString()}}</div>
@@ -26,24 +28,27 @@
       </div>
     </el-tab-pane>
 
-
-  <el-divider content-position="center">目录</el-divider>
-  <br>
+    <el-divider content-position="center">目录</el-divider>
+    <br />
     <div style="border:1px ;width:50%;margin:0 auto;">
-      <el-tree :data="catalogData" :props="defaultProps" style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"></el-tree>
+      <el-tree
+        :data="catalogData"
+        :props="defaultProps"
+        style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
+      ></el-tree>
     </div>
 
     <br />
 
-    <div style="text-align:center;font-size:16px;font-weight:700">该课程可以是一个模板？
-   
-    <el-switch
-      v-model="switchValue"
-      active-color="#13ce66"
-      inactive-color="#ff4949"
-      active-value="1"
-      inactive-value="0"
-    ></el-switch>
+    <div style="text-align:center;font-size:16px;font-weight:700">
+      该课程是一个模板？
+      <el-switch
+        v-model="switchValue"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        active-value="1"
+        inactive-value="0"
+      ></el-switch>
     </div>
     <!-- <br />生成考试系统目录： 是？ 否？ -->
 
@@ -51,7 +56,9 @@
     <br />
     <div style="display:flex;justify-content:space-between">
       <el-button type="primary" @click="lastStep" plain>上一步</el-button>
-      <el-button type="primary" @click="create" plain>确定创建</el-button>
+      <el-button type="primary" v-show="!hadCreate"  @click.once="create" plain>确定创建</el-button>
+      <el-button type="primary" v-show="hadCreate"  plain>已创建</el-button>
+
     </div>
     <!-- </el-tabs> -->
   </div>
@@ -67,6 +74,7 @@ export default {
   name: "PreviewAndRelease",
   data() {
     return {
+      hadCreate:false,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       msg: "预览",
       switchValue: false,
@@ -143,10 +151,17 @@ export default {
         .then(function(response) {
           console.log(response);
           if (that.switchValue == "1") {
-            alert("成功！请去共享课程添加学生吧！");
+            that.$message({
+              message: "创建成功！请去课程模板添加该课程吧！",
+              type: "success"
+            });
           } else {
-            alert("成功！请去我的课程添加学生！");
+            that.$message({
+              message: "创建成功！请去待发布课程添加学生！",
+              type: "success"
+            });
           }
+          that.hadCreate = true;
         })
         .catch(function(error) {
           console.log(error);
