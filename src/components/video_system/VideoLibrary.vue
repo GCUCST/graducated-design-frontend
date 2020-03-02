@@ -945,7 +945,7 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  margin: 20px auto;
+  margin:0px auto;
   padding: 30px;
   background: white;
   width: 95%;

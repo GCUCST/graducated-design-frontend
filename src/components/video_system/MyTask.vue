@@ -1,6 +1,8 @@
 
 <template >
   <div class="mytask" @click="visible=false" @contextmenu.prevent>
+               <el-tabs tab-position="up">
+      <el-tab-pane :label="'教学任务'">
     <el-table :data="myTasks" style="width: 100%">
       <el-table-column prop="id" label="任务编号" width="80"></el-table-column>
       <el-table-column prop="teacherName" label="教师名称" width="80"></el-table-column>
@@ -8,6 +10,8 @@
       <el-table-column prop="content" label="内容"></el-table-column>
       <el-table-column prop="createDate" label="创建时间"></el-table-column>
     </el-table>
+      </el-tab-pane>
+               </el-tabs>
   </div>
 </template>
 
