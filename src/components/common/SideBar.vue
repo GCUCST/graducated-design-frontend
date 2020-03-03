@@ -128,18 +128,18 @@
                 index="4-1"
                 v-if="role=='student'"
                 @click="routeJump('ChapterPractice')"
-              >章节自由练习（学生）</el-menu-item>
+              >章节自由练习</el-menu-item>
               <el-menu-item
                 index="4-2"
                 v-if="role=='student'"
                 @click="routeJump('ChapterTest')"
-              >章节测试（学生）</el-menu-item>
-              <el-menu-item index="4-3" v-if="role=='student'" @click="routeJump('Exam')">考试（学生）</el-menu-item>
+              >章节测试</el-menu-item>
+              <el-menu-item index="4-3" v-if="role=='student'" @click="routeJump('Exam')">我的考试</el-menu-item>
               <el-menu-item
                 index="4-4"
                 v-if="role=='student'"
                 @click="routeJump('ErrorSet')"
-              >错题集（学生）</el-menu-item>
+              >历史考试</el-menu-item>
               <el-menu-item
                 index="4-5"
                 v-if="role=='teacher'"
@@ -149,7 +149,7 @@
                 index="4-6"
                 v-if="role=='teacher'"
                 @click="routeJump('QuestionBank')"
-              >我的试题库（教师，添加试题）</el-menu-item>
+              >我的试题库</el-menu-item>
               <el-menu-item
                 index="4-7"
                 v-if="role=='teacher'"
@@ -159,8 +159,8 @@
                 index="4-8"
                 v-if="role=='teacher'"
                 @click="routeJump('TestSetting')"
-              >设置试卷（教师，设置考试时间、开放时间等）</el-menu-item>
-              <el-menu-item index="4-9" v-if="role=='teacher'" @click="routeJump('Marking')">阅卷（教师）</el-menu-item>
+              >考试设置</el-menu-item>
+              <el-menu-item index="4-9" v-if="role=='teacher'" @click="routeJump('Marking')">我的试卷库</el-menu-item>
               <el-menu-item
                 index="4-10"
                 v-if="role=='teacher'"

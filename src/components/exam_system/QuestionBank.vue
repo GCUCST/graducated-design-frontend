@@ -17,7 +17,12 @@
           <el-input v-model="formSearch.title" placeholder="题目"></el-input>
         </el-form-item>
         <el-form-item label="年级">
-          <el-input v-model="formSearch.grade" placeholder="题目"></el-input>
+          <el-select v-model="formSearch.grade" placeholder="年级">
+            <el-option label="2019级" value="0"></el-option>
+            <el-option label="2018级" value="1"></el-option>
+            <el-option label="2017级" value="2"></el-option>
+            <el-option label="2016级" value="3"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="创建教师">
           <el-input v-model="formSearch.createTea" placeholder="创建教师"></el-input>
@@ -165,7 +170,7 @@ export default {
           id:101,   //试题编号
           title:'下列需要在虚拟机中执行的代码是？',   //题目
           subject:'java基础',   //科目
-          grade:'2019级',
+          grade:'2019级',     //年级
           chapter:'第二章',   //章节
           score:'4',   //分数
           type:'0',   //题型，0表示选择题
@@ -182,7 +187,7 @@ export default {
           id:102,   //试题编号
           title:'下列需要在虚拟机中执行的代码是？',   //题目
           subject:'java进阶',   //科目
-          grade:'2018级',
+          grade:'2018级',   //年级
           chapter:'第二章',   //章节
           score:'4',   //分数
           type:'0',   //题型，0表示选择题
@@ -199,7 +204,7 @@ export default {
           id:103,   //试题编号
           title:'下列需要在虚拟机中执行的代码是？',   //题目
           subject:'java高级',   //科目
-          grade:'2017级',
+          grade:'2017级',   //年级
           chapter:'第二章',   //章节
           score:'4',   //分数
           type:'0',   //题型，0表示选择题
@@ -234,6 +239,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentRow = val;
+      console.log(this.currentRow);
     },
   }
 };
