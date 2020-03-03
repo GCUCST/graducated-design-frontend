@@ -186,6 +186,7 @@ export default {
 
     //请求课程资源和目录
     reqCourseRes(courseId, videoId) {
+
       var parmas = new URLSearchParams();
       parmas.append("courseId", courseId);
       var that = this;
@@ -205,6 +206,7 @@ export default {
         .catch(function(error) {
           console.log("获取课程失败。");
         });
+        
     }
   },
 
