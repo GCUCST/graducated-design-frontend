@@ -1,11 +1,11 @@
 <template>
   <div class="testsetting">
-    考试设置-试卷管理
+    考试设置-考试管理
     <el-divider></el-divider>
     
     <!-- 考试的增删改查操作 -->
     <el-row>
-      <el-button type="primary" plain @click="addExam"><i class="el-icon-circle-plus"></i>添加试题</el-button>
+      <el-button type="primary" plain @click="addExam"><i class="el-icon-circle-plus"></i>添加考试</el-button>
       <el-button type="primary" plain @click="editExam"><i class="el-icon-edit"></i>修改考试</el-button>
       <el-button type="primary" plain @click="deleteExam"><i class="el-icon-remove"></i>删除考试</el-button>
     </el-row>
@@ -14,7 +14,24 @@
     <div style="padding-top: 20px;">
       <el-form :inline="true" :model="examsearch" class="demo-form-inline">
         <el-form-item label="考试名称">
-          <el-input v-model="examsearch.ename" placeholder="题目"></el-input>
+          <el-input v-model="examsearch.ename" placeholder="考试名称"></el-input>
+        </el-form-item>
+        <el-form-item label="试卷类型">
+          <el-select v-model="examsearch.type" placeholder="试卷类型">
+            <el-option label="章节练习" value="0"></el-option>
+            <el-option label="章节测试"" value="1"></el-option>
+            <el-option label="考试" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        </el-form-item>
+        <el-form-item label="所属科目">
+          <el-select v-model="examsearch.subject" placeholder="所属科目">
+            <el-option label="java基础" value="0"></el-option>
+            <el-option label="Java进阶" value="1"></el-option>
+            <el-option label="java高级" value="2"></el-option>
+            <el-option label="spring初级" value="3"></el-option>
+            <el-option label="spring进阶" value="4"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="年级">
           <el-select v-model="examsearch.grade" placeholder="年级">
@@ -24,13 +41,12 @@
             <el-option label="2016级" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属科目">
-          <el-select v-model="examsearch.subject" placeholder="试题类型">
-            <el-option label="java基础" value="0"></el-option>
-            <el-option label="Java进阶" value="1"></el-option>
-            <el-option label="java高级" value="2"></el-option>
-            <el-option label="spring初级" value="3"></el-option>
-            <el-option label="spring进阶" value="4"></el-option>
+        <el-form-item label="班级">
+          <el-select v-model="examsearch.cla" placeholder="班级">
+            <el-option label="软件一班" value="0"></el-option>
+            <el-option label="信科一班" value="1"></el-option>
+            <el-option label="计科一班"" value="2"></el-option>
+            <el-option label="软件二班" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-date-picker
@@ -49,7 +65,7 @@
       </el-form>
     </div>
 
-    <!-- 试题列表 使用表格展示 -->
+    <!-- 考试列表 使用表格展示 -->
     <div style="border: 1px #ccc solid;">
       <el-table
       ref="singleTable"
@@ -70,12 +86,22 @@
           width="200">
         </el-table-column>
         <el-table-column
+          prop="type"
+          label="试卷类型"
+          width="120">
+        </el-table-column>
+        <el-table-column
           prop="subject"
           label="所属科目"
           width="120">
         </el-table-column>
         <el-table-column
           prop="grade"
+          label="年级"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="cla"
           label="年级"
           width="100">
         </el-table-column>
@@ -164,6 +190,8 @@ export default {
      examsearch:{   //考试的搜索条件
        ename:'',   //考试的名称
        subject:'',  //考试所属的科目
+       grade:'',   //年级
+       cla:'',    //班级
        startTime:'',   //开始时间
        endTime:''  //结束时间
      },
@@ -172,8 +200,10 @@ export default {
         {   //考试例子
           id:111,
           ename:'java进阶章节测试-第一章',   //考试名称
+          type:'章节测试',   //试卷类型
           subject:'java进阶',  //考试所属科目
           grade:'2017级',   //年级
+          cla:'软件一班',  //班级
           startTime:'2020-03-01 00:00:00',  //考试开始日期
           endTime:'2020-03-21 00:00:00',    //考试结束日期
           avaliableTime:'80',   //考试限制时间
@@ -192,8 +222,10 @@ export default {
         {   //考试例子
           id:111,
           ename:'java基础章节测试-第二章',   //考试名称
+          type:'章节测试',   //试卷类型
           subject:'java基础',  //考试所属科目
           grade:'2018级',   //年级
+          cla:'信科一班',  //班级
           startTime:'2020-03-01 00:00:00',  //考试开始日期
           endTime:'2020-03-21 00:00:00',    //考试结束日期
           avaliableTime:'80',   //考试限制时间
@@ -214,16 +246,16 @@ export default {
   },
   methods: {
     onSubmit(){
-      console.log('添加考试');
+      console.log('查询考试');
     },
     addExam(){
-      console.log('添加试题');
+      console.log('添加考试');
     },
     editExam(){
-      console.log('修改试题');
+      console.log('修改考试');
     },
     deleteExam(){
-      console.log('删除试题');
+      console.log('删除考试');
     },
     handleCurrentChange(val) {
       this.currentRow = val;
