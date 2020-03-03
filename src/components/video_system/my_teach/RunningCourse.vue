@@ -1,98 +1,77 @@
 <template >
-  <div >
-    <div v-if="showDetails" style="
-    text-align: center;
-    position: fixed;
-    background: white;
-    width: 75%;
-    top: 11%;
-    height: 70%;
-    font-size: 18px;
-    line-height: 30px;
-    font-weight: 500;
-    overflow: auto;
-    z-index: 9999;
-    padding: 20px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-   
-    ">
-    <div>
-      <!-- <el-table
-        ref="multipleTable"
-          @selection-change="handleSelectionChange"
-           tooltip-effect="dark"
-      :data=" CourseProgress"
-      sortable
-      height="400px"
-      style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
-      <el-table-column
-        prop="username"
-        label="账号"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="username"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="allPercent"
-        label="进度">
-      </el-table-column>
-    </el-table> -->
+  <div>
+    <div v-if="showDetails" class="panel" >
+         <div  style="text-align:right" >
+            <el-button type="mini"
+            circle @click="showDetails = !showDetails"><i class="el-icon-close"/>
+            </el-button>
+         </div>
+     
+       <el-tabs value = 'first'>
+    <el-tab-pane label="课程学生" name="first">
+
+      <div>
+        <el-table
+          ref="multipleTable"
+          :data="CourseProgress"
+          tooltip-effect="dark"
+            @selection-change="handleSelectionChange"
+          style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);"
+        >
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="username" label="账号" width="180"></el-table-column>
+          <el-table-column prop="allPercent" label="进度">
+            <div slot-scope="scope">{{getStudentNameByUsername(scope.row.username)}}</div>
+          </el-table-column>
+          <el-table-column prop="allPercent" label="进度">
+            <div slot-scope="scope">{{scope.row.allPercent}}%</div>
+          </el-table-column>
+        </el-table>
+        <div style="margin:10px auto;">
+            一共：{{CourseProgress.length}}名学生，选中{{multipleSelection.length}}名学生。
+        </div>
+      </div>
+
+    </el-tab-pane>
 
 
-      <el-table
-    ref="multipleTable"
-    :data="CourseProgress"
-    tooltip-effect="dark"
- style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);">
-    @selection-change="handleSelectionChange"
-    >
-       <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column>
-     <el-table-column
-        prop="username"
-        label="账号"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="username"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="allPercent"
-        label="进度">
-      </el-table-column>
-
-  
-  </el-table>
-  
-  <div style="margin-top: 20px">
+    <el-tab-pane label="私信通知" name="fourth">
+<el-collapse  >
+  <el-collapse-item>
+     <template slot="title">
+      <div style="text-indent:2em;font-size:16px;">已选列表：（共{{multipleSelection.length}}位）</div>
+    </template>
+  <div>  
+        <div style="flex-wrap: wrap;display:flex;width:90%;margin:0 auto">
+      <div  style="font-weight:500;;width:18%;text-align:center;" v-for="(item,index) in multipleSelection" :key="index">
+           {{item.username}} {{getStudentNameByUsername(item.username)}}
+       </div>
+      </div>      
   </div>
+  </el-collapse-item>
+</el-collapse>
+
+      <div style="margin-top:50px;">
+         <div style="width:100%;">   标题： <el-input v-model="title"  show-word-limit maxlength="30" style="width:300px;" /> </div>
+         <div style="width:100%;">  内容： <el-input v-model="content" show-word-limit maxlength="200" type="textarea" style="width:300px;" /> </div>
+        <br>
+        <div><el-button @click="comfirmSend()">确认发送</el-button></div>
+      </div>
+
+    </el-tab-pane>
+  </el-tabs>
 
 
-    <div style="margin:10px auto;">
-        <el-button @click="showDetails = !showDetails"> 返回 </el-button>
+
+
+
     </div>
-    </div>
-        <!-- <div  style=" display: flex;
-  flex-wrap: wrap;width:100%">
-        <span  style="width:32%;border:1px solid"
-         v-for="(item,index) in CourseProgress" :key="index">
-           {{item.username}}  : {{item.allPercent}} % 
-        </span>
-         </div> -->
-    </div>
 
 
-    <!-- 学生添加版块 -->
-    <!-- <v-AddClass v-if="showAddClassPanel"></v-AddClass> -->
+
+
     <!-- 整个内容区 -->
-    <div class="content"  v-loading="loading">
+    <div class="content" v-loading="loading">
       <div v-if="noCourses" style="margin-top:200px;text-align:center">暂无进行中的课程。</div>
       <div v-for="(item,i) in courseObjects" :key="i">
         <div
@@ -180,7 +159,6 @@
         </div>
       </div>
     </div>
-    <!-- /整个内容区  -->
   </div>
 </template>
 
@@ -196,34 +174,90 @@ export default {
   name: "ShareClass",
   data() {
     return {
-      multipleSelection:[],
-      showDetails:false,
-      CourseProgress:[],
+      multipleSelection: [],
+      showDetails: false,
+      CourseProgress: [],
       defaultProps: {
         children: "children",
         label: "label"
       },
-      loading:true,
+      allStudents: [],
+      loading: true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       showAddClassPanel: false,
       courseObjects: null,
-      noCourses:true
+      noCourses: true,
+
+      //私信模块
+      title:null,
+      content:null
     };
   },
   mounted() {
-    var that = this;
-    VueBus.$on("closeAddClass", function(data) {
-      that.showAddClassPanel = false;
-      that.reflashTeachClass();
-      localStorage.removeItem("courseId");
-    });
     this.reflashTeachClass();
+    this.getAllStudents();
   },
   methods: {
-     handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(val)
-      },
+    comfirmSend(){
+      //1.判断   2.做消息发送
+      if(this.title==''||this.title==null){
+        alert("标题为空。")
+        return ;
+      }
+      if(this.content==''||this.content==null){
+        alert("不允许发送空值。")
+          return ;
+      }
+      if(this.multipleSelection.length<1){
+        alert("请于课程学生选中学生")
+          return ;
+      }
+      var parmas = new URLSearchParams();
+      parmas.append("title",this.title);
+      parmas.append("content",this.content);
+      parmas.append("messageType",'video_progress_tips');
+      parmas.append("receivers",JSON.stringify(this.multipleSelection));
+      var that = this;
+      axios
+        .post("/comm/sendMsgs",parmas)
+        .then(function(response) {
+          console.log(response)
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+
+
+    },
+    getStudentNameByUsername(username) {
+      var name = null;
+      this.allStudents.forEach(element => {
+        if (element.stuId == username) {
+          name = element.name;
+          return;
+        }
+      });
+
+      return name;
+    },
+
+    getAllStudents() {
+      var that = this;
+      axios
+        .post("/comm/getAllStudents")
+        .then(function(response) {
+          that.allStudents = response.data.object.object;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log(val);
+    },
     handleNodeClick(data) {
       if (data.url)
         window.open(UrlConfig.getQiniuyunUrl() + data.url, "_blank");
@@ -237,13 +271,12 @@ export default {
           console.log(response);
           that.courseObjects = response.data.object;
           that.loading = false;
-          that.noCourses = true
-           that.courseObjects.forEach(element => {
-             if(element.courseStatus=='进行中'){
-               that.noCourses=false
-             }
-           });
-
+          that.noCourses = true;
+          that.courseObjects.forEach(element => {
+            if (element.courseStatus == "进行中") {
+              that.noCourses = false;
+            }
+          });
         })
         .catch(function(error) {
           console.log(error);
@@ -251,85 +284,67 @@ export default {
     },
 
     unRelease(courseId) {
-
-
       var that = this;
       var parmas = new URLSearchParams();
       parmas.append("courseStatus", "待发布");
       parmas.append("courseId", courseId);
 
- this.$confirm('确定暂停该课程?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-            axios
-        .post("/comm/updCourseStatus", parmas)
-        .then(function(response) {
-          console.log(response);
-          that.reflashTeachClass();
-             that.$message({
-            type: 'success',
-            message: '挂起成功!'
-          });
+      this.$confirm("确定暂停该课程?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axios
+            .post("/comm/updCourseStatus", parmas)
+            .then(function(response) {
+              console.log(response);
+              that.reflashTeachClass();
+              that.$message({
+                type: "success",
+                message: "挂起成功!"
+              });
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         })
-        .catch(function(error) {
-          console.log(error);
-        });
-
-       
-        }).catch(() => {
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
+            type: "info",
+            message: "已取消"
+          });
         });
-
-
-    
-
-
     },
-    lookClass(array,id) {
-
-      var parmas = new URLSearchParams()
-      parmas.append("courseId",id)
-      var that = this
+    lookClass(array, id) {
+      var parmas = new URLSearchParams();
+      parmas.append("courseId", id);
+      var that = this;
       axios
-        .post("/comm/getTeachClassByCourseId",parmas)
+        .post("/comm/getTeachClassByCourseId", parmas)
         .then(function(response) {
-          // console.log(response.data.object);
-          that.CourseProgress = response.data.object
-          that.showDetails = true 
+          that.CourseProgress = response.data.object;
+          that.showDetails = true;
 
           //更新进度
-           that.CourseProgress.forEach(element => {
-             if(element.progress==0){
-               return;
-             }
+          that.CourseProgress.forEach(element => {
+            if (element.progress == 0) {
+              return;
+            }
             var n = 0; //个数
             var p = 0; //总量
             //当学生第一次进入该课程。并不存在进度
-            if(element.progress==0)return;
+            if (element.progress == 0) return;
             JSON.parse(element.progress).catalog.forEach(ec => {
               p += Number(ec.percent);
               n++;
             });
             element.allPercent = (p / n).toFixed(2);
           });
-      
-
-          
-
-
-
-
         })
         .catch(function(error) {
           console.log(error);
         });
-
-      
     }
   },
   components: {
@@ -363,6 +378,23 @@ export default {
 }
 .box-card {
   width: 300px;
+}
+.panel{
+      text-align: center;
+    position: fixed;
+    background: white;
+    width: 75%;
+    top: 11%;
+    min-width: 900px;
+    min-height: 550px;
+    height: 70%;
+    font-size: 18px;
+    line-height: 30px;
+    font-weight: 500;
+    overflow: auto;
+    z-index: 9999;
+    padding: 10px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>
 

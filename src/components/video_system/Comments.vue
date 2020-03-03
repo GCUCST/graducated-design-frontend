@@ -11,7 +11,7 @@
           :src="myAvatar"></el-avatar>
         </div>
         <div style="margin-left:40px;    width: 80%;">
-          <el-input placeholder="请输入内容" v-model="commentContent" clearable></el-input>
+          <el-input show-word-limit maxlength="512" placeholder="请输入内容" v-model="commentContent" clearable></el-input>
         </div>
         <div style="margin-left:20px;">
           <el-button @click="comment(courseId,'comment')" type="primary">发表</el-button>
@@ -85,11 +85,12 @@
            
           
             <el-button type="mini"  @click="showRepliedInputId=obj.id">回复</el-button>
-            {{obj.replyNum}}
+            <!-- {{obj.replyNum}} -->
 
           <br>
 
             <el-input
+            maxlength="512"
               style="width:500px;"
               v-if="obj.id==showRepliedInputId?true:false"
               v-model="repliedContent"
@@ -227,13 +228,16 @@ export default {
         console.log(response.data.object);
         if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
-        if (targetType == "comment") {
+        if (targetType == "comment"||targetType == "replied") {
           for (var i = 0; i < that.allReplies.length; i++) {
             if (that.allReplies[i].id == targetId) {
               that.allReplies[i].likeNum++;
             }
           }
         }
+        }
+        else{
+            that.$message('已经点过赞了哦');
         }
 
       });
