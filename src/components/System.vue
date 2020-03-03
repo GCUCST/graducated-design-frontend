@@ -34,6 +34,7 @@
                   <router-view  name="QuestionBank"></router-view>
                   <router-view  name="LearnProgress"></router-view>
                   <router-view  name="TestSetting"></router-view>
+                  <router-view  name="AddExam"></router-view>
                   <router-view  name="Marking"></router-view>
                   <router-view  name="ExportPaper"></router-view>
                   <router-view  name="ChapterPractice"></router-view>

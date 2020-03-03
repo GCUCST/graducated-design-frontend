@@ -78,9 +78,10 @@ const ManagePassword = () => import('@/components/manage/ManagePassword') //懒�
 
 const Courses = () => import('@/components/exam_system/Courses') //懒加载
 const QuestionBank = () => import('@/components/exam_system/QuestionBank') //懒加载
-const AddQuestion = () => import('@/components/exam_system/bankAction/addQuestion')  //添加试题
+const AddQuestion = () => import('@/components/exam_system/curdAction/addQuestion')  //添加试题
 const LearnProgress = () => import('@/components/exam_system/LearnProgress') //懒加载
 const TestSetting = () => import('@/components/exam_system/TestSetting') //懒加载
+const AddExam = () => import('@/components/exam_system/curdAction/addExam')  //添加考试
 const Marking = () => import('@/components/exam_system/Marking') //懒加载
 const ExportPaper = () => import('@/components/exam_system/ExportPaper') //懒加载
 
