@@ -34,7 +34,9 @@
                &nbsp;&nbsp;&nbsp;&nbsp;{{obj.nickName==null?obj.name:obj.nickName}}
            </div>
            
-            <el-button  style="height:40px" type="text"  @click="liked(obj.id,'comment')"><img src="../../assets/icons/like.png" /> {{obj.likeNum}}</el-button>
+            <div   class="like"
+             @click="liked(obj.id,'comment')">
+             {{obj.likeNum}}</div>
             
           </div>
           <br />
@@ -52,7 +54,8 @@
                     <span style="color:gainsboro"> {{"：“ "+item.B.content.substr(0,3)+"...”："}}</span>
                </div>
                <div >
-                <el-button size="mini"   type="text" @click="liked(item.A.id,'replied')"><img src="../../assets/icons/like.png" />{{item.A.likeNum}}</el-button>
+                <div    class="like" @click="liked(item.A.id,'replied')">
+                  {{item.A.likeNum}}</div>
               </div>
 
               
@@ -264,5 +267,27 @@ export default {
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 5px; */
+}
+
+
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
 </style>

@@ -38,13 +38,12 @@
                 :style="{'width': (video_full ? '100%':'85%')}"
               >
                 <span>
-                  <el-button
-                    plain
-                    type="text"
+                  <div
+                    class="like"
                     @click="liked(course.courseId,'course')"
-                  ><img width="12px;" height="12px" src="../../assets/icons/like.png"/>
+                  > 
                   {{course?course.likeNum:0}}
-                  </el-button>
+                  </div>
                 </span>
                 <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
               </div>
@@ -190,6 +189,9 @@ export default {
        this.videoId = this.minCatalog[0].videoId
        this.videoSrc = this.QiniuyunUrl + this.minCatalog[0].url;
       }
+      else{
+         this.findVideoSrc(this.catalogData,videoId)
+      }
 
     },
 
@@ -257,6 +259,27 @@ export default {
   height: 750px;
   text-align: center;
   object-fit: fill;
+}
+
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
 
 video {
