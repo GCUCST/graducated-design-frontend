@@ -1,5 +1,5 @@
 <template>
-  <div class="video-commit">
+  <div class="video-commit" v-loading="loading">
     <div style="width:99%">
       <el-divider></el-divider>
 
@@ -121,6 +121,7 @@ export default {
   name: "VideoCourse",
   data() {
     return {
+      loading:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       myAvatar: null,//我的头像
       courseId: null, //第一次进来课程id
@@ -170,9 +171,8 @@ export default {
         }
       });
       this.comments = commentsJSON;
-      // console.log(commentsJSON);
-      // console.log(repliesJSON);
       console.log("评论获取完毕。")
+      this.loading = false;
 
     },
     //获取所有评论和回复

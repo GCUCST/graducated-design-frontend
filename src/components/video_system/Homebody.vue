@@ -1,6 +1,6 @@
 <template>
-  <div class="homebody"  @click="visible=false" @contextmenu.prevent>
-    <el-tabs tab-position="up"  v-loading="loading" >
+  <div class="homebody" v-loading="loading"  @click="visible=false" @contextmenu.prevent>
+    <el-tabs tab-position="up"   >
       <el-tab-pane :label="msg">
         <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
           <div style="font-size:14px">
@@ -29,10 +29,10 @@
           </div>
         </div>
 
-        <div class="content">
-          <div v-if="noCourses" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
+        <div class="content" >
+          <div  v-if="noCourses" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
 
-          <div style="width:25%;margin:3%" v-for="(item,index) in publicCourses" :key="index">
+          <div  style="width:25%;margin:3%" v-for="(item,index) in publicCourses" :key="index">
             <el-card style="width:100%" shadow="hover" class="box-card" v-if="item.courseStatus">
               <div @contextmenu.prevent @click.right="rightClick($event,item)">
                 <div>
