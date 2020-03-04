@@ -8,13 +8,15 @@
     <div class="header-search">
         <div class="search">
             <el-input style="width:60%;"  placeholder="请输入内容" v-model="search"></el-input>
-            <i style="color:white" class="el-icon-search"></i>
+            <i @click="filter()" style="cursor:pointer;color:white" class="el-icon-search"></i>
         </div>
     </div>
   </div>
 </template>
 
 <script>
+import VueBus from "@/utils/VueBus.js";
+
 export default {
   name: "Header",
   data() {
@@ -34,6 +36,10 @@ export default {
               this.times = 0;
               this.$router.push({name:"AdminLogin"})
           }
+      },
+      filter(){
+        var that = this
+         VueBus.$emit("filterVideo",that.search );
       }
   }
 };
