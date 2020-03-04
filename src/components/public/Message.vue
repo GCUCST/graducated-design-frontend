@@ -17,7 +17,7 @@
               v-model="activeNames"
               @change="handleChange"
             >
-              <el-collapse-item name="1">
+              <el-collapse-item >
                 <template slot="title">
                   <div
                     style="width:95%;display:flex;flex-flow:flex-wrap;justify-content:space-between"
@@ -116,7 +116,7 @@ export default {
         that.unReadMsgs.splice(index,1);
         that.hadReadMsgs.push(item);
           }else{
-              that.$message.error('失败，请刷新重拾。');
+              that.$message.error('失败，请刷新重试。');
           }
         })
         .catch(function(error) {
@@ -158,7 +158,7 @@ export default {
   padding: 30px;
   background: white;
   width: 95%;
-  height: 600px;
+  min-height: 600px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }

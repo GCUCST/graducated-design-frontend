@@ -221,7 +221,19 @@ export default {
       axios
         .post("/comm/sendMsgs",parmas)
         .then(function(response) {
-          console.log(response)
+
+            that.$message({
+                showClose: true,
+                duration:0,
+          message: '发送成功！已将消息发送给'+response.data.object+"名学生。",
+          type: 'success'
+        });
+        that.title=null,
+        that.content=null;
+
+
+
+
         })
         .catch(function(error) {
           console.log(error);

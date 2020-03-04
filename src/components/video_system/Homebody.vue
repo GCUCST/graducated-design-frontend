@@ -1,6 +1,6 @@
 <template>
-  <div class="homebody" @click="visible=false" @contextmenu.prevent>
-    <el-tabs tab-position="up">
+  <div class="homebody"  @click="visible=false" @contextmenu.prevent>
+    <el-tabs tab-position="up"  v-loading="loading" >
       <el-tab-pane :label="msg">
         <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
           <div style="font-size:14px">
@@ -66,6 +66,7 @@ export default {
   data() {
     return {
       msg: "主界面",
+      loading:true,
       noCourses: false, //当前无课程
       publicCourses: [], //公共课程
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
@@ -92,6 +93,7 @@ export default {
         .then(function(response) {
           that.publicCourses = response.data.object;
           that.noCourses = false;
+          that.loading = false;
           console.log(response);
         })
         .catch(function(error) {
