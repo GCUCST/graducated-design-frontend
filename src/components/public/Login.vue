@@ -4,7 +4,7 @@
       <div class="title">登录</div>
     </el-divider>
 
-    <el-form label-width="100px" class="demo-ruleForm">
+    <el-form style="font-weight:560"  label-width="100px" class="demo-ruleForm">
       <el-form-item label="账号">
         <el-input placeholder="请输入账号" type="text" v-model="account"></el-input>
       </el-form-item>
@@ -12,21 +12,22 @@
         <el-input placeholder="请输入密码" type="password" v-model="password"></el-input>
       </el-form-item>
 
-      <el-form-item label="验证码">
+      <el-form-item label="验证码" >
         &nbsp;&nbsp; {{code}}
-        <el-button @click="reflashCode" style="margin-left:20px" size="mini">刷新</el-button>
+        <el-button @click="reflashCode" type='text' style="margin-left:20px" ><i class="el-icon-refresh-left
+"/></el-button>
       </el-form-item>
 
-      <el-form-item label="验证码">
+      <el-form-item style="font-weight:560" label="验证码">
         <el-input placeholder="请输入验证码" v-model="comfirmCode"></el-input>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="getToken">
+        <el-button type="primary" style="font-weight:560"  @click="getToken">
           <span v-show="!commited">登录</span>
           <i style="width:28px" v-show="commited" class="el-icon-loading" />
         </el-button>
-        <el-button @click="reset">清空</el-button>
+        <el-button @click="reset" style="font-weight:560" >清空</el-button>
         <span style="color:grey;font-size:13px;text-decoration:underline;">忘记密码</span>
       </el-form-item>
     </el-form>
@@ -177,6 +178,7 @@ export default {
 <style scoped>
 .title {
   font-size: 34px;
+  font-weight: 500
 }
 .demo-ruleForm {
   width: 40%;
