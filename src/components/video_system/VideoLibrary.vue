@@ -373,7 +373,7 @@ export default {
       that.tempForUpload.newFile.mimeType = data.object.mimeType;
       that.tempForUpload.tempContent.push(that.tempForUpload.newFile);
 
-      this.$message({
+      that.$message({
         type: "success",
         message: "新建文件成功！ " + that.tempForUpload.value
       });
