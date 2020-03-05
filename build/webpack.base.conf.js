@@ -23,6 +23,11 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  ///        引入外部cdn文件 by
+  externals:{
+    'Vue':'Vue',
+    'element-ui':'ELEMENT'
+  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
