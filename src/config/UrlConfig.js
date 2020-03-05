@@ -1,11 +1,14 @@
 import Vue from 'vue'
 const QiniuyunUrl = "http://cdn.chenshaotong.cn/"   //七牛云的地址
-const WebServerUrl = "http://cst.natapp1.cc"   //web服务器地址
+// const WebServerUrl = "http://chenshaotong.cn"   //web服务器地址  服务器
+const WebServerUrl = " http://cst.natapp1.cc"   //web服务器地址  本地
+
 const baseUrl = "/api"               //url前缀，供代理使用
 
 //一整串的url
 const url = {
-    callbackUrl: WebServerUrl + "/comm/callback",  //七牛云上传完成回调的地址
+    // callbackUrl: WebServerUrl + "/api/comm/callback",  //部署到服务器回调的地址
+    callbackUrl: WebServerUrl + "/comm/callback",  // 本地七牛云上传完成回调的地址
     getDefaultAvatarUrl:QiniuyunUrl+"/default/avatar/user"  //七牛云默认的头像
 }
 
