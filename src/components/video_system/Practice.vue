@@ -89,6 +89,8 @@
       <div style="text-align:right">
         <el-button @click="showQuestionsPanel = !showQuestionsPanel" icon="el-icon-close" circle></el-button>
       </div>
+       <div style="width:50%;margin:0 auto"><el-input  v-model="search" size="mini" placeholder="输入关键字搜索" />
+            </div>
       <el-table
         :data="allQuestions.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))"
         max-height="450"
@@ -98,14 +100,13 @@
         <el-table-column label="标题" prop="title"></el-table-column>
         <el-table-column label="类型" prop="questionType"></el-table-column>
         <el-table-column align="right">
-          <template slot="header" slot-scope="scope">
-            <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-          </template>
           <template slot-scope="scope">
             <el-button size="mini" @click="handleAdd(scope.$index, scope.row)">添加</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <br>
+           
     </div>
   </div>
 </template>
