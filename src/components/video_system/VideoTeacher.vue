@@ -1,8 +1,8 @@
 <template>
-  <div class="video-course">
+  <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: 'MyCourse' }">我的课程</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: 'MyTeach' }">我的教的课程</el-breadcrumb-item>
       <el-breadcrumb-item>{{course?course.title:'加载中...'}}</el-breadcrumb-item>
       <el-breadcrumb-item>{{getVideoTitleByVideoId(videoId)}}</el-breadcrumb-item>
     </el-breadcrumb>
@@ -41,14 +41,14 @@
                 :style="{'width': (video_full ? '100%':'85%')}"
               >
                 <span>
-                  <el-button
-                    plain
-                    type="primary"
+                  <div
+                    class="like"
                     @click="liked(course.courseId,'course')"
-                  >{{course?course.likeNum:0}}点赞</el-button>
-                  <el-button plain type="primary">{{course?course.replyNum:0}}评论</el-button>
+                  > 
+                  {{course?course.likeNum:0}}
+                  </div>
                 </span>
-                <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen" ></el-button>
               </div>
             </div>
           </div>
@@ -65,27 +65,11 @@
                     @node-click="handleNodeClick"
                   ></el-tree>
                 </el-tab-pane>
-
-                <el-tab-pane label="我的进度" style="overflow:auto">
-                  <div
-                    style="font-size:12px;line-height:30px;font-weigth:700"
-                    v-for=" (item,index) in progress.catalog"
-                    :key="index"
-                  >
-                    <span style="cursor:pointer;">{{item.label}}</span>
-                    <el-progress
-                      :stroke-width="2"
-                      :show-text="true"
-                      :percentage="Number(item.percent)"
-                    ></el-progress>
-                  </div>
-                </el-tab-pane>
               </el-tabs>
             </div>
           </transition>
         </div>
       </div>
-      <v-Comments></v-Comments>
     </div>
   </div>
 </template>
@@ -94,29 +78,27 @@
 
 <script>
 import axios from "axios";
-import Comments from "./Comments";
+import VueBus from '../../utils/VueBus';
 import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "VideoCourse",
-  components: {
-    "v-Comments": Comments
-  },
   data() {
     return {
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
+
       courseId: null, //第一次进来课程id
       videoId: null, //第一次进来当前视频id
       videoSrc: null, //视频地址
-      duration: 0,
+      far: 0, //视频最远进度
+
       video_full: false, //全屏模式
       course: null, //当前的课程
-      far: 0, //视频最远进度
       defaultProps: {
         children: "children",
         label: "label"
-      },//目录菜单
+      }, //目录菜单
       catalogData: null, //当前目录数据
-      progress: { videoId: null, catalog: []} //进度
+      progress: { videoId: null, catalog: [] } //进度
     };
   },
   methods: {
@@ -124,7 +106,6 @@ export default {
     liked(targetId, targetType) {
       console.log(targetId);
       console.log(targetType);
-
       var parmas = new URLSearchParams();
       parmas.append("targetId", targetId);
       parmas.append("targetType", targetType);
@@ -145,11 +126,26 @@ export default {
 
     //视频跳转
     jumpVideo(videoId) {
+      // this.reqCourseRes(this.courseId, this.videoId);
+      // location.reload();
+      var that = this;
+      this.progress.catalog.forEach(element => {
+        if (element.videoId == videoId) {
+          console.log(element);
+          that.far = element.far;
+          that.videoSrc = that.QiniuyunUrl + element.url;
+        }
+      });
+
       this.$router.push({
         name: "VideoCourse",
         query: { courseId: this.courseId, videoId: videoId }
       });
-      location.reload();
+      this.courseId = this.$route.query.courseId;
+      this.videoId = this.$route.query.videoId;
+
+         var data = {courseId:this.courseId,videoId:this.videoId}
+       VueBus.$emit("reflash_practice",data)
     },
 
     //获取小标题
@@ -173,8 +169,6 @@ export default {
             label: data[i].label,
             videoId: data[i].id,
             url: data[i].url,
-            far: 0,
-            percent: 0
           });
         }
       }
@@ -196,130 +190,7 @@ export default {
         this.jumpVideo(data.id);
       }
     },
-    //设置进度
-    setProgress() {
-      var that = this;
-      var Media = document.getElementById("qnv");
-      Media.addEventListener(
-        "timeupdate",
-        function() {
-          var timeDisplay;
-          //用秒数来显示当前播放进度
-          timeDisplay = Math.floor(Media.currentTime);
-          //--------设置进度---------------
-          for (var i = 0; i < that.progress.catalog.length; i++) {
-            if (that.progress.catalog[i].videoId == that.videoId) {
-              that.progress.catalog[i].far = that.far;
-              if (that.progress.catalog[i].percent == 0)
-                that.progress.catalog[i].percent =
-                  (that.far / Number(Media.duration)) * 100;
-              else
-                that.progress.catalog[i].percent = (
-                  (that.far / Number(Media.duration)) *
-                  100
-                ).toFixed(2);
-            }
-          }
-          var rightTime = (
-            Number(Media.currentTime) / Number(Media.duration)
-          ).toFixed(3);
-          if (
-            rightTime == 0.1 ||
-            rightTime == 0.2 ||
-            rightTime == 0.3 ||
-            rightTime == 0.4 ||
-            rightTime == 0.5 ||
-            rightTime == 0.6 ||
-            rightTime == 0.7 ||
-            rightTime == 0.8 ||
-            rightTime == 0.9 ||
-            rightTime == 0.999
-          ) {
-            //上传
-            localStorage.setItem("progress", JSON.stringify(that.progress));
-            var parmas = new URLSearchParams();
-            parmas.append("courseId", that.courseId);
-            parmas.append("progress", JSON.stringify(that.progress));
-            axios.post("/comm/updTeachClass", parmas).then(function(response) {
-              console.log("更新成功。");
-            });
-          }
-        },
-        true
-      );
-    },
-    //防止进度条拉前
-    preventDragAhead() {
-      let that = this;
-      var sym; //实际进度
-      var time; //拉的进度    //far是最远进度
-      var qnv = document.querySelector("#qnv");
-      var interval = setInterval(function() {
-        try {
-          time = qnv.currentTime;
-          if (time - sym > 1 && time > that.far) {
-            qnv.currentTime = that.far; //拉过头就跳到最远播放位置
-          }
-          sym = qnv.currentTime;
-          if (sym > that.far) {
-            that.far = sym;
-          }
-        } catch (error) {
-          console.log("没有获取到视频资源:" + error);
-          clearInterval(interval);
-        }
-      }, 500);
-    },
 
-    //获取我的进度
-    getMyProgress(videoId) {
-      var parmas = new URLSearchParams();
-      parmas.append("courseId", this.courseId);
-      var that = this;
-      axios
-        .post("/comm/getTeachClassByUsernameAndCourseId", parmas)
-        .then(function(response) {
-          var progress = response.data.object.progress;
-          if (response.data.object.progress == 0) {
-            progress = null;
-          }
-          if (progress == null) {
-            console.log("目前没有目录");
-            //不存在就创建
-            that.findVideoIdUrl(that.catalogData);
-            //做更新
-            var parmas = new URLSearchParams();
-            parmas.append("courseId", that.courseId);
-            parmas.append("progress", JSON.stringify(that.progress));
-            axios.post("/comm/updTeachClass", parmas).then(function(response) {
-              console.log(response);
-            });
-          } else {
-            //存在就写入
-            that.progress = JSON.parse(progress);
-            //d第一次点击封面进来，不携带videoId
-            //进来时候拿到的videoId
-            that.videoId = videoId
-              ? videoId
-              : that.progress.videoId
-              ? that.progress.videoId
-              : that.progress.catalog[0].videoId;
-            that.progress.videoId = that.videoId;
-            for (var i = 0; i < that.progress.catalog.length; i++) {
-              if (that.progress.catalog[i].videoId == that.videoId) {
-                //根据进度id定位到该url
-                that.videoSrc =
-                  UrlConfig.getQiniuyunUrl() + that.progress.catalog[i].url;
-                that.far = that.progress.catalog[i].far;
-              }
-            }
-            console.log("获取进度完成。");
-          }
-        })
-        .catch(function(error) {
-          console.log("获取进度失败。");
-        });
-    },
     //请求课程资源和目录
     reqCourseRes(courseId, videoId) {
       var parmas = new URLSearchParams();
@@ -335,7 +206,11 @@ export default {
           that.catalogData = JSON.parse(response.data.object.catalogData);
           console.log("获取课程目录完成。");
           //请求视频资源
-          that.getMyProgress(videoId);
+          that.findVideoIdUrl(that.catalogData);
+          if(that.videoId==null){
+            that.videoId =  that.progress.catalog[0].videoId;
+            that.videoSrc = that.QiniuyunUrl+that.progress.catalog[0].url;
+          }
         })
         .catch(function(error) {
           console.log("获取课程失败。");
@@ -347,22 +222,11 @@ export default {
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
     this.reqCourseRes(this.courseId, this.videoId);
-    this.setProgress();
-    this.preventDragAhead();
   }
 };
 </script>
 
 <style scoped>
-.video-course {
-  min-height: 600px;
-  margin: 0px auto;
-  padding: 20px;
-  background: white;
-  width: 100%;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
 .video-small {
   width: 85%;
   text-align: center;
@@ -376,6 +240,27 @@ export default {
   text-align: center;
   object-fit: fill;
 }
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
+}
+
 
 video {
   transition: all 300ms ease-in-out 50ms;

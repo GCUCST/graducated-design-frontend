@@ -1,5 +1,5 @@
 <template>
-  <div class="video-course">
+  <div class="video-course" >
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
       <el-breadcrumb-item>{{course?course.title:'加载中...'}}</el-breadcrumb-item>
@@ -20,7 +20,7 @@
 
       <el-divider></el-divider>
 
-      <div style="width:100%">
+      <div style="width:100%" v-loading="loading_course">
         <div style="width:100%;display:flex; justify-content:space-between">
           <div style="width:100%">
             <div style="width:100%;text-align:center">
@@ -38,15 +38,14 @@
                 :style="{'width': (video_full ? '100%':'85%')}"
               >
                 <span>
-                  <el-button
-                    plain
-                    type="text"
+                  <div
+                    class="like"
                     @click="liked(course.courseId,'course')"
-                  ><img width="12px;" height="12px" src="../../assets/icons/like.png"/>
+                  > 
                   {{course?course.likeNum:0}}
-                  </el-button>
+                  </div>
                 </span>
-                <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen" ></el-button>
               </div>
             </div>
           </div>
@@ -86,6 +85,7 @@ export default {
   },
   data() {
     return {
+      loading_course:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       courseId: null, //第一次进来课程id
       videoId: null, //第一次进来当前视频id
@@ -108,7 +108,8 @@ export default {
       parmas.append("targetType", targetType);
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
-        console.log(response);
+        console.log(response.data.object);
+        if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
         if (targetType == "comment") {
           for (var i = 0; i < that.allReplies.length; i++) {
@@ -116,6 +117,10 @@ export default {
               that.allReplies[i].likeNum++;
             }
           }
+        }
+        }
+        else{
+             that.$message('已经点过赞了哦');
         }
       });
     },
@@ -126,7 +131,24 @@ export default {
         name: "PublicCourse",
         query: { courseId: this.courseId, videoId: videoId }
       });
-      location.reload();
+      // location.reload();
+      this.findVideoSrc(this.catalogData,videoId)
+    },
+
+     findVideoSrc(data,videoId) {
+       var that = this
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].level == 2 || data[i].level == 1) {
+          this.findVideoSrc(data[i].children,videoId);
+        } else if (data[i].level == 3) {
+          if(videoId == data[i].id)
+          {
+            console.log("太难了吧")
+            that.videoSrc = that.QiniuyunUrl+data[i].url;
+            that.videoId =videoId;
+          }
+        }
+      }
     },
 
     //获取小标题
@@ -140,7 +162,7 @@ export default {
       return title;
     },
 
-    //第一次进来，获取目录中所有的视频，并且设置进度
+    //第一次进来，获取目录中所有的视频
     findVideoIdUrl(data) {
       for (var i = 0; i < data.length; i++) {
         if (data[i].level == 2 || data[i].level == 1) {
@@ -159,22 +181,18 @@ export default {
       if (!videoId) {
         this.$router.push({
           name: "PublicCourse",
-          query: {
-            courseId: this.courseId,
-            videoId: this.minCatalog[0].videoId
-          }
-        });
-        location.reload();
+              query: {
+                courseId: this.courseId,
+                videoId: this.minCatalog[0].videoId
+              }
+            });
+       this.videoId = this.minCatalog[0].videoId
+       this.videoSrc = this.QiniuyunUrl + this.minCatalog[0].url;
+      }
+      else{
+         this.findVideoSrc(this.catalogData,videoId)
       }
 
-      console.log("vid:" + videoId);
-      var that = this;
-      this.minCatalog.forEach(element => {
-        console.log(element);
-        if (element.videoId == videoId) {
-          that.videoSrc = that.QiniuyunUrl + element.url;
-        }
-      });
     },
 
     //点击了目录菜单
@@ -201,6 +219,7 @@ export default {
           console.log("获取课程目录完成。");
           //取出所有视频
           that.findVideoIdUrl(that.catalogData);
+          that.loading_course = false;
           that.setNowVideoSrc(that.videoId);
         })
         .catch(function(error) {
@@ -240,6 +259,27 @@ export default {
   height: 750px;
   text-align: center;
   object-fit: fill;
+}
+
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
 
 video {

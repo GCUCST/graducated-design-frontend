@@ -23,7 +23,6 @@
 import Catalog from "./new_course/CatalogSave";
 import ImgTitleIntro from "./new_course/ImgTitleIntro.vue";
 
-import SettingShare from "./new_course/SettingShare.vue";
 import PreviewAndRelease from "./new_course/PreviewAndRelease.vue";
 import VueBus from "@/utils/VueBus.js";
 
@@ -37,7 +36,6 @@ export default {
   components: {
     "v-Catalog": Catalog,
     "v-ImgTitleIntro": ImgTitleIntro,
-    "v-SettingShare": SettingShare,
     "v-PreviewAndRelease": PreviewAndRelease
   },
   mounted() {

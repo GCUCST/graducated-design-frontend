@@ -1,8 +1,12 @@
 <template>
   <div class="help-freeback">
        <el-tabs tab-position="up">
-       <el-tab-pane label="帮助">帮助</el-tab-pane>
-       <el-tab-pane label="反馈">反馈</el-tab-pane>
+       <el-tab-pane label="帮助">
+         <div style="margin-top:100px;;text-align:center">欢迎使用华广学习系统。</div>
+       </el-tab-pane>
+       <el-tab-pane label="反馈">
+            <div style="margin-top:100px;;text-align:center">无</div>
+       </el-tab-pane>
   </el-tabs>
   </div>
 </template>

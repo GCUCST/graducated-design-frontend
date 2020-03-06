@@ -1,6 +1,6 @@
 <template>
-  <div class="homebody" @click="visible=false" @contextmenu.prevent>
-    <el-tabs tab-position="up">
+  <div class="homebody" v-loading="loading"  @click="visible=false" @contextmenu.prevent>
+    <el-tabs tab-position="up"   >
       <el-tab-pane :label="msg">
         <div v-if="visible" :style="{top:Axis.y+'px',left:Axis.x+'px'}" class="detail">
           <div style="font-size:14px">
@@ -29,10 +29,10 @@
           </div>
         </div>
 
-        <div class="content">
-          <div v-if="noCourses" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
+        <div class="content" >
+          <div  v-if="showCourses.length==0" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
 
-          <div style="width:25%;margin:3%" v-for="(item,index) in publicCourses" :key="index">
+          <div  style="width:25%;margin:3%" v-for="(item,index) in showCourses" :key="index">
             <el-card style="width:100%" shadow="hover" class="box-card" v-if="item.courseStatus">
               <div @contextmenu.prevent @click.right="rightClick($event,item)">
                 <div>
@@ -42,7 +42,12 @@
                 <div class="bottom-content">
                   <div>{{ item.author}}</div>
                   <div style="display:flex;">
-                    <div> <img width="12px;" height="12px" src="../../assets/icons/like.png"/>{{item.likeNum}}</div>&ensp;
+
+                    <div>
+                       <img width="14px;" height="14px" src="../../assets/icons/like.png"/>
+                    </div>
+                       <div style="font-weight:545" >&nbsp;{{item.likeNum}}</div>
+
                   </div>
                 </div>
               </div>
@@ -50,7 +55,6 @@
           </div>
         </div>
       </el-tab-pane>
-
     </el-tabs>
   </div>
 </template>
@@ -60,14 +64,17 @@
 
 <script>
 import axios from "axios";
+import VueBus from "@/utils/VueBus.js";
 import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "Homebody",
   data() {
     return {
       msg: "主界面",
+      loading:true,
       noCourses: false, //当前无课程
-      publicCourses: [], //公共课程
+      publicCourses: [], //所有公共课程
+      showCourses: [], //显示的课程
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       Axis: { x: 0, y: 0, item: null }, //坐标和对象
       visible: false //展示右击菜单
@@ -92,6 +99,8 @@ export default {
         .then(function(response) {
           that.publicCourses = response.data.object;
           that.noCourses = false;
+          that.loading = false;
+          that.showCourses = that.publicCourses
           console.log(response);
         })
         .catch(function(error) {
@@ -101,6 +110,23 @@ export default {
   },
   mounted() {
     this.getAllPublicCourses();
+    
+    var that = this
+    VueBus.$on("filterVideo", function(data) {
+      that.showCourses = []
+      that.publicCourses.forEach(element => {
+          if(element.title.indexOf(data)!=-1){
+            that.showCourses.push(element)
+          }
+      });
+      if(data == "")
+      {
+        that.showCourses = that.publicCourses
+      }
+    });
+  },
+  destroyed(){
+    VueBus.$off("filterVideo")
   }
 };
 </script>

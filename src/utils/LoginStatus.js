@@ -49,6 +49,9 @@ var LoginStatus = {
             UrlConfig.getApi().getUserInfo         
           )
           .then(function(response) {
+            if(response.data.data==404){
+              alert("未找到维护。")
+            }
             that.saveUserInfo(response);
           })
           .catch(function(error) {

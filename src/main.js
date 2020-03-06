@@ -1,13 +1,15 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
+// import Vue from 'vue'
 import App from './App'
 import router from './router'
-Vue.config.productionTip = false
 
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
+
+// Vue.config.productionTip = false
+
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+// Vue.use(ElementUI);
 
 //设置token默认请求头
 import axios from "axios"
@@ -31,7 +33,14 @@ axios.interceptors.request.use(function (config) {
     console.log("这个东西主页需要，放行。")
     return config;
   }
-
+  if(config.url=="/comm/sendEmail"){
+    console.log("这个东西邮箱需要，放行。")
+    return config;
+  }
+  if(config.url=="/comm/checkEmailCode"){
+    console.log("这个东西重置密码需要，放行。")
+    return config;
+  }
   if (config.url == UrlConfig.getApi().getToken) {
     console.log("这是要去申请令牌,不拦截")
     return config;
@@ -121,6 +130,7 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       alert("该页面需要登录")
+
       next({
         path: "/index/login",
       })

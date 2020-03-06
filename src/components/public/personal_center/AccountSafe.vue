@@ -53,12 +53,12 @@ export default {
     checkInput(){
         if(this.originalPassword==''||this.newPassword==''||this.comfirmPassword=='')
         {
-          alert("请补全数据。")
+             this.$message.error("请补全数据。");
           return -1;
           }
         if(this.comfirmPassword!=this.newPassword)
         {
-          alert("新密码和确认密码不一致。")
+              this.$message.error("新密码和确认密码不一致。");
           return 0;
         }
         return 1;
@@ -78,7 +78,17 @@ export default {
         .post("/comm/changePassword", params)
         .then(function(response) {
           console.log(response);
-         alert(response.data.message)
+          if(response.data.status)
+          {  that.$message({
+          message: response.data.message,
+          type: 'success'
+        });}
+        else{
+          that.$message.error(response.data.message);
+        }
+        that.comfirmPassword = null;
+        that.newPassword = null;
+        that.originalPassword = null;
 
         })
         .catch(function(error) {

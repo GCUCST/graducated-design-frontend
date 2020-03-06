@@ -36,13 +36,16 @@
 
         <!-- 整个内容区 -->
         <div class="content">
-
           <div v-if="noCourses" style=";margin:200px auto;margin-top:200px;text-align:center">暂无课程。</div>
 
           <div style="width:26%;margin:3%" v-for="(item) in courses" :key="item.course.courseId">
-            <el-card style="width:100%" shadow="hover" class="box-card" 
-            v-if="item.course.courseStatus">
-            <!-- v-if="item.course.courseStatus=='进行中'"> -->
+            <el-card
+              style="width:100%"
+              shadow="hover"
+              class="box-card"
+              v-if="item.course.courseStatus"
+            >
+              <!-- v-if="item.course.courseStatus=='进行中'"> -->
 
               <!-- 一个课程 -->
               <div @contextmenu.prevent @click.right="rightClick($event,item)">
@@ -59,8 +62,10 @@
                   <div>{{ getTeacherNameByStaId(item.course.username)}}</div>
                   <div>{{item.teachClass.allPercent}}%</div>
                   <div style="display:flex;">
-                    <div><img width="12px;" height="12px" src="../../assets/icons/like.png"/>{{item.course.likeNum}}</div>&ensp;
-                    <div>回{{item.course.replyNum}}</div>
+                    <div>
+                      <img width="14px;" height="14px" src="../../assets/icons/like.png" />
+                    </div>
+                    <div style="font-weight:545">&nbsp;{{item.course.likeNum}}</div>
                   </div>
                 </div>
               </div>
@@ -85,8 +90,8 @@ export default {
   data() {
     return {
       msg: "我的课程",
-      loading:true,
-      noCourses:true,
+      loading: true,
+      noCourses: true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(),
       courses: null,
       allTeachers: null,
@@ -134,22 +139,18 @@ export default {
             var n = 0; //个数
             var p = 0; //总量
             //当学生第一次进入该课程。并不存在进度
-            if(element.teachClass.progress==0)return;
+            if (element.teachClass.progress == 0) return;
             JSON.parse(element.teachClass.progress).catalog.forEach(ec => {
               p += Number(ec.percent);
               n++;
             });
             element.teachClass.allPercent = (p / n).toFixed(2);
           });
-        if(that.courses.length!=0){
-           that.noCourses = false
-        }
-
+          if (that.courses.length != 0) {
+            that.noCourses = false;
+          }
 
           that.loading = false;
-
-
-
         })
         .catch(function(error) {
           console.log(error);

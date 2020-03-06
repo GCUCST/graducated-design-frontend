@@ -1,5 +1,5 @@
 <template>
-  <div class="video-commit">
+  <div class="video-commit" v-loading="loading">
     <div style="width:99%">
       <el-divider></el-divider>
 
@@ -11,7 +11,7 @@
           :src="myAvatar"></el-avatar>
         </div>
         <div style="margin-left:40px;    width: 80%;">
-          <el-input placeholder="请输入内容" v-model="commentContent" clearable></el-input>
+          <el-input show-word-limit maxlength="512" placeholder="请输入内容" v-model="commentContent" clearable></el-input>
         </div>
         <div style="margin-left:20px;">
           <el-button @click="comment(courseId,'comment')" type="primary">发表</el-button>
@@ -34,11 +34,19 @@
                &nbsp;&nbsp;&nbsp;&nbsp;{{obj.nickName==null?obj.name:obj.nickName}}
            </div>
            
-            <el-button  style="height:40px" type="text"  @click="liked(obj.id,'comment')"><img src="../../assets/icons/like.png" /> {{obj.likeNum}}</el-button>
+            <div   class="like"
+             @click="liked(obj.id,'comment')">
+             {{obj.likeNum}}</div>
             
           </div>
           <br />
-          <div style="margin-left:2em;font-size:18px;text-indent:2em">{{obj.content}}</div>
+          <div v-if="obj.repliedStatus=='ok'" style="margin-left:2em;font-size:18px;text-indent:2em">
+             {{obj.content}}
+          </div>
+           <div v-if="obj.repliedStatus=='del'" style="color:grey;margin-left:2em;font-size:18px;text-indent:2em">
+            <s>该评论被删除。</s>
+          </div>
+
           <br />
 
           <div style="text-align:right;">
@@ -52,7 +60,8 @@
                     <span style="color:gainsboro"> {{"：“ "+item.B.content.substr(0,3)+"...”："}}</span>
                </div>
                <div >
-                <el-button size="mini"   type="text" @click="liked(item.A.id,'replied')"><img src="../../assets/icons/like.png" />{{item.A.likeNum}}</el-button>
+                <div    class="like" @click="liked(item.A.id,'replied')">
+                  {{item.A.likeNum}}</div>
               </div>
 
               
@@ -79,17 +88,20 @@
 
             </div>
             <br>
-            <el-button type="mini" @click="diguiComments(obj.id,obj)">展开</el-button>
+            <el-button v-if="obj.username==username" type="text" @click="delRepliedById(obj.id,obj)">删除</el-button>
+
+            <el-button type="text" @click="diguiComments(obj.id,obj)">展开</el-button>
 
             <!-- <el-button type="mini"  @click="liked(obj.id,'comment')">赞 {{obj.likeNum}}</el-button> -->
            
           
-            <el-button type="mini"  @click="showRepliedInputId=obj.id">回复</el-button>
-            {{obj.replyNum}}
+            <el-button type="text"  @click="showRepliedInputId=obj.id">回复</el-button>
+            <!-- {{obj.replyNum}} -->
 
           <br>
 
             <el-input
+            maxlength="512"
               style="width:500px;"
               v-if="obj.id==showRepliedInputId?true:false"
               v-model="repliedContent"
@@ -120,6 +132,8 @@ export default {
   name: "VideoCourse",
   data() {
     return {
+      username:JSON.parse(localStorage.getItem('userInfo')).account,
+      loading:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       myAvatar: null,//我的头像
       courseId: null, //第一次进来课程id
@@ -169,9 +183,8 @@ export default {
         }
       });
       this.comments = commentsJSON;
-      // console.log(commentsJSON);
-      // console.log(repliesJSON);
       console.log("评论获取完毕。")
+      this.loading = false;
 
     },
     //获取所有评论和回复
@@ -185,6 +198,22 @@ export default {
           that.allReplies = response.data.object;
           that.dealComments(that.allReplies);
         });
+    },
+
+    delRepliedById(id,obj){
+      var parmas = new URLSearchParams();
+      parmas.append("id", id);
+      var that = this;
+      axios.post("/comm/delRepliedById", parmas).then(function(response) {
+        if(response.data.object==1){
+           that.$message({
+          message: '删除成功。',
+          type: 'success'
+        });
+        obj.repliedStatus='del'
+        }
+      });
+
     },
     //评论
     comment(targetId, targetType) {
@@ -227,13 +256,16 @@ export default {
         console.log(response.data.object);
         if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
-        if (targetType == "comment") {
+        if (targetType == "comment"||targetType == "replied") {
           for (var i = 0; i < that.allReplies.length; i++) {
             if (that.allReplies[i].id == targetId) {
               that.allReplies[i].likeNum++;
             }
           }
         }
+        }
+        else{
+            that.$message('已经点过赞了哦');
         }
 
       });
@@ -260,5 +292,27 @@ export default {
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 5px; */
+}
+
+
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
 </style>

@@ -22,13 +22,15 @@
                     <img style="width:100%;height:200px;" :src="QiniuyunUrl+item.cover" />
                   </div>
                   <!-- 标题 -->
-                  <div class="title">{{item.title}}</div>
+                  <div class="title" @click="toVideoCourse(item.courseId)">{{item.title}}</div>
                 </div>
 
-                <footer class="bottom-content">
-                  <div>赞{{item.likeNum}}</div>
-                  <div>回{{item.replyNum}}</div>
+               <footer class="bottom-content">
+               <img width="15px;" height="15px" src="../../../assets/icons/like.png"/>
+               {{item.likeNum}}
+                  <!-- <div>回{{item.replyNum}}</div> -->
                 </footer>
+
 
                 <!-- /一个课程 -->
               </el-tab-pane>
@@ -253,6 +255,15 @@ export default {
     this.reflashTeachClass();
   },
   methods: {
+        toVideoCourse(courseId){
+        this.$router.push({
+        name: "VideoCourse",
+        query: { courseId: courseId, videoId: null }
+      });
+
+    },
+
+
     cancelEdit() {
       this.editorId = false;
     },
@@ -518,11 +529,12 @@ export default {
 }
 
 .bottom-content {
-  font-size: 12px;
-  display: flex;
+  font-size: 15px;
+  /* display: flex; */
   margin-top: 30px;
   height: 15px;
-  justify-content: space-between;
+  line-height: 15px;
+  /* justify-content: space-between; */
 }
 
 .title {
@@ -530,7 +542,34 @@ export default {
   text-align: center;
   margin-top: 10px;
 }
+.title:hover{
+   font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+  color: #409Eff;
+  margin-top: 10px;
+}
 .box-card {
   width: 300px;
+}
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../../assets/icons/like-full.png") no-repeat left center;
 }
 </style>

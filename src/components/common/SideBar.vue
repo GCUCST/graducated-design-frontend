@@ -176,15 +176,16 @@
 
           <el-menu-item index="5" v-if="role!=null" @click="routeJump('Message')">
             <!-- 小红点提示消息未读 -->
-            <el-badge :value="3" class="item">
-              <i class="el-icon-setting"></i>
+            <el-badge :value="unReadMsgNum" v-show="unReadMsgNum!=0"  >
+              <i class="el-icon-message"></i>
             </el-badge>
-            <span slot="title">消息系统（所有，需登录）</span>
+              <i class="el-icon-message" v-show="unReadMsgNum==0"></i>
+            <span slot="title">消息系统</span>
           </el-menu-item>
 
           <!-- 帮助反馈 -->
           <el-menu-item index="6" @click="routeJump('HelpFreeback')">
-            <i class="el-icon-setting"></i>
+            <i class="el-icon-s-help"></i>
             <span slot="title">帮助反馈</span>
           </el-menu-item>
 
@@ -207,6 +208,7 @@ export default {
   name: "Sidebar",
   data() {
     return {
+      unReadMsgNum:0,
       msg: "Sidebar", //没用
       isCollapse: true, //用于最大化侧边栏
       ifShowSideBar: true, //显示侧边栏
@@ -295,9 +297,24 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    getAllMyUnReadMsgNum(){
+     var that = this;
+      axios
+        .post("/comm/getMyUnReadMsgNum")
+        .then(function(response) {
+            console.log(response)
+            that.unReadMsgNum = response.data.object
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   mounted() {
+     if(localStorage.getItem("userInfo"))
+      this.getAllMyUnReadMsgNum()
+     
     //收到更新侧边栏功能的指令
     var that = this;
     VueBus.$on("role", function(data) {
@@ -307,7 +324,11 @@ export default {
         ? UrlConfig.getQiniuyunUrl() +
           JSON.parse(localStorage.getItem("userInfo")).info.avatar
         : null;
+         if(localStorage.getItem("userInfo"))
+         that.getAllMyUnReadMsgNum()
     });
+
+
   }
 };
 </script>
@@ -338,5 +359,12 @@ export default {
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
+}
+.item{
+  margin-top: 10px;
+  margin-right: 40px;
+}
+.item2{
+  display: none;
 }
 </style>

@@ -1,5 +1,6 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 import Router from 'vue-router'
+
 
 
 //系统公共部分
@@ -89,11 +90,6 @@ const ChapterPractice = () => import('@/components/exam_system/stu/ChapterPracti
 const ChapterTest = () => import('@/components/exam_system/stu/ChapterTest') //懒加载
 const Exam = () => import('@/components/exam_system/stu/Exam') //懒加载
 const ErrorSet = () => import('@/components/exam_system/stu/ErrorSet') //懒加载
-
-
-
-
-
 
 
 
