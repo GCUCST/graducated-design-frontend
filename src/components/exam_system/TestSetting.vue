@@ -215,7 +215,7 @@ export default {
           shortNum: 2,   //简答题数量
           proBlankNum:1,   //程序填空题
           programNum:1,    //编程题数量
-          paperNum: 50,   //生成试卷数量
+          paperNum: 50,   //生成试卷数量（每生成一张卷子就+1）
           examedNum:20,   //已考人数
           createTime:'2020-03-03  00:00:00'   //添加考试的时间
         },

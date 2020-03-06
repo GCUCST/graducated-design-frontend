@@ -158,6 +158,9 @@ export default {
     onSubmit(){
       console.log('搜索试卷');
     },
+    handleCurrentChange(val) {
+      this.currentRow = val;
+    },
   }
 };
 </script>
