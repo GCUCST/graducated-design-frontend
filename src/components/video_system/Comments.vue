@@ -88,7 +88,7 @@
 
             </div>
             <br>
-            <el-button type="text" @click="delRepliedById(obj.id)">删除</el-button>
+            <el-button v-if="obj.username==username" type="text" @click="delRepliedById(obj.id,obj)">删除</el-button>
 
             <el-button type="text" @click="diguiComments(obj.id,obj)">展开</el-button>
 
@@ -132,6 +132,7 @@ export default {
   name: "VideoCourse",
   data() {
     return {
+      username:JSON.parse(localStorage.getItem('userInfo')).account,
       loading:true,
       QiniuyunUrl: UrlConfig.getQiniuyunUrl(), //七牛云地址
       myAvatar: null,//我的头像
@@ -199,7 +200,7 @@ export default {
         });
     },
 
-    delRepliedById(id){
+    delRepliedById(id,obj){
       var parmas = new URLSearchParams();
       parmas.append("id", id);
       var that = this;
@@ -209,6 +210,7 @@ export default {
           message: '删除成功。',
           type: 'success'
         });
+        obj.repliedStatus='del'
         }
       });
 

@@ -176,7 +176,7 @@
 
           <el-menu-item index="5" v-if="role!=null" @click="routeJump('Message')">
             <!-- 小红点提示消息未读 -->
-            <el-badge :value="unReadMsgNum" v-show="unReadMsgNum!=0"  class="item">
+            <el-badge :value="unReadMsgNum" v-show="unReadMsgNum!=0"  >
               <i class="el-icon-message"></i>
             </el-badge>
               <i class="el-icon-message" v-show="unReadMsgNum==0"></i>
