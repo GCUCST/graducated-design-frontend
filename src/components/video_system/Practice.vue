@@ -27,7 +27,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
-              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
             </div>
           </el-collapse-item>
 
@@ -50,7 +50,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
-              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
             </div>
           </el-collapse-item>
           <!-- 填空 -->
@@ -66,9 +66,10 @@
               type="text"
             >删除</el-button>
             <div style="display:flex;">
-              <div v-for="(i,j) in item.answer" :key="j">
+              <div v-for="(i,j) in JSON.parse(item.answer)" :key="j">
                 {{j+1}}、
-                <el-input v-model="blankList[j]" style="margin-right:50px;;width:100px;" />
+                <el-input v-model="blankList[j]" 
+                style="margin-right:50px;;width:100px;" />
               </div>
             </div>
             <div style="text-align:center">
@@ -76,7 +77,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
-              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
             </div>
           </el-collapse-item>
         </div>
