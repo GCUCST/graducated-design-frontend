@@ -11,7 +11,7 @@
             </template>
             <!-- 教师持有这个 -->
             <el-button
-              @click="del(item.QuestionId)"
+              @click="del(item.questionId)"
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
@@ -27,6 +27,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
             </div>
           </el-collapse-item>
 
@@ -37,7 +38,7 @@
             </template>
             <!-- 教师持有这个 -->
             <el-button
-              @click="del(item.QuestionId)"
+              @click="del(item.questionId)"
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
@@ -49,6 +50,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
             </div>
           </el-collapse-item>
           <!-- 填空 -->
@@ -58,7 +60,7 @@
             </template>
             <!-- 教师持有这个 -->
             <el-button
-              @click="del(item.QuestionId)"
+              @click="del(item.questionId)"
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
@@ -74,6 +76,7 @@
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
+              <span v-show="showAnswerId==index">,描述：{{item.desc}}</span>
             </div>
           </el-collapse-item>
         </div>
@@ -89,14 +92,15 @@
       <div style="text-align:right">
         <el-button @click="showQuestionsPanel = !showQuestionsPanel" icon="el-icon-close" circle></el-button>
       </div>
-       <div style="width:50%;margin:0 auto"><el-input  v-model="search" size="mini" placeholder="输入关键字搜索" />
-            </div>
+      <div style="width:50%;margin:0 auto">
+        <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+      </div>
       <el-table
         :data="allQuestions.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))"
         max-height="450"
         style="width: 100%"
       >
-        <el-table-column label="编号" prop="QuestionId"></el-table-column>
+        <el-table-column label="编号" prop="questionId"></el-table-column>
         <el-table-column label="标题" prop="title"></el-table-column>
         <el-table-column label="类型" prop="questionType"></el-table-column>
         <el-table-column align="right">
@@ -105,8 +109,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <br>
-           
+      <br />
     </div>
   </div>
 </template>
@@ -119,7 +122,7 @@ export default {
   name: "VideoCourse",
   data() {
     return {
-      role:  JSON.parse(localStorage.getItem("userInfo")).info.role,
+      role: JSON.parse(localStorage.getItem("userInfo")).info.role,
       search: "",
       showAnswerId: null,
       loading: true,
@@ -131,51 +134,23 @@ export default {
       blankList: [],
       simpleAnswers: null,
 
-      allQuestions: [
-        {
-          QuestionId: 1,
-          questionType: 0,
-          title: "下列需要虚拟机中执行代码的是？",
-          score: 2,
-          attrA: "Java代码",
-          attrB: "c代码",
-          attrC: "C++代码",
-          attrD: "PHP代码",
-          answer: ["PHP代码", "c代码"],
-          desc: "这道题目考察Java的基本内容。"
-        },
-        {
-          QuestionId: 3,
-          questionType: 1,
-          title: "java三大特性___ , ___ 和 ___。",
-          score: 3,
-          attrA: "",
-          attrB: "",
-          attrC: "",
-          attrD: "",
-          answer: ["封装", "继承", "多态"],
-          desc: "这道题目考察Java的基本内容。"
-        },
-        {
-          QuestionId: 2,
-          questionType: "2",
-          title: "包的作用是？",
-          score: 5,
-          attrA: null,
-          attrB: null,
-          attrC: null,
-          attrD: null,
-          answer: [
-            "1、将功能相近的类放到同一个包中，可以方便查找和使用。2、在一定程度上避免命名冲突。"
-          ],
-          desc: "这道题考察包的作用。"
-        }
-      ],
+      allQuestions: [],
       questions: []
-     
     };
   },
   methods: {
+    getAllQuestionsByPracticeSystem() {
+      var that = this;
+      axios
+        .post("/comm/getAllQuestionsByPracticeSystem")
+        .then(function(response) {
+          console.log(response);
+          that.allQuestions = response.data.object;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     getQuestions() {
       console.log("getQuestion被调用。。");
       var parmas = new URLSearchParams();
@@ -191,6 +166,7 @@ export default {
           } else if (response.data.object.questions) {
             that.questions = JSON.parse(response.data.object.questions);
           }
+              that.loading = false;
         })
         .catch(function(error) {
           console.log(error);
@@ -234,16 +210,22 @@ export default {
       console.log(index, row);
       var exist = false;
       this.questions.forEach(element => {
-        if (element.QuestionId == row.QuestionId) {
-          alert("已存在");
+        if (element.questionId == row.questionId) {
+          this.$message.error("已添加该题目");
           exist = true;
         }
       });
-      if (!exist) this.questions.push(row);
+      if (!exist) {
+        this.questions.push(row);
+        this.$message({
+          message: "添加成功",
+          type: "success"
+        });
+      }
     },
-    del(QuestionId) {
+    del(questionId) {
       this.questions.forEach((element, i) => {
-        if (element.QuestionId == QuestionId) this.questions.splice(i, 1);
+        if (element.questionId == questionId) this.questions.splice(i, 1);
       });
     }
   },
@@ -251,7 +233,7 @@ export default {
   mounted() {
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
-    this.loading = false;
+    this.getAllQuestionsByPracticeSystem();
     this.getQuestions();
     var that = this;
     VueBus.$on("reflash_practice", function(data) {
@@ -275,18 +257,18 @@ export default {
   min-height: 600px;
   margin: 0px auto;
   padding: 20px;
-  width: 90%;
+  /* width: 90%; */
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .panel {
   text-align: left;
-  height: 60%;
   width: 100%;
   min-height: 450px;
   position: initial;
-  margin: 0 auto;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  margin: 10 auto;
+  padding: 10px;
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.1);
   z-index: 99;
   background: white;
 }

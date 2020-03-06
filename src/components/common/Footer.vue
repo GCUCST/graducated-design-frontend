@@ -20,7 +20,8 @@ export default {
 .footer {
   height: 30px;
   text-align: center;
-  margin: 10px auto;
+  margin: 20px auto;
+  width: 95%;
   padding: 30px;
   background: white;
  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);

@@ -123,6 +123,7 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       alert("该页面需要登录")
+
       next({
         path: "/index/login",
       })

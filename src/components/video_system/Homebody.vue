@@ -42,7 +42,12 @@
                 <div class="bottom-content">
                   <div>{{ item.author}}</div>
                   <div style="display:flex;">
-                    <div> <img width="12px;" height="12px" src="../../assets/icons/like.png"/>{{item.likeNum}}</div>&ensp;
+
+                    <div>
+                       <img width="14px;" height="14px" src="../../assets/icons/like.png"/>
+                    </div>
+                       <div style="font-weight:545" >&nbsp;{{item.likeNum}}</div>
+
                   </div>
                 </div>
               </div>
@@ -50,7 +55,6 @@
           </div>
         </div>
       </el-tab-pane>
-
     </el-tabs>
   </div>
 </template>

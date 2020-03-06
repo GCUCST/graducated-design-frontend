@@ -68,8 +68,10 @@
                   style="margin:0 auto;width:80%;text-align:left;text-indent:2em;font-size:16px"
                 >{{item.content}}</div>
 
-                <div style="margin-top:20px;text-align:right"></div>
-                <br />
+                  <div style="margin-top:20px;text-align:right">
+                  <el-button @click="delMessage(item.id)" type="danger" icon="el-icon-delete" circle></el-button>
+                </div>
+                <br>
                 <div style="text-align:right">来源：{{item.senderName}}({{item.sender}})</div>
                 <div style="text-align:right">——{{item.createTime}}</div>
               </el-collapse-item>
@@ -100,6 +102,35 @@ export default {
     this.getAllMyMessages();
   },
   methods: {
+    delMessage(id){
+      var parmas = new URLSearchParams();
+      parmas.append("messageId", id);
+      var that = this;
+      axios
+        .post("/comm/delMessage", parmas)
+        .then(function(response) {
+            console.log(response)
+            if(response.data.object==1){
+              
+              that.hadReadMsgs.forEach((element,index) => {
+                if(element.id==id){
+                   that.hadReadMsgs.splice(index,1)
+                   that.$message({
+          message: '删除成功。',
+          type: 'success'
+        });
+
+                }
+              });
+            }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+
+
+    },
     read(id,index,item) {
       console.log(id);
       var parmas = new URLSearchParams();

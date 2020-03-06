@@ -16,7 +16,7 @@
         >时间：{{ !date?null:new Date(date[0]).toLocaleDateString()+" - "+new Date(date[1]).toLocaleDateString()}}</div>
         <div style="text-align:left;font-size:16px;font-weight:bold">标签：{{tags}}</div>
         <div style="text-align:left;font-size:16px;font-weight:bold">
-          类型：{{courseType=="public"?"公开课":courseType=="required"?"必修课":
+          类型：{{courseType=="public"?"公开课（温馨提示：公开课无需发布，即可发布于主界面）":courseType=="required"?"必修课":
           courseType=="electives"?"选修课":courseType=="generalElective"?"通选课":
           courseType=="other"?"其他":null
           }}

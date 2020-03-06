@@ -41,17 +41,12 @@
                 :style="{'width': (video_full ? '100%':'85%')}"
               >
                 <span>
-                  <el-button
-                    plain
-                    type="text"
+                  <div
+                    class="like"
                     @click="liked(course.courseId,'course')"
-                  ><img src="../../assets/icons/like.png" />
-                  {{course?course.likeNum:0}}
-                  </el-button>
-
-                  <!-- <el-button plain type="text">{{course?course.replyNum:0}}评论</el-button> -->
+                  >{{course?course.likeNum:0}}</div>
                 </span>
-                <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen"></el-button>
               </div>
             </div>
           </div>
@@ -76,7 +71,10 @@
                     :key="index"
                   >
                     <span style="cursor:pointer;">{{item.label}}</span>
-                    <el-progress  :stroke-width="2" :percentage="Number(item.percent?item.percent:0)"></el-progress>
+                    <el-progress
+                      :stroke-width="2"
+                      :percentage="Number(item.percent?item.percent:0)"
+                    ></el-progress>
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -93,7 +91,7 @@
 <script>
 import axios from "axios";
 import UrlConfig from "../../config/UrlConfig.js";
-import VueBus from '../../utils/VueBus';
+import VueBus from "../../utils/VueBus";
 export default {
   name: "VideoCourse",
   data() {
@@ -145,22 +143,20 @@ export default {
       var that = this;
       this.progress.catalog.forEach(element => {
         if (element.videoId == videoId) {
-          console.log(element);
           that.far = element.far;
           that.videoSrc = that.QiniuyunUrl + element.url;
         }
       });
 
-                          this.$router.push({
-                            name: "VideoCourse",
-                            query: { courseId: this.courseId, videoId: videoId }
-                          });
-                          this.courseId = this.$route.query.courseId;
-                          this.videoId = this.$route.query.videoId;
+      this.$router.push({
+        name: "VideoCourse",
+        query: { courseId: this.courseId, videoId: videoId }
+      });
+      this.courseId = this.$route.query.courseId;
+      this.videoId = this.$route.query.videoId;
 
-                          var data = {courseId:this.courseId,videoId:this.videoId}
-            VueBus.$emit("reflash_practice",data)
-
+      var data = { courseId: this.courseId, videoId: this.videoId };
+      VueBus.$emit("reflash_practice", data);
     },
 
     //获取小标题
@@ -211,7 +207,7 @@ export default {
     setProgress() {
       var that = this;
       var Media = document.getElementById("qnv");
-   
+
       Media.addEventListener(
         "timeupdate",
         function() {
@@ -221,26 +217,21 @@ export default {
           //--------设置进度---------------
           for (var i = 0; i < that.progress.catalog.length; i++) {
             if (that.progress.catalog[i].videoId == that.videoId) {
-              
               that.progress.catalog[i].far = Number(that.far);
               if (that.progress.catalog[i].percent == 0) {
                 that.progress.catalog[i].percent =
                   (Number(that.far) / Number(Media.duration)) * 100;
               } else {
-                 
                 if (Media.duration) {
                   that.progress.catalog[i].percent = (
                     Number(that.far / Media.duration) * 100
                   ).toFixed(2);
-                  if( that.progress.catalog[i].percent>98){
-                      that.progress.catalog[i].percent = 100
+                  if (that.progress.catalog[i].percent > 98) {
+                    that.progress.catalog[i].percent = 100;
                   }
-                  
-                }
-                else{
+                } else {
                 }
               }
-
             }
           }
           var rightTime = (
@@ -256,9 +247,8 @@ export default {
             rightTime == 0.7 ||
             rightTime == 0.8 ||
             rightTime == 0.9 ||
-            rightTime == 0.95||
-            rightTime == 1.00
-
+            rightTime == 0.95 ||
+            rightTime == 1.0
           ) {
             //上传
             // localStorage.setItem("progress", JSON.stringify(that.progress));
@@ -393,6 +383,26 @@ export default {
   height: 750px;
   text-align: center;
   object-fit: fill;
+}
+.like {
+  display: inline-block;
+  margin-left: 15px;
+  padding-left: 30px;
+  color: #e96565;
+  line-height: 40px;
+  cursor: pointer;
+  font-size: 15px;
+  background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover {
+  display: inline-block;
+  margin-left: 15px;
+  cursor: pointer;
+  line-height: 40px;
+  padding-left: 30px;
+  color: #e96565;
+  font-size: 15px;
+  background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
 
 video {

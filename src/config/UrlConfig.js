@@ -1,7 +1,7 @@
 import Vue from 'vue'
 const QiniuyunUrl = "http://cdn.chenshaotong.cn/"   //七牛云的地址
 // const WebServerUrl = "http://chenshaotong.cn"   //web服务器地址  服务器
-const WebServerUrl = " http://cst.natapp1.cc"   //web服务器地址  本地
+const WebServerUrl = "http://cst.natapp1.cc"   //web服务器地址  本地
 
 const baseUrl = "/api"               //url前缀，供代理使用
 

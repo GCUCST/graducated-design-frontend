@@ -25,10 +25,12 @@
                   <div class="title" @click="toVideoCourse(item.courseId)">{{item.title}}</div>
                 </div>
 
-                <footer class="bottom-content">
- <img width="12px;" height="12px" src="../../../assets/icons/like.png"/>{{item.likeNum}}&ensp;
+               <footer class="bottom-content">
+               <img width="15px;" height="15px" src="../../../assets/icons/like.png"/>
+               {{item.likeNum}}
                   <!-- <div>回{{item.replyNum}}</div> -->
                 </footer>
+
 
                 <!-- /一个课程 -->
               </el-tab-pane>
@@ -527,10 +529,11 @@ export default {
 }
 
 .bottom-content {
-  font-size: 12px;
+  font-size: 15px;
   /* display: flex; */
   margin-top: 30px;
   height: 15px;
+  line-height: 15px;
   /* justify-content: space-between; */
 }
 

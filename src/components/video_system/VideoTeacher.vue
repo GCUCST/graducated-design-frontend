@@ -41,12 +41,14 @@
                 :style="{'width': (video_full ? '100%':'85%')}"
               >
                 <span>
-                  <el-button plain type="text" @click="liked(course.courseId,'course')">
-                    <img src="../../assets/icons/like.png" />
-                    {{course?course.likeNum:0}}
-                  </el-button>
+                  <div
+                    class="like"
+                    @click="liked(course.courseId,'course')"
+                  > 
+                  {{course?course.likeNum:0}}
+                  </div>
                 </span>
-                <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen" ></el-button>
               </div>
             </div>
           </div>
@@ -238,6 +240,27 @@ export default {
   text-align: center;
   object-fit: fill;
 }
+.like{
+      display: inline-block;
+      margin-left: 15px;
+      padding-left: 30px;
+      color: #E96565;
+      line-height: 40px;
+      cursor: pointer;
+      font-size: 15px;
+      background: url("../../assets/icons/like.png") no-repeat left center;
+}
+.like:hover{
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+      line-height: 40px;
+      padding-left: 30px;
+      color: #E96565;
+      font-size: 15px;
+      background: url("../../assets/icons/like-full.png") no-repeat left center;
+}
+
 
 video {
   transition: all 300ms ease-in-out 50ms;

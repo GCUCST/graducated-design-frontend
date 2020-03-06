@@ -45,7 +45,7 @@
                   {{course?course.likeNum:0}}
                   </div>
                 </span>
-                <el-button @click="video_full=!video_full" plain type="primary">网页全屏</el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen" ></el-button>
               </div>
             </div>
           </div>

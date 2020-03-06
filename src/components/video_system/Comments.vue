@@ -40,7 +40,13 @@
             
           </div>
           <br />
-          <div style="margin-left:2em;font-size:18px;text-indent:2em">{{obj.content}}</div>
+          <div v-if="obj.repliedStatus=='ok'" style="margin-left:2em;font-size:18px;text-indent:2em">
+             {{obj.content}}
+          </div>
+           <div v-if="obj.repliedStatus=='del'" style="color:grey;margin-left:2em;font-size:18px;text-indent:2em">
+            <s>该评论被删除。</s>
+          </div>
+
           <br />
 
           <div style="text-align:right;">
@@ -82,12 +88,14 @@
 
             </div>
             <br>
-            <el-button type="mini" @click="diguiComments(obj.id,obj)">展开</el-button>
+            <el-button type="text" @click="delRepliedById(obj.id)">删除</el-button>
+
+            <el-button type="text" @click="diguiComments(obj.id,obj)">展开</el-button>
 
             <!-- <el-button type="mini"  @click="liked(obj.id,'comment')">赞 {{obj.likeNum}}</el-button> -->
            
           
-            <el-button type="mini"  @click="showRepliedInputId=obj.id">回复</el-button>
+            <el-button type="text"  @click="showRepliedInputId=obj.id">回复</el-button>
             <!-- {{obj.replyNum}} -->
 
           <br>
@@ -189,6 +197,21 @@ export default {
           that.allReplies = response.data.object;
           that.dealComments(that.allReplies);
         });
+    },
+
+    delRepliedById(id){
+      var parmas = new URLSearchParams();
+      parmas.append("id", id);
+      var that = this;
+      axios.post("/comm/delRepliedById", parmas).then(function(response) {
+        if(response.data.object==1){
+           that.$message({
+          message: '删除成功。',
+          type: 'success'
+        });
+        }
+      });
+
     },
     //评论
     comment(targetId, targetType) {
