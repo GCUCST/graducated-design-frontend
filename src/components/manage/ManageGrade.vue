@@ -9,9 +9,11 @@
           <el-button @click="addGrade()">添加</el-button>
         </div>
 
-        <el-table :data="gradeJson" style="width: 50%;margin:0 auto" max-height="400">
+        <el-table :data="gradeJson" style="width: 60%;margin:0 auto" max-height="400">
+             <el-table-column type="selection"></el-table-column>
+            <el-table-column label="序号" type="index" width="80"></el-table-column>
           <el-table-column fixed prop="id" label="编号" width="150"></el-table-column>
-          <el-table-column prop="name" label="名称" width="150"></el-table-column>
+          <el-table-column prop="name" sortable label="名称" width="150"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -58,7 +60,10 @@ export default {
         .post("/comm/updateGSMA",params)
         .then(function(response) {
            if(response.data.object==1){
-             alert("更新成功。")
+             that.$message({
+          message: '保存成功',
+          type: 'success'
+        });
            }
         })
         .catch(function(error) {
@@ -67,25 +72,57 @@ export default {
 
     },
     handleDelete(index, row) {
-      console.log(index, row);
-      console.log(row.id);
-      this.gradeJson.forEach((element, i) => {
-        if (element.id == row.id) {
-          this.gradeJson.splice(i, 1);
-        }
-      });
+
+      this.$confirm('删除该年级？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+                this.gradeJson.forEach((element, i) => {
+                  if (element.id == row.id) {
+                    this.gradeJson.splice(i, 1);
+                     this.$message({
+          message: '删除成功。（需手动保存）',
+          type: 'success'
+        });
+                  }
+                });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+
+
     },
     addGrade() {
       if (this.input == null) {
-        alert("请输入年级。");
+          this.$message.error("请输入年级。");
         return;
       }
       //去空格
       this.input = this.input.replace(/\s+/g, "");
       if (this.input == "") {
-        alert("请输入年级。");
+         this.$message.error("请输入年级。");
         return;
       }
+
+       if(isNaN(this.input)){
+           this.$message.error("年级不合法！");
+           return;
+       }
+
+      var goNext = true;
+       this.gradeJson.forEach(element => {
+         if(element.name==this.input){
+           this.$message.error("已存在该年级。");
+          goNext = false;
+         }
+       });
+
       var grade = {
         id: new Date()
           .valueOf()
@@ -93,8 +130,13 @@ export default {
           .substring(7),
         name: this.input
       };
-      this.gradeJson.push(grade);
+      if(goNext)
+      this.gradeJson.unshift(grade);
       this.input = null;
+
+      this.save();
+
+
     },
     getGSMA() {
       // var params = new URLSearchParams();
@@ -120,10 +162,13 @@ export default {
 
 <style scoped>
 .manage-student {
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   margin: 20px auto;
-  padding: 30px;
   background: white;
-  width: 95%;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  padding: 30px;
 }
 </style>

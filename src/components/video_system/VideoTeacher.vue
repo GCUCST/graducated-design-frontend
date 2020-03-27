@@ -113,6 +113,7 @@ export default {
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
         console.log(response);
+        if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
         if (targetType == "comment") {
           for (var i = 0; i < that.allReplies.length; i++) {
@@ -121,6 +122,11 @@ export default {
             }
           }
         }
+        }else{
+          that.$message('已经点过赞了哦');
+        }
+
+
       });
     },
 
