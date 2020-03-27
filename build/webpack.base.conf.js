@@ -23,7 +23,7 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
-  ///        引入外部cdn文件 by
+  ///        引入外部cdn文件 by cst
   externals:{
     'Vue':'Vue',
     'element-ui':'ELEMENT'

@@ -1,3 +1,4 @@
+
 <template >
   <div class="manage-student" v-loading="loading">
     <el-tabs tab-position="up">
@@ -54,10 +55,11 @@
 
                <el-table-column
       align="right">
+      <!-- eslint-disable-next-line -->
       <template slot="header" slot-scope="scope">
         <el-input
+           @click="fun(scope.$index)"
           v-model="search"
-          size="mini"
           placeholder="输入姓名搜索"/>
       </template>
 
@@ -65,7 +67,6 @@
 
               <template slot-scope="scope">
                 <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
-              
                 <el-button
                   size="mini"
                   type="danger"
@@ -161,6 +162,8 @@ export default {
     this.getAllStudents();
   },
   methods: {
+    
+    fun(num){},
     selClass() {
       this.adminClassJson.forEach(element => {
         if (element.id == this.temp_item_id) {

@@ -28,13 +28,13 @@
               </template>
         </el-table-column>
 
-        <el-table-column label="操作">
+        <el-table-column label="操作"   align="right">
           
 
                 <template slot="header" slot-scope="scope">
         <el-input
           v-model="search"
-          size="mini"
+         @click="fun(scope.$index)"
           placeholder="输入姓名搜索"/>
       </template>
           
@@ -100,6 +100,7 @@ export default {
     this.getAllTeachers();
   },
   methods: {
+    fun(num){},
     getGSMA() {
       // var params = new URLSearchParams();
       // params.append("GSMAJson", JSON.stringify(GSMAJson));

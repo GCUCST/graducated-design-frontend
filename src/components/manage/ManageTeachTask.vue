@@ -18,15 +18,15 @@
             <el-table-column prop="courseName" label="课程名称"></el-table-column>
             <el-table-column prop="content" label="详情"></el-table-column>
 
-            <el-table-column label="操作">
-                  <template slot="header" slot-scope="scope">
-
+           <el-table-column
+      align="right">
+      <template slot="header" slot-scope="scope">
         <el-input
           v-model="search"
-          size="mini"
-          placeholder="输入课程名称搜索"/>
+          @click="fun(scope.$index)"
+          placeholder="输入关键字搜索"/>
       </template>
-          
+
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -83,7 +83,7 @@ export default {
   name: "teacher",
   data() {
     return {
-      search:"",
+      search: "",
       loading: true,
       courseName: null,
       content: null,
@@ -102,6 +102,8 @@ export default {
     this.getAllTask();
   },
   methods: {
+    fun(num){
+    },
     getAllTask() {
       //teachTaskList
       // var params = new URLSearchParams();
@@ -188,7 +190,7 @@ export default {
                 });
                 that.teachTaskList.splice(index, 1);
               } else {
-                  that.$message.error("删除失败。");
+                that.$message.error("删除失败。");
               }
             })
             .catch(function(error) {
@@ -240,15 +242,15 @@ export default {
         return;
       }
       if (this.content == null || this.content == "") {
-          this.$message.error("请输入详情！");
+        this.$message.error("请输入详情！");
         return;
       }
       if (this.teacherId == null || this.teacherId == "") {
-          this.$message.error("请选择教师！");
+        this.$message.error("请选择教师！");
         return;
       }
       if (this.teacherName == null || this.teacherName == "") {
-          this.$message.error("请选择教师！");
+        this.$message.error("请选择教师！");
         return;
       }
 
@@ -264,12 +266,12 @@ export default {
         .then(function(response) {
           console.log("addTeachTask:", response);
           if (response.data.object == 1) {
- that.$message({
-          message: '添加成功',
-          type: 'success'
-        });
+            that.$message({
+              message: "添加成功",
+              type: "success"
+            });
 
-            that. getAllTask() ;
+            that.getAllTask();
             that.courseName = "";
             that.content = "";
           }
