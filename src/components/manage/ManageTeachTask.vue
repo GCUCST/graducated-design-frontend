@@ -24,7 +24,7 @@
         <el-input
           v-model="search"
           @click="fun(scope.$index)"
-          placeholder="输入关键字搜索"/>
+          placeholder="输入课程搜索"/>
       </template>
 
               <template slot-scope="scope">

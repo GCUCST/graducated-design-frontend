@@ -1,14 +1,75 @@
 
 <template >
   <div class="manage-student" v-loading="loading">
+    
+
+    <div v-show="showEditPanel" style="
+      text-align: center;
+  width: 80%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin: 0 auto;
+  background: white;
+  z-index: 999;
+  position:fixed;
+  overflow: auto;
+  height:450px;
+  padding: 20px;
+    ">
+        <div style="text-align:right"><el-button @click=" showEditPanel=!showEditPanel "  circle>X</el-button></div>
+        <div style="font-size:16px;">
+        学号：{{oldStuInfo.stuId}} &nbsp;&nbsp;&nbsp;&nbsp;
+        姓名：{{oldStuInfo.name}}&nbsp;&nbsp;&nbsp;&nbsp;
+        年级：{{oldStuInfo.grade}}&nbsp;&nbsp;&nbsp;&nbsp;
+        专业：{{oldStuInfo.major}}&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+  <el-tabs  value="first" >
+    <el-tab-pane  label="转专业" name="first">
+      <div style="font-size:16px;;margin:50px 50px;">
+         现专业：{{oldStuInfo.major}} ==>
+    <el-select  v-model="newStuInfo.major" placeholder="请选择">
+    <el-option
+      v-for="item in majorJson"
+      :key="item.name"
+      :label="item.name"
+      :value="item.name">
+    </el-option>
+  </el-select><br><br><br>
+   <el-button type="primary" @click="comfirmNewInfo('major')" round>确定</el-button>
+
+      </div>
+    </el-tab-pane>
+    <el-tab-pane label="升降级" name="fourth">
+      <div style="font-size:16px;;margin:50px 50px;">
+         现年级：{{oldStuInfo.grade}}==>
+    <el-select  v-model="newStuInfo.grade" placeholder="请选择">
+    <el-option
+      v-for="item in gradeJson"
+      :key="item.name"
+      :label="item.name"
+      :value="item.name">
+    </el-option>
+  </el-select><br><br><br>
+   <el-button type="primary" @click="comfirmNewInfo('grade')" round>确定</el-button>
+      </div>
+
+
+      
+    </el-tab-pane>
+  </el-tabs>
+    </div>
+
+
+
+
+
     <el-tabs tab-position="up">
       <el-tab-pane :label="'学生管理'">
         <div style="text-align:center">
           <!-- 开始。。。。。。。。。。。。。。。。。 -->
           <el-table
-           :data="allStudents.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            :data="allStudents.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
             ref="multipleTable"
-   
             tooltip-effect="dark"
             @selection-change="handleSelectionChange"
             height="450"
@@ -53,26 +114,23 @@
               show-overflow-tooltip
             ></el-table-column>
 
-               <el-table-column
-      align="right">
-      <!-- eslint-disable-next-line -->
-      <template slot="header" slot-scope="scope">
-        <el-input
-           @click="fun(scope.$index)"
-          v-model="search"
-          placeholder="输入姓名搜索"/>
-      </template>
-
-            <!-- <el-table-column label="操作"> -->
+            <el-table-column  width="180" label="操作">
+              <!-- eslint-disable-next-line -->
+              <template slot="header" slot-scope="scope">
+                <el-input @click="fun(scope.$index)" v-model="search" placeholder="输入姓名搜索" />
+              </template>
 
               <template slot-scope="scope">
-                <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+                <el-button size="mini"
+                 @click="handleEdit(scope.$index, scope.row)">
+                 编辑</el-button>
                 <el-button
                   size="mini"
                   type="danger"
                   @click="handleDelete(scope.$index, scope.row)"
                 >删除</el-button>
               </template>
+              
             </el-table-column>
           </el-table>
 
@@ -80,7 +138,12 @@
           <div>
             <div style="font-size:16px;" v-if="showEditor">
               学号：
-              <el-input v-model="oneStudent.stuId" style="width:100px" />&nbsp;姓名：
+              <el-input
+                show-word-limit
+                maxlength="20"
+                v-model="oneStudent.stuId"
+                style="width:100px"
+              />&nbsp;姓名：
               <el-input v-model="oneStudent.name" style="width:100px" />&nbsp;性别：
               <!-- <el-input v-model="oneStudent.gender" style="width:100px" /> -->
               <el-select style="width:100px" v-model="oneStudent.gender" placeholder="请选择">
@@ -136,7 +199,8 @@ export default {
   name: "Student",
   data() {
     return {
-        search: '',//查找学生
+      showEditPanel:false,
+      search: "", //查找学生
       loading: true,
       majorFileter: [], //过滤专业
       gradeFilter: [], //过滤年级
@@ -153,7 +217,22 @@ export default {
       adminClassJson: [], //班级数组
       // className: null, //新建班级的名称
       // students: [], //添加的学生
-      allStudents: [] //全体学生数据
+      allStudents: [], //全体学生数据
+      majorJson:[],
+      gradeJson:[],
+
+      oldStuInfo:{
+        major:null,
+        grade:null,
+        name:null,
+        stuId:null
+      },
+      newStuInfo:{
+        major:null,
+        grade:null,
+        name:null,
+        stuId:null
+      }
       // multipleSelection: [] //临时多选的变量
     };
   },
@@ -162,8 +241,61 @@ export default {
     this.getAllStudents();
   },
   methods: {
-    
-    fun(num){},
+    comfirmNewInfo(ops){
+      var that = this
+    console.log(ops)
+      if(ops=='major'){
+      var params = new URLSearchParams();
+      params.append("stuId",this.newStuInfo.stuId);
+      params.append("major",this.newStuInfo.major);
+        axios
+            .post("/comm/changeMajor", params)
+            .then(function(response) {
+              console.log(response)
+              if(response.data.code==200){
+                that.$message({
+          showClose: true,
+             type: 'success',
+          message: '成功'
+        });
+                that.getAllStudents();
+                that.oldStuInfo.major = that.newStuInfo.major
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+      }
+      else if(ops=='grade'){
+         var params = new URLSearchParams();
+      params.append("stuId",this.newStuInfo.stuId);
+      params.append("grade",this.newStuInfo.grade);
+        axios
+            .post("/comm/changeGrade", params)
+            .then(function(response) {
+              if(response.data.code==200){
+                 that.$message({
+          showClose: true,
+             type: 'success',
+          message: '成功'
+        });
+                that.getAllStudents();
+                that.oldStuInfo.grade = that.newStuInfo.grade
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+
+
+      }
+
+
+
+
+
+    },
+    fun(num) {},
     selClass() {
       this.adminClassJson.forEach(element => {
         if (element.id == this.temp_item_id) {
@@ -187,6 +319,7 @@ export default {
           ).adminClass;
 
           var majorJson = JSON.parse(response.data.object.gsmajson).major;
+          that.majorJson = majorJson
           for (var i = 0; i < majorJson.length; i++) {
             that.majorFileter.push({
               text: majorJson[i].name,
@@ -195,6 +328,7 @@ export default {
           }
 
           var gradeJson = JSON.parse(response.data.object.gsmajson).grade;
+          that.gradeJson = gradeJson
           for (var i = 0; i < gradeJson.length; i++) {
             that.gradeFilter.push({
               text: Number(gradeJson[i].name),
@@ -209,6 +343,19 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+      this.oldStuInfo = {
+        major:row.major,
+        grade:row.grade,
+        name:row.name,
+        stuId:row.stuId
+      }
+      this.newStuInfo = {
+        major:row.major,
+        grade:row.grade,
+        name:row.name,
+        stuId:row.stuId
+      }
+      this.showEditPanel = true
     },
     handleDelete(index, row) {
       // console.log(index, row.stuId);
@@ -283,18 +430,18 @@ export default {
     save() {
       //校验该学生
       if (this.oneStudent.stuId == null || this.oneStudent.stuId == "") {
-        alert("请输入学生学号！");
+        this.$message.error("请输入学生学号！");
         return;
       }
       if (this.oneStudent.name == null || this.oneStudent.name == "") {
-        alert("请输入学生姓名！");
+        this.$message.error("请输入学生姓名！");
         return;
       }
       if (
         this.oneStudent.adminClass == null ||
         this.oneStudent.adminClass == ""
       ) {
-        alert("请输入学生班级！");
+        this.$message.error("请输入学生班级！");
         return;
       }
 
@@ -314,9 +461,12 @@ export default {
           console.log(response);
           if (response.data.object.object == 1) {
             that.allStudents.push(that.oneStudent);
-            alert("添加成功。");
+            that.$message({
+              message: "添加成功。",
+              type: "success"
+            });
           } else {
-            alert("插入失败。");
+            that.$message.error("插入失败。");
           }
 
           (that.temp_item = null),
