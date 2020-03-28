@@ -145,7 +145,7 @@ export default {
       axios
         .post("/comm/getAllQuestionsByPracticeSystem")
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
           that.allQuestions = response.data.object;
         })
         .catch(function(error) {
@@ -166,9 +166,9 @@ export default {
             that.loading = false;
             return;
           } else if (response.data.object.questions) {
-            console.log("---陈少桐---",response.data.object.questions)
+            // console.log("---陈少桐---",response.data.object.questions)
             that.questions = JSON.parse(response.data.object.questions);
-            console.log("-----/陈少桐------------"+that.questions.length)
+            // console.log("-----/陈少桐------------"+that.questions.length)
           }
           console.log("正常跑完。")
               that.loading = false;
