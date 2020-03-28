@@ -44,11 +44,9 @@
                   <div
                     class="like"
                     @click="liked(course.courseId,'course')"
-                  > 
-                  {{course?course.likeNum:0}}
-                  </div>
+                  >{{course?course.likeNum:0}}</div>
                 </span>
-                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen" ></el-button>
+                <el-button @click="video_full=!video_full" circle icon="el-icon-full-screen"></el-button>
               </div>
             </div>
           </div>
@@ -56,7 +54,7 @@
           <transition name="custom-classes-transition" enter-active-class="animated bounceInRight">
             <div style="width:35%" v-show="!video_full">
               <el-tabs style="height:100%" type="border-card" stretch>
-                <el-tab-pane label="章节">
+                <el-tab-pane style="height: 470px;overflow:auto" label="章节">
                   <el-tree
                     node-key="id"
                     default-expand-all
@@ -78,7 +76,7 @@
 
 <script>
 import axios from "axios";
-import VueBus from '../../utils/VueBus';
+import VueBus from "../../utils/VueBus";
 import UrlConfig from "../../config/UrlConfig.js";
 export default {
   name: "VideoCourse",
@@ -113,20 +111,18 @@ export default {
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
         console.log(response);
-        if(!response.data.object){
-        if (targetType == "course") that.course.likeNum++;
-        if (targetType == "comment") {
-          for (var i = 0; i < that.allReplies.length; i++) {
-            if (that.allReplies[i].id == targetId) {
-              that.allReplies[i].likeNum++;
+        if (!response.data.object) {
+          if (targetType == "course") that.course.likeNum++;
+          if (targetType == "comment") {
+            for (var i = 0; i < that.allReplies.length; i++) {
+              if (that.allReplies[i].id == targetId) {
+                that.allReplies[i].likeNum++;
+              }
             }
           }
+        } else {
+          that.$message("已经点过赞了哦");
         }
-        }else{
-          that.$message('已经点过赞了哦');
-        }
-
-
       });
     },
 
@@ -150,8 +146,8 @@ export default {
       this.courseId = this.$route.query.courseId;
       this.videoId = this.$route.query.videoId;
 
-         var data = {courseId:this.courseId,videoId:this.videoId}
-       VueBus.$emit("reflash_practice",data)
+      var data = { courseId: this.courseId, videoId: this.videoId };
+      VueBus.$emit("reflash_practice", data);
     },
 
     //获取小标题
@@ -174,7 +170,7 @@ export default {
           this.progress.catalog.push({
             label: data[i].label,
             videoId: data[i].id,
-            url: data[i].url,
+            url: data[i].url
           });
         }
       }
@@ -213,10 +209,27 @@ export default {
           console.log("获取课程目录完成。");
           //请求视频资源
           that.findVideoIdUrl(that.catalogData);
-          if(that.videoId==null){
-            that.videoId =  that.progress.catalog[0].videoId;
-            that.videoSrc = that.QiniuyunUrl+that.progress.catalog[0].url;
+          console.log("findVideoIdUrl..完成")
+
+          if (that.videoId == null) {
+            that.videoId = that.progress.catalog[0].videoId;
+            that.videoSrc = that.QiniuyunUrl + that.progress.catalog[0].url;
+            that.$router.push({
+              name: "VideoCourse",
+              query: {
+                courseId: that.courseId,
+                videoId: that.progress.catalog[0].videoId
+              }
+            });
           }
+          else{
+            
+            that.jumpVideo(that.videoId) 
+          }
+
+      var data = { courseId: that.courseId, videoId: that.videoId };
+      VueBus.$emit("reflash_practice", data);
+
         })
         .catch(function(error) {
           console.log("获取课程失败。");
@@ -227,7 +240,12 @@ export default {
   mounted() {
     this.courseId = this.$route.query.courseId;
     this.videoId = this.$route.query.videoId;
-    this.reqCourseRes(this.courseId, this.videoId);
+      var data = { courseId: this.courseId, videoId: this.videoId };
+      VueBus.$emit("reflash_practice", data);
+    // alert(this.courseId+this.videoId)
+    if( this.course==null){
+      this.reqCourseRes(this.courseId, this.videoId);
+    }
   }
 };
 </script>
@@ -246,27 +264,26 @@ export default {
   text-align: center;
   object-fit: fill;
 }
-.like{
-      display: inline-block;
-      margin-left: 15px;
-      padding-left: 30px;
-      color: #E96565;
-      line-height: 40px;
-      cursor: pointer;
-      font-size: 15px;
-      background: url("../../assets/icons/like.png") no-repeat left center;
+.like {
+  display: inline-block;
+  margin-left: 15px;
+  padding-left: 30px;
+  color: #e96565;
+  line-height: 40px;
+  cursor: pointer;
+  font-size: 15px;
+  background: url("../../assets/icons/like.png") no-repeat left center;
 }
-.like:hover{
-      display: inline-block;
-      margin-left: 15px;
-      cursor: pointer;
-      line-height: 40px;
-      padding-left: 30px;
-      color: #E96565;
-      font-size: 15px;
-      background: url("../../assets/icons/like-full.png") no-repeat left center;
+.like:hover {
+  display: inline-block;
+  margin-left: 15px;
+  cursor: pointer;
+  line-height: 40px;
+  padding-left: 30px;
+  color: #e96565;
+  font-size: 15px;
+  background: url("../../assets/icons/like-full.png") no-repeat left center;
 }
-
 
 video {
   transition: all 300ms ease-in-out 50ms;

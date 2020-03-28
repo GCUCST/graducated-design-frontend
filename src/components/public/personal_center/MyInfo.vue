@@ -284,10 +284,16 @@ export default {
           .then(function(response) {
             console.log(response);
             if (response.data.object == 1) {
+
                that.$message({
           message: '更新信息成功',
           type: 'success'
         });
+        LoginStatus.reflashAndSetUserInfo();
+     setTimeout(() => {
+          that.user = JSON.parse(localStorage.getItem("userInfo"))
+       },1500)
+
             } else {
                this.$message.error('服务器开小差，更新失败！');
             }

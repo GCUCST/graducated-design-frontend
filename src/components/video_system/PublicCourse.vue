@@ -53,7 +53,7 @@
           <transition name="custom-classes-transition" enter-active-class="animated bounceInRight">
             <div style="width:35%" v-show="!video_full">
               <el-tabs style="height:100%" type="border-card" stretch>
-                <el-tab-pane label="章节">
+                <el-tab-pane  style="height: 470px;overflow:auto"  label="章节">
                   <el-tree
                     node-key="id"
                     default-expand-all

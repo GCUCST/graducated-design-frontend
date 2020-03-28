@@ -55,8 +55,8 @@
               
               <div style="font-size:16px;display:flex;justify-content:space-between">
                 <div >
-                    <span style="color:dodgerblue">{{item.A.nickName}}</span>@
-                    <span style="color:dodgerblue">{{item.B.nickName}}</span>
+                    <span style="color:dodgerblue">{{item.A.nickName?item.A.nickName:item.A.name}}</span>@
+                    <span style="color:dodgerblue">{{item.B.nickName?item.B.nickName:item.B.name}}</span>
                     <span style="color:gainsboro"> {{"：“ "+item.B.content.substr(0,3)+"...”："}}</span>
                </div>
                <div >

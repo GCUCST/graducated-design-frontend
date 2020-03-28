@@ -1,8 +1,8 @@
 <template>
   <div class="practice" v-loading="loading">
     <div>
-      <div style="text-align:center" v-if="questions.length<1">老师还未设置题库~</div>
-      <el-collapse accordion @change="handleChange">
+      <div style="text-align:center" v-if="questions.length<1">老师未设置本节练习题~</div>
+      <el-collapse v-if="questions.length>=1" accordion @change="handleChange">
         <div v-for="(item,index) in questions" :key="index">
           <!-- 选择题 -->
           <el-collapse-item v-if="item.questionType==0">

@@ -448,6 +448,10 @@ export default {
               .then(function(response) {
                 console.log(response);
                 that.reflashTeachClass();
+                  that.$message({
+          message: '成功',
+          type: 'success'
+        });
               })
               .catch(function(error) {
                 console.log(error);
