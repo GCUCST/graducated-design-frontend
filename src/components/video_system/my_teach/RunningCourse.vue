@@ -6,7 +6,7 @@
           <i class="el-icon-close" />
         </el-button>
       </div>
-      <el-tabs value="first">
+      <el-tabs  @tab-click="handleClick" v-model="tabValue">
         <el-tab-pane label="课程学生" name="first">
           <div>
             <el-table
@@ -42,7 +42,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="私信通知" name="fourth">
+        <el-tab-pane label="已选学生" name="sel">
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
@@ -81,6 +81,53 @@
             </div>
           </div>
         </el-tab-pane>
+
+        <el-tab-pane label="全体消息" name="all">
+                      <el-collapse>
+            <el-collapse-item>
+              <template slot="title">
+                <div style="text-indent:2em;font-size:16px;">全班学生：（共{{CourseProgress.length}}位）</div>
+              </template>
+              <div>
+                <div style="flex-wrap: wrap;display:flex;width:90%;margin:0 auto">
+                  <div
+                    style="font-weight:500;;width:18%;text-align:center;"
+                    v-for="(item,index) in CourseProgress"
+                    :key="index"
+                  >{{item.username}} {{getStudentNameByUsername(item.username)}}</div>
+                </div>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+
+          <div style="margin-top:50px;">
+            <div style="width:100%;">
+              标题：
+              <el-input v-model="title" show-word-limit maxlength="30" style="width:300px;" />
+            </div>
+            <div style="width:100%;">
+              内容：
+              <el-input
+                v-model="content"
+                show-word-limit
+                maxlength="200"
+                type="textarea"
+                style="width:300px;"
+              />
+            </div>
+            <br />
+            <div>
+              <el-button @click="comfirmSendAll()">确认发送</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+
+
+
+
+
+
+
       </el-tabs>
     </div>
 
@@ -206,7 +253,8 @@ export default {
       //私信模块
       title: null,
       content: null,
-      progressDetailsJson:[]
+      progressDetailsJson:[],
+      tabValue:"first"
     };
   },
   mounted() {
@@ -214,26 +262,63 @@ export default {
     this.getAllStudents();
   },
   methods: {
+    handleClick(){
+    },
+
     toVideoCourse(courseId) {
       this.$router.push({
         name: "VideoCourse",
         query: { courseId: courseId, videoId: null }
       });
     },
-    comfirmSend() {
-      //1.判断   2.做消息发送
+    comfirmSendAll(){
+        //1.判断   2.做消息发送
       if (this.title == "" || this.title == null) {
-        alert("标题为空。");
+         this.$message.error("标题为空。");
         return;
       }
       if (this.content == "" || this.content == null) {
-        alert("不允许发送空值。");
+         this.$message.error("不允许发送空值。");
+        return;
+      }
+      var parmas = new URLSearchParams();
+      parmas.append("title", this.title);
+      parmas.append("content", this.content);
+      parmas.append("messageType", "video_progress_tips");
+      parmas.append("receivers", JSON.stringify(this.CourseProgress));
+      var that = this;
+      axios
+        .post("/comm/sendMsgs", parmas)
+        .then(function(response) {
+          that.$message({
+            showClose: true,
+            duration: 0,
+            message:
+              "发送成功！已将消息发送给" + response.data.object + "名学生。",
+            type: "success"
+          });
+          (that.title = null), (that.content = null);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    comfirmSend() {
+      //1.判断   2.做消息发送
+      if (this.title == "" || this.title == null) {
+         this.$message.error("标题为空。");
+        return;
+      }
+      if (this.content == "" || this.content == null) {
+         this.$message.error("不允许发送空值。");
         return;
       }
       if (this.multipleSelection.length < 1) {
-        alert("请于课程学生选中学生");
+         this.$message.error("请于课程学生选中学生");
         return;
       }
+      console.log("cst:"+JSON.stringify(this.multipleSelection))
       var parmas = new URLSearchParams();
       parmas.append("title", this.title);
       parmas.append("content", this.content);
