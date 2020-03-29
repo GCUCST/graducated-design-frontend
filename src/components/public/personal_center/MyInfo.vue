@@ -330,8 +330,6 @@ export default {
           .then(function(response) {
             console.log(response);
             if (response.data.object == 1) {
-              
-              
                that.$message({
           message: '更新信息成功',
           type: 'success'
