@@ -73,7 +73,8 @@
               用户账号：{{user.account}}
               <br />
               用户身份：{{user.role=='dean'?'教务员':user.role=='teacher'?'教师':user.role=='student'?'学生':'管理员'}}
-              <br />用户昵称：<span style="color:red">*</span>
+              <br />用户昵称：
+              <span style="color:red">*</span>
               <el-input style="width:50%" v-model="nickName"></el-input>
               <br />用户姓名：
               <el-input disabled style="width:50%" v-model="name"></el-input>
@@ -88,7 +89,8 @@
               </el-select>
               <br />用户年龄：
               <el-input-number v-model="age" style="width:50%" :min="1" :max="200" />
-              <br />用户邮箱：<span style="color:red">*</span>
+              <br />用户邮箱：
+              <span style="color:red">*</span>
               <el-input style="width:50%" v-model="email"></el-input>
               <br />电话号码：
               <el-input style="width:50%" v-model="phone"></el-input>
@@ -117,11 +119,14 @@
                 <el-input disabled style="width:50%" v-model="adminClass"></el-input>
               </span>
 
-              <br />用户宿舍：<span style="color:red">*</span>
+              <br />用户宿舍：
+              <span style="color:red">*</span>
               <el-input style="width:50%" v-model="dorm"></el-input>
-              <br />通讯地址：<span style="color:red">*</span>
+              <br />通讯地址：
+              <span style="color:red">*</span>
               <el-input style="width:50%" v-model="city"></el-input>
-              <br />入职时间：<span style="color:red">*</span>
+              <br />入职时间：
+              <span style="color:red">*</span>
               <!-- <el-input style="width:50%" v-model="admissionDate"></el-input> -->
               <el-date-picker
                 style="width:50%"
@@ -132,10 +137,18 @@
               ></el-date-picker>
               <br />身份证号：
               <el-input style="width:50%" v-model="idcard"></el-input>
-              <br />出生日期：<span style="color:red">*</span>
+              <br />出生日期：
+              <span style="color:red">*</span>
               <!-- <el-input style="width:50%" v-model="birthday"></el-input> -->
-              <el-date-picker value-format="yyyy-MM-dd" style="width:50%" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>
-              <br />政治面貌：<span style="color:red">*</span>
+              <el-date-picker
+                value-format="yyyy-MM-dd"
+                style="width:50%"
+                v-model="birthday"
+                type="date"
+                placeholder="选择日期"
+              ></el-date-picker>
+              <br />政治面貌：
+              <span style="color:red">*</span>
               <el-input style="width:50%" v-model="political"></el-input>
               <br />
             </div>
@@ -195,68 +208,67 @@ export default {
   mounted() {
     //刷新用户
     LoginStatus.reflashAndSetUserInfo();
-     setTimeout(() => {
-          this.user = JSON.parse(localStorage.getItem("userInfo"))
-       },1000)
+    setTimeout(() => {
+      this.user = JSON.parse(localStorage.getItem("userInfo"));
+    }, 1000);
 
-      setTimeout(() => {
-        this.grade = this.user.info.grade;
-        this.secondaryCollege = this.user.info.secondaryCollege;
-        this.major = this.user.info.major;
-        this.adminClass = this.user.info.adminClass;
-        this.nickName = this.user.info.nickName;
-        this.name = this.user.info.name;
-        this.gender = this.user.info.gender;
-        this.age = this.user.info.age;
-        this.email = this.user.info.email;
-        this.phone = this.user.info.phone;
-        this.education = this.user.info.education;
-        this.technicalTitle = this.user.info.technicalTitle;
-        this.dept = this.user.info.dept;
-        this.dorm = this.user.info.dorm;
-        this.city = this.user.info.city;
-        this.admissionDate = this.user.info.admissionDate;
-        this.idcard = this.user.info.idcard;
-        this.birthday = this.user.info.birthday;
-        this.political = this.user.info.political;
-      }, 2000);
+    setTimeout(() => {
+      this.grade = this.user.info.grade;
+      this.secondaryCollege = this.user.info.secondaryCollege;
+      this.major = this.user.info.major;
+      this.adminClass = this.user.info.adminClass;
+      this.nickName = this.user.info.nickName;
+      this.name = this.user.info.name;
+      this.gender = this.user.info.gender;
+      this.age = this.user.info.age;
+      this.email = this.user.info.email;
+      this.phone = this.user.info.phone;
+      this.education = this.user.info.education;
+      this.technicalTitle = this.user.info.technicalTitle;
+      this.dept = this.user.info.dept;
+      this.dorm = this.user.info.dorm;
+      this.city = this.user.info.city;
+      this.admissionDate = this.user.info.admissionDate;
+      this.idcard = this.user.info.idcard;
+      this.birthday = this.user.info.birthday;
+      this.political = this.user.info.political;
+    }, 2000);
   },
   methods: {
     updateMyInfo() {
-      if(this.email==null||this.email==""){
-          this.$message.error('邮箱不允许为空');
-          return ;
+      if (this.email == null || this.email == "") {
+        this.$message.error("邮箱不允许为空");
+        return;
       }
       var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-      if(!reg.test(this.email)){
-          this.$message.error('邮箱格式错误');
-          return ;
-    }
-    if(this.admissionDate==null||this.admissionDate==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-        if(this.birthday==null||this.birthday==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-            if(this.city==null||this.city==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-      if(this.nickName==null||this.nickName==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-          if(this.political==null||this.political==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-          if(this.dorm==null||this.dorm==""){
-       this.$message.error('填写完整');
-       return ;
-    }
-
+      if (!reg.test(this.email)) {
+        this.$message.error("邮箱格式错误");
+        return;
+      }
+      if (this.admissionDate == null || this.admissionDate == "") {
+        this.$message.error("填写完整");
+        return;
+      }
+      if (this.birthday == null || this.birthday == "") {
+        this.$message.error("填写完整");
+        return;
+      }
+      if (this.city == null || this.city == "") {
+        this.$message.error("填写完整");
+        return;
+      }
+      if (this.nickName == null || this.nickName == "") {
+        this.$message.error("填写完整");
+        return;
+      }
+      if (this.political == null || this.political == "") {
+        this.$message.error("填写完整");
+        return;
+      }
+      if (this.dorm == null || this.dorm == "") {
+        this.$message.error("填写完整");
+        return;
+      }
 
       //判断是学生还是教工
       if (this.user.role == "student") {
@@ -278,24 +290,22 @@ export default {
         parmas.append("IDcard", this.idcard);
         parmas.append("birthday", this.birthday);
         parmas.append("political", this.political);
-        var that = this
+        var that = this;
         axios
           .post("/comm/updateStudent", parmas)
           .then(function(response) {
             console.log(response);
             if (response.data.object == 1) {
-
-               that.$message({
-          message: '更新信息成功',
-          type: 'success'
-        });
-        LoginStatus.reflashAndSetUserInfo();
-     setTimeout(() => {
-          that.user = JSON.parse(localStorage.getItem("userInfo"))
-       },1500)
-
+              that.$message({
+                message: "更新信息成功",
+                type: "success"
+              });
+              LoginStatus.reflashAndSetUserInfo();
+              setTimeout(() => {
+                that.user = JSON.parse(localStorage.getItem("userInfo"));
+              }, 1500);
             } else {
-               this.$message.error('服务器开小差，更新失败！');
+              this.$message.error("服务器开小差，更新失败！");
             }
           })
           .catch(function(error) {
@@ -303,9 +313,8 @@ export default {
           });
         return;
       } else {
-
         console.log("更新教工。");
-        var that = this
+        var that = this;
         var parmas = new URLSearchParams();
         parmas.append("nickName", this.nickName);
         parmas.append("name", this.name);
@@ -319,7 +328,6 @@ export default {
         parmas.append("dept", this.dept);
         parmas.append("admissionDate", this.admissionDate);
 
-        
         parmas.append("city", this.city);
         parmas.append("IDcard", this.idcard);
         parmas.append("birthday", this.birthday);
@@ -330,17 +338,16 @@ export default {
           .then(function(response) {
             console.log(response);
             if (response.data.object == 1) {
-               that.$message({
-          message: '更新信息成功',
-          type: 'success'
-        });
-        LoginStatus.reflashAndSetUserInfo();
-     setTimeout(() => {
-          that.user = JSON.parse(localStorage.getItem("userInfo"))
-       },1500)
-
+              that.$message({
+                message: "更新信息成功",
+                type: "success"
+              });
+              LoginStatus.reflashAndSetUserInfo();
+              setTimeout(() => {
+                that.user = JSON.parse(localStorage.getItem("userInfo"));
+              }, 1500);
             } else {
-             that.$message.error('服务器开小差，更新失败！');
+              that.$message.error("服务器开小差，更新失败！");
             }
           })
           .catch(function(error) {

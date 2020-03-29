@@ -1,9 +1,9 @@
 
 <template >
   <div class="manage-student" v-loading="loading">
-    
-
-    <div v-show="showEditPanel" style="
+    <div
+      v-show="showEditPanel"
+      style="
       text-align: center;
   width: 80%;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -15,53 +15,63 @@
   overflow: auto;
   height:450px;
   padding: 20px;
-    ">
-        <div style="text-align:right"><el-button @click=" showEditPanel=!showEditPanel "  circle>X</el-button></div>
-        <div style="font-size:16px;">
+    "
+    >
+      <div style="text-align:right">
+        <el-button @click=" showEditPanel=!showEditPanel " circle>X</el-button>
+      </div>
+      <div style="font-size:16px;">
         学号：{{oldStuInfo.stuId}} &nbsp;&nbsp;&nbsp;&nbsp;
         姓名：{{oldStuInfo.name}}&nbsp;&nbsp;&nbsp;&nbsp;
         年级：{{oldStuInfo.grade}}&nbsp;&nbsp;&nbsp;&nbsp;
         专业：{{oldStuInfo.major}}&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-  <el-tabs  value="first" >
-    <el-tab-pane  label="转专业" name="first">
-      <div style="font-size:16px;;margin:50px 50px;">
-         现专业：{{oldStuInfo.major}} ==>
-    <el-select  v-model="newStuInfo.major" placeholder="请选择">
-    <el-option
-      v-for="item in majorJson"
-      :key="item.name"
-      :label="item.name"
-      :value="item.name">
-    </el-option>
-  </el-select><br><br><br>
-   <el-button type="primary" @click="comfirmNewInfo('major')" round>确定</el-button>
-
+        班级：{{oldStuInfo.adminClass}}
       </div>
-    </el-tab-pane>
-    <el-tab-pane label="升降级" name="fourth">
-      <div style="font-size:16px;;margin:50px 50px;">
-         现年级：{{oldStuInfo.grade}}==>
-    <el-select  v-model="newStuInfo.grade" placeholder="请选择">
-    <el-option
-      v-for="item in gradeJson"
-      :key="item.name"
-      :label="item.name"
-      :value="item.name">
-    </el-option>
-  </el-select><br><br><br>
-   <el-button type="primary" @click="comfirmNewInfo('grade')" round>确定</el-button>
-      </div>
-
-
-      
-    </el-tab-pane>
-  </el-tabs>
+      <el-tabs value="first">
+        <el-tab-pane label="转专业" name="first">
+          <div style="font-size:16px;;margin:50px 50px;">
+            现专业：{{oldStuInfo.major}} ==>
+            <el-select v-model="newStuInfo.major" placeholder="请选择">
+              <el-option
+                v-for="item in majorJson"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              ></el-option>
+            </el-select>
+            <el-select style="width:100px;" v-model="newStuInfo.adminClass" placeholder="请选择">
+              <el-option
+                v-for="i in 15"
+                :key="i"
+                :label="i+'班'"
+                :value="i"
+              ></el-option>
+            </el-select>
+            <br />
+            <br />
+            <br />
+            <el-button type="primary" @click="comfirmNewInfo('major')" round>确定</el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="升降级" name="fourth">
+          <div style="font-size:16px;;margin:50px 50px;">
+            现年级：{{oldStuInfo.grade}}==>
+            <el-select v-model="newStuInfo.grade" placeholder="请选择">
+              <el-option
+                v-for="item in gradeJson"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              ></el-option>
+            </el-select>
+            <br />
+            <br />
+            <br />
+            <el-button type="primary" @click="comfirmNewInfo('grade')" round>确定</el-button>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
-
-
-
-
 
     <el-tabs tab-position="up">
       <el-tab-pane :label="'学生管理'">
@@ -114,23 +124,20 @@
               show-overflow-tooltip
             ></el-table-column>
 
-            <el-table-column  width="180" label="操作">
+            <el-table-column width="180" label="操作">
               <!-- eslint-disable-next-line -->
               <template slot="header" slot-scope="scope">
                 <el-input @click="fun(scope.$index)" v-model="search" placeholder="输入姓名搜索" />
               </template>
 
               <template slot-scope="scope">
-                <el-button size="mini"
-                 @click="handleEdit(scope.$index, scope.row)">
-                 编辑</el-button>
+                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button
                   size="mini"
                   type="danger"
                   @click="handleDelete(scope.$index, scope.row)"
                 >删除</el-button>
               </template>
-              
             </el-table-column>
           </el-table>
 
@@ -186,6 +193,14 @@
 
         <br />
       </el-tab-pane>
+
+      <el-tab-pane style label="批量添加学生">
+        <br />
+        <div style="height:500px;border:1px solid">
+          <el-button @click="test()" type="primary">主要按钮</el-button>
+          <input type="file" id='file'  />
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -199,7 +214,7 @@ export default {
   name: "Student",
   data() {
     return {
-      showEditPanel:false,
+      showEditPanel: false,
       search: "", //查找学生
       loading: true,
       majorFileter: [], //过滤专业
@@ -218,20 +233,22 @@ export default {
       // className: null, //新建班级的名称
       // students: [], //添加的学生
       allStudents: [], //全体学生数据
-      majorJson:[],
-      gradeJson:[],
+      majorJson: [],
+      gradeJson: [],
 
-      oldStuInfo:{
-        major:null,
-        grade:null,
-        name:null,
-        stuId:null
+      oldStuInfo: {
+        major: null,
+        grade: null,
+        name: null,
+        stuId: null,
+        adminClass:null
       },
-      newStuInfo:{
-        major:null,
-        grade:null,
-        name:null,
-        stuId:null
+      newStuInfo: {
+        major: null,
+        grade: null,
+        name: null,
+        stuId: null,
+        adminClass:null
       }
       // multipleSelection: [] //临时多选的变量
     };
@@ -241,59 +258,79 @@ export default {
     this.getAllStudents();
   },
   methods: {
-    comfirmNewInfo(ops){
-      var that = this
-    console.log(ops)
-      if(ops=='major'){
-      var params = new URLSearchParams();
-      params.append("stuId",this.newStuInfo.stuId);
-      params.append("major",this.newStuInfo.major);
-        axios
-            .post("/comm/changeMajor", params)
-            .then(function(response) {
-              console.log(response)
-              if(response.data.code==200){
-                that.$message({
-          showClose: true,
-             type: 'success',
-          message: '成功'
-        });
-                that.getAllStudents();
-                that.oldStuInfo.major = that.newStuInfo.major
-              }
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
+    test() {
+    var obj = document.getElementById("file");
+    var wb;
+      console.log(obj);
+      if (!obj.files) {
+        return;
       }
-      else if(ops=='grade'){
-         var params = new URLSearchParams();
-      params.append("stuId",this.newStuInfo.stuId);
-      params.append("grade",this.newStuInfo.grade);
+      var f = obj.files[0];
+      //新建文件读取
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        //将文件读取为二进制字符串
+        wb = XLSX.read(data, { type: "binary" });
+        // alert(wb.SheetNames[0]);
+        // wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+        // wb.Sheets[Sheet名]获取第一个Sheet的数据
+          JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
+        console.log(
+          XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+        );
+      };
+      reader.readAsBinaryString(f);
+
+    },
+
+    comfirmNewInfo(ops) {
+      var that = this;
+      console.log(ops);
+      if (ops == "major") {
+        var params = new URLSearchParams();
+        params.append("stuId", this.newStuInfo.stuId);
+        params.append("major", this.newStuInfo.major);
+        params.append("adminClass", this.newStuInfo.adminClass);
         axios
-            .post("/comm/changeGrade", params)
-            .then(function(response) {
-              if(response.data.code==200){
-                 that.$message({
-          showClose: true,
-             type: 'success',
-          message: '成功'
-        });
-                that.getAllStudents();
-                that.oldStuInfo.grade = that.newStuInfo.grade
-              }
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-
-
+          .post("/comm/changeMajor", params)
+          .then(function(response) {
+            console.log(response);
+            if (response.data.code == 200) {
+              that.$message({
+                showClose: true,
+                type: "success",
+                message: "成功"
+              });
+              that.getAllStudents();
+              that.oldStuInfo.major = that.newStuInfo.major;
+              that.oldStuInfo.adminClass = that.newStuInfo.adminClass;
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      } else if (ops == "grade") {
+        var params = new URLSearchParams();
+        params.append("stuId", this.newStuInfo.stuId);
+        params.append("grade", this.newStuInfo.grade);
+        axios
+          .post("/comm/changeGrade", params)
+          .then(function(response) {
+            if (response.data.code == 200) {
+              that.$message({
+                showClose: true,
+                type: "success",
+                message: "成功"
+              });
+              that.getAllStudents();
+              that.oldStuInfo.grade = that.newStuInfo.grade;
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
       }
-
-
-
-
-
     },
     fun(num) {},
     selClass() {
@@ -319,7 +356,7 @@ export default {
           ).adminClass;
 
           var majorJson = JSON.parse(response.data.object.gsmajson).major;
-          that.majorJson = majorJson
+          that.majorJson = majorJson;
           for (var i = 0; i < majorJson.length; i++) {
             that.majorFileter.push({
               text: majorJson[i].name,
@@ -328,7 +365,7 @@ export default {
           }
 
           var gradeJson = JSON.parse(response.data.object.gsmajson).grade;
-          that.gradeJson = gradeJson
+          that.gradeJson = gradeJson;
           for (var i = 0; i < gradeJson.length; i++) {
             that.gradeFilter.push({
               text: Number(gradeJson[i].name),
@@ -344,18 +381,20 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       this.oldStuInfo = {
-        major:row.major,
-        grade:row.grade,
-        name:row.name,
-        stuId:row.stuId
-      }
+        major: row.major,
+        grade: row.grade,
+        adminClass:row.adminClass,
+        name: row.name,
+        stuId: row.stuId
+      };
       this.newStuInfo = {
-        major:row.major,
-        grade:row.grade,
-        name:row.name,
-        stuId:row.stuId
-      }
-      this.showEditPanel = true
+        major: row.major,
+        grade: row.grade,
+             adminClass:row.adminClass,
+        name: row.name,
+        stuId: row.stuId
+      };
+      this.showEditPanel = true;
     },
     handleDelete(index, row) {
       // console.log(index, row.stuId);
