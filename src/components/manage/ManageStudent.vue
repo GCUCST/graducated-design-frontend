@@ -40,12 +40,7 @@
               ></el-option>
             </el-select>
             <el-select style="width:100px;" v-model="newStuInfo.adminClass" placeholder="请选择">
-              <el-option
-                v-for="i in 15"
-                :key="i"
-                :label="i+'班'"
-                :value="i"
-              ></el-option>
+              <el-option v-for="i in 15" :key="i" :label="i+'班'" :value="i"></el-option>
             </el-select>
             <br />
             <br />
@@ -73,18 +68,22 @@
       </el-tabs>
     </div>
 
+    <!-- ----------------------------------------------------------------- -->
+
     <el-tabs tab-position="up">
       <el-tab-pane :label="'学生管理'">
         <div style="text-align:center">
           <!-- 开始。。。。。。。。。。。。。。。。。 -->
           <el-table
-            :data="allStudents.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            id="one"
             ref="multipleTable"
+            :data="allStudents.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
             tooltip-effect="dark"
-            @selection-change="handleSelectionChange"
             height="450"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection"></el-table-column>
+            <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column label="序号" type="index" width="80"></el-table-column>
             <el-table-column sortable prop="stuId" label="学号"></el-table-column>
             <el-table-column prop="name" label="姓名"></el-table-column>
@@ -182,11 +181,14 @@
               <br />
             </div>
             <br />
+            <!-- <el-button v-show="!showEditor" >共：{{allStudents.length}}</el-button> -->
+
+            <el-button v-show="!showEditor" @click="exportStudents()">导出选中</el-button>
+
             <el-button v-show="!showEditor" @click="showEditor = !showEditor">添加学生</el-button>
+
             <el-button v-show="showEditor" @click="save()">确定添加</el-button>
             <el-button v-show="showEditor" @click="showEditor = !showEditor">取消</el-button>
-
-            <!-- <el-button @click="toggleSelection()">清空选择</el-button> -->
           </div>
         </div>
         <!-- /结束。。。。。。。。。。。。。。。 -->
@@ -194,12 +196,72 @@
         <br />
       </el-tab-pane>
 
-      <el-tab-pane style label="批量添加学生">
-        <br />
-        <div style="height:500px;border:1px solid">
-          <el-button @click="test()" type="primary">主要按钮</el-button>
-          <input type="file" id='file'  />
+      <!-- ----------------------------------------------------------------- -->
+
+      <el-tab-pane label="批量添加学生">
+        <div style="text-align:left;height:500px;">
+          <el-button @click="downloadXlsDemo()" size="mini" type="primary">模板</el-button>
+          <el-button style size="mini" @click="selFile()" type="primary">{{fileName}}</el-button>
+
+          <el-button @click="parseStudentJson()" size="mini" type="primary">解析</el-button>
+          <el-button @click="distinctFromAllstudents()" size="mini" type="primary">去重</el-button>
+
+          <input style="opacity: 0;
+    width: 0px;" @change="updateFile()" type="file" id="file" />
+
+          <el-table
+            :data="batchStudent.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            tooltip-effect="dark"
+            height="450"
+          >
+            <el-table-column label="序号" type="index" width="80"></el-table-column>
+            <el-table-column sortable prop="stuId" label="学号"></el-table-column>
+            <el-table-column prop="name" label="姓名"></el-table-column>
+            <el-table-column
+              prop="gender"
+              :filters="[{text: '男', value: 1},{text: '女', value: 0},{text:'未设置',value:-1}]"
+              :filter-method="filterHandler"
+              label="性别"
+            >
+              <!-- <template slot-scope="scope">
+                <span
+                  style="margin-left: 10px"
+                >{{ scope.row.gender==1?'男':scope.row.gender==0?'女':'未设置' }}</span>
+              </template>-->
+            </el-table-column>
+            <el-table-column
+              prop="grade"
+              :filter-method="filterHandler"
+              :filters="gradeFilter"
+              label="年级"
+            ></el-table-column>
+            <el-table-column
+              prop="major"
+              :filters="majorFileter"
+              :filter-method="filterHandler"
+              sortable
+              label="专业"
+            ></el-table-column>
+            <el-table-column
+              prop="adminClass"
+              :filters="[{text: 1, value: 1},{text: 2, value: 2},{text: 3, value: 3},{text: 4, value: 4},{text: 5, value: 5},{text: 6, value: 6},{text: 7, value: 7},{text: 8, value: 8},{text: 9, value: 9}]"
+              :filter-method="filterHandler"
+              sortable
+              label="班级"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column width="180" label="操作">
+              <!-- eslint-disable-next-line -->
+              <template slot="header" slot-scope="scope">
+                <el-input @click="fun(scope.$index)" v-model="search" placeholder="输入姓名搜索" />
+              </template>
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" @click="remove(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
+        <el-button @click="batchStudentAdd()">批量添加</el-button>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -209,11 +271,17 @@
 
 <script>
 import VueBus from "../../utils/VueBus";
+import UrlConfig from "../../config/UrlConfig";
 import axios from "axios";
 export default {
   name: "Student",
   data() {
     return {
+      exportSelctStudents: [],
+      xlsDemoAddress: UrlConfig.getQiniuyunUrl() + "addStudentsDemo.xls",
+      file: {},
+      fileName: "选择",
+      batchStudent: [],
       showEditPanel: false,
       search: "", //查找学生
       loading: true,
@@ -241,16 +309,15 @@ export default {
         grade: null,
         name: null,
         stuId: null,
-        adminClass:null
+        adminClass: null
       },
       newStuInfo: {
         major: null,
         grade: null,
         name: null,
         stuId: null,
-        adminClass:null
+        adminClass: null
       }
-      // multipleSelection: [] //临时多选的变量
     };
   },
   mounted() {
@@ -258,14 +325,200 @@ export default {
     this.getAllStudents();
   },
   methods: {
-    test() {
-    var obj = document.getElementById("file");
-    var wb;
-      console.log(obj);
-      if (!obj.files) {
+    sheet2blob(sheet, sheetName) {
+	sheetName = sheetName || 'sheet1';
+	var workbook = {
+		SheetNames: [sheetName],
+		Sheets: {}
+	};
+	workbook.Sheets[sheetName] = sheet;
+	// 生成excel的配置项
+	var wopts = {
+		bookType: 'xlsx', // 要生成的文件类型
+		bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+		type: 'binary'
+	};
+	var wbout = XLSX.write(workbook, wopts);
+	var blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+	// 字符串转ArrayBuffer
+	function s2ab(s) {
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+	return blob;
+},
+
+    openDownloadDialog(url, saveName) {
+      if (typeof url == "object" && url instanceof Blob) {
+        url = URL.createObjectURL(url); // 创建blob地址
+      }
+      var aLink = document.createElement("a");
+      aLink.href = url;
+      aLink.download = saveName || ""; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+      var event;
+      if (window.MouseEvent) event = new MouseEvent("click");
+      else {
+        event = document.createEvent("MouseEvents");
+        event.initMouseEvent(
+          "click",
+          true,
+          false,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+      }
+      aLink.dispatchEvent(event);
+    },
+    exportStudents() {
+      console.log(this.exportSelctStudents);
+        var aoa = [
+          ["stuId", "name", "gender", "grade","major","adminClass"]
+        ];
+      this.exportSelctStudents.forEach(element => {
+        aoa.push([element.stuId,element.name,element.gender==1?'男':element.gender==0?'女':'未设置',
+        element.grade,element.major,element.adminClass])
+      });
+
+      var sheet = XLSX.utils.aoa_to_sheet(aoa);
+      this.openDownloadDialog(this.sheet2blob(sheet), "student_export.xlsx");
+    },
+
+
+
+
+    downloadXlsDemo() {
+      window.open(this.xlsDemoAddress);
+    },
+
+    distinctFromAllstudents() {
+      var that = this;
+      this.allStudents.forEach((element2, index2) => {
+        this.batchStudent.forEach((element, index) => {
+          if (element.stuId == element2.stuId) {
+            that.batchStudent.splice(index, 1);
+          }
+        });
+      });
+    },
+    batSaveOne(stuId, name, gender, major, grade, adminClass) {
+      var that = this;
+      var params = new URLSearchParams();
+      params.append("stuId", stuId);
+      params.append("name", name);
+      params.append("gender", gender == "男" ? 1 : gender == "女" ? 0 : -1);
+      params.append("major", major);
+      params.append("grade", grade);
+      params.append("adminClass", adminClass);
+      axios
+        .post("/comm/addStudent", params)
+        .then(function(response) {
+          console.log(response);
+          if (response.data.object.code == 200) {
+            // console.log(stuId+" 插入成功！");
+            that.$message({
+              message: stuId + "：" + name + " 插入成功！",
+              type: "success"
+            });
+            that.batchStudent.forEach((element, index) => {
+              if (element.stuId == stuId) {
+                that.batchStudent.splice(index, 1);
+              }
+            });
+          } else {
+            that.$message.error(stuId + "：" + name + " 插入失败！已存在");
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    batchStudentAdd() {
+      this.batchStudent.forEach((element, index) => {
+        console.log(element, index);
+        this.batSaveOne(
+          element.stuId,
+          element.name,
+          element.gender,
+          element.major,
+          element.grade,
+          element.adminClass
+        );
+      });
+      setTimeout(() => {
+        this.getAllStudents();
+      }, 2000);
+    },
+    remove(index, row) {
+      var params = new URLSearchParams();
+      // params.append("stuId", row.stuId);
+
+      var that = this;
+      this.$confirm("取消新增该学生？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          that.batchStudent.splice(index, 1);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    updateFile() {
+      var that = this;
+      var obj = document.getElementById("file").files;
+      if (obj.length == 0) {
+        this.fileName = "选择";
         return;
       }
-      var f = obj.files[0];
+      var f = obj[0];
+      if (f != null) {
+        this.file = f;
+      }
+      console.log(this.file.name);
+      this.fileName = this.file.name;
+    },
+    selFile() {
+      document.getElementById("file").click();
+    },
+    parseStudentJson() {
+      var that = this;
+      var obj = document.getElementById("file").files;
+      var wb;
+      if (obj.length == 0) {
+        this.$message.error("请选择xls文件");
+        return;
+      }
+      var extension = obj[0].name.substring(obj[0].name.lastIndexOf(".") + 1);
+      console.log(extension);
+      if (
+        extension != "xls" &&
+        extension != "XLS" &&
+        extension != "xlsx" &&
+        extension != "XLSX"
+      ) {
+        this.$message.error("请选择xls文件");
+        return;
+      }
+
+      var f = obj[0];
       //新建文件读取
       var reader = new FileReader();
       reader.onload = function(e) {
@@ -275,13 +528,21 @@ export default {
         // alert(wb.SheetNames[0]);
         // wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
         // wb.Sheets[Sheet名]获取第一个Sheet的数据
-          JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-        console.log(
-          XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-        );
+        var valiData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        console.log(valiData[0]);
+        if (
+          valiData.length > 0 &&
+          valiData[0].stuId != undefined &&
+          valiData[0].name != undefined
+        )
+          that.batchStudent = XLSX.utils.sheet_to_json(
+            wb.Sheets[wb.SheetNames[0]]
+          );
+        else {
+          that.$message.error("文件数据有误！");
+        }
       };
       reader.readAsBinaryString(f);
-
     },
 
     comfirmNewInfo(ops) {
@@ -383,14 +644,14 @@ export default {
       this.oldStuInfo = {
         major: row.major,
         grade: row.grade,
-        adminClass:row.adminClass,
+        adminClass: row.adminClass,
         name: row.name,
         stuId: row.stuId
       };
       this.newStuInfo = {
         major: row.major,
         grade: row.grade,
-             adminClass:row.adminClass,
+        adminClass: row.adminClass,
         name: row.name,
         stuId: row.stuId
       };
@@ -446,9 +707,9 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+
     handleSelectionChange(val) {
-      this.multipleSelection = val;
-      console.log(val);
+      this.exportSelctStudents = val;
     },
 
     cancel() {},
