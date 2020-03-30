@@ -382,6 +382,11 @@ export default {
       aLink.dispatchEvent(event);
     },
     exportStudents() {
+      if(this.exportSelctStudents.length==0){
+        alert("请选择学生。")
+        return ;
+      }
+
       console.log(this.exportSelctStudents);
         var aoa = [
           ["stuId", "name", "gender", "grade","major","adminClass"]
