@@ -30,7 +30,7 @@
           <el-button @click="addAdminClass()">添加</el-button>
         </div>
 
-        <el-table :data="adminClassJson" style="width: 80%;margin:0 auto" max-height="400">
+        <el-table :data="adminClassJson" style="width: 65%;margin:0 auto" max-height="400">
            <el-table-column type="selection"></el-table-column>
           <el-table-column label="序号" type="index" width="80"></el-table-column>
           <el-table-column fixed prop="id" label="编号" width="100"></el-table-column>
