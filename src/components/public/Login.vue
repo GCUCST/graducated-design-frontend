@@ -47,7 +47,7 @@
       </el-form-item>
 
       <el-form-item label="验证码">
-        &nbsp;&nbsp; {{code}}
+        &nbsp;&nbsp; {{code}}&nbsp;&nbsp; 
         <el-button @click="reflashCode" type="text" style="margin-left:20px">
           <i class="el-icon-refresh-left" />
         </el-button>
@@ -213,7 +213,11 @@ export default {
       }
 
       //1.验证码判断
-      if (this.code != this.comfirmCode) {
+      this.comfirmCode = this.comfirmCode.toLowerCase() 
+      this.comfirmCode = this.comfirmCode.replace(/\s*/g,"");
+      var str_1 = this.code.replace(/\s*/g,"");
+      str_1 = str_1.toLowerCase();
+      if (str_1 != this.comfirmCode) {
         this.$message.error("验证码有误");
         this.comfirmCode = null;
         this.reflashCode();

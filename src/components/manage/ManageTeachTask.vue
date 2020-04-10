@@ -1,63 +1,76 @@
 <template >
   <div class="add-class" v-loading="loading">
-           <el-tabs tab-position="up">
+    <el-tabs tab-position="up">
       <el-tab-pane :label="'教学任务管理'">
-    <div style="text-align:center">
-      <!-- 开始。。。。。。。。。。。。。。。。。 -->
-      <el-table
-        ref="multipleTable"
-        :data="teachTaskList"
-        tooltip-effect="dark"
-        @selection-change="handleSelectionChange"
-        height="450"
-      >
-        <el-table-column type="selection"></el-table-column>
-        <el-table-column sortable prop="teacherId" label="工号"></el-table-column>
-        <el-table-column prop="teacherName" label="姓名"></el-table-column>
-        <el-table-column prop="courseName" label="课程名称"></el-table-column>
-        <el-table-column prop="content" label="详情"></el-table-column>
-
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <br />
-      <div>
-        <div style="font-size:16px;" v-if="showEditor">
-          选择教师：
-          <el-select
-            style="width:150px"
-            @change="selTeacher()"
-            v-model="temp_data_id"
-            placeholder="请选择"
+        <div style="text-align:center">
+          <!-- 开始。。。。。。。。。。。。。。。。。 -->
+          <el-table
+            ref="multipleTable"
+            :data="teachTaskList.filter(data => !search || data.courseName.toLowerCase().includes(search.toLowerCase()))"
+            tooltip-effect="dark"
+            @selection-change="handleSelectionChange"
+            height="450"
           >
-            <el-option
-              v-for="item in allTeachers"
-              :key="item.staId"
-              :label="item.staId+' '+item.name"
-              :value="item.staId"
-            ></el-option>
-          </el-select>课程名称：
-          <el-input v-model="courseName" style="width:150px" />&nbsp;详情：
-          <el-input v-model="content" style="width:150px" />&nbsp;
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column label="序号" type="index" width="80"></el-table-column>
+            <el-table-column sortable prop="teacherId" label="工号"></el-table-column>
+            <el-table-column prop="teacherName" label="姓名"></el-table-column>
+            <el-table-column prop="courseName" label="课程名称"></el-table-column>
+            <el-table-column prop="content" label="详情"></el-table-column>
+
+           <el-table-column
+      align="right">
+      <template slot="header" slot-scope="scope">
+        <el-input
+          v-model="search"
+          @click="fun(scope.$index)"
+          placeholder="输入课程搜索"/>
+      </template>
+
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index, scope.row)"
+                >删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <br />
+          <div>
+            <div style="font-size:16px;" v-if="showEditor">
+              选择教师：
+              <el-select
+                style="width:150px"
+                @change="selTeacher()"
+                v-model="temp_data_id"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in allTeachers"
+                  :key="item.staId"
+                  :label="item.staId+' '+item.name"
+                  :value="item.staId"
+                ></el-option>
+              </el-select>课程名称：
+              <el-input v-model="courseName" style="width:150px" />&nbsp;详情：
+              <el-input v-model="content" style="width:150px" />&nbsp;
+            </div>
+            <br />
+
+            <el-button v-show="!showEditor" @click="showEditor = !showEditor">添加授课任务</el-button>
+            <el-button v-show="showEditor" @click="save()">确定添加</el-button>
+            <el-button v-show="showEditor" @click="showEditor = !showEditor">取消</el-button>
+
+            <!-- <el-button @click="toggleSelection()">清空选择</el-button> -->
+          </div>
         </div>
+        <!-- /结束。。。。。。。。。。。。。。。 -->
+
         <br />
-
-        <el-button v-show="!showEditor" @click="showEditor = !showEditor">添加授课任务</el-button>
-        <el-button v-show="showEditor" @click="save()">确定添加</el-button>
-        <el-button v-show="showEditor" @click="showEditor = !showEditor">取消</el-button>
-
-        <!-- <el-button @click="toggleSelection()">清空选择</el-button> -->
-      </div>
-    </div>
-    <!-- /结束。。。。。。。。。。。。。。。 -->
-
-    <br />
       </el-tab-pane>
-           </el-tabs>
+    </el-tabs>
   </div>
 </template>
 
@@ -70,7 +83,8 @@ export default {
   name: "teacher",
   data() {
     return {
-      loading:true,
+      search: "",
+      loading: true,
       courseName: null,
       content: null,
       teacherId: null,
@@ -88,6 +102,8 @@ export default {
     this.getAllTask();
   },
   methods: {
+    fun(num){
+    },
     getAllTask() {
       //teachTaskList
       // var params = new URLSearchParams();
@@ -152,28 +168,41 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row.id);
-      
+
       var params = new URLSearchParams();
       params.append("id", row.id);
       var that = this;
-      axios
-        .post("/comm/delTeachTask", params)
-        .then(function(response) {
-          console.log("delTeachTask:", response.data.object);
-          if(response.data.object==1){
-            // alert("删除成功。")
-            that.teachTaskList.splice(index,1);
-            
-          }
-          else{
-            alert("删除失败。")
-          }
+
+      this.$confirm("删除该任务?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axios
+            .post("/comm/delTeachTask", params)
+            .then(function(response) {
+              console.log("delTeachTask:", response.data.object);
+              if (response.data.object == 1) {
+                that.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                that.teachTaskList.splice(index, 1);
+              } else {
+                that.$message.error("删除失败。");
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-
-
     },
     filterHandler(value, row, column) {
       const property = column["property"];
@@ -209,19 +238,19 @@ export default {
     save() {
       //验空
       if (this.courseName == null || this.courseName == "") {
-        alert("请输入课程！");
+        this.$message.error("请输入课程！");
         return;
       }
       if (this.content == null || this.content == "") {
-        alert("请输入详情！");
+        this.$message.error("请输入详情！");
         return;
       }
       if (this.teacherId == null || this.teacherId == "") {
-        alert("请选择教师！");
+        this.$message.error("请选择教师！");
         return;
       }
       if (this.teacherName == null || this.teacherName == "") {
-        alert("请选择教师！");
+        this.$message.error("请选择教师！");
         return;
       }
 
@@ -236,10 +265,15 @@ export default {
         .post("/comm/addTeachTask", params)
         .then(function(response) {
           console.log("addTeachTask:", response);
-          if(response.data.object==1)
-          {
-            alert("添加成功。")
-            location.reload()
+          if (response.data.object == 1) {
+            that.$message({
+              message: "添加成功",
+              type: "success"
+            });
+
+            that.getAllTask();
+            that.courseName = "";
+            that.content = "";
           }
         })
         .catch(function(error) {
@@ -254,12 +288,12 @@ export default {
 .add-class {
   text-align: center;
   width: 100%;
- box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
- border-radius: 5px;
-    margin: 20px auto;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin: 20px auto;
   background: white;
   z-index: 999;
   overflow: auto;
-    padding: 30px;
+  padding: 30px;
 }
 </style>

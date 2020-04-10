@@ -53,8 +53,17 @@ export default {
     var that = this;
     VueBus.$on("uploadFinishMyAvatar", function(data) {
       console.log("MyAvatar收到成功", data);
-      alert("上传成功！");
+      LoginStatus.reflashAndSetUserInfo();
+     setTimeout(() => {
+       that.user = JSON.parse(localStorage.getItem("userInfo"))
+        that.$message({
+          message: '上传成功',
+          type: 'success'
+        });
       that.file = null;
+       },1500)
+
+
     });
   },
   beforeDestroy(){
@@ -97,11 +106,8 @@ export default {
         targetType,
         "MyAvatar"
       );
-      // setTimeout(()=>
-      // {
-      //   alert("上传成功！")
-      //   this.file = null
-      // },3000)
+        this.$message('正在上传中...');
+
     }
   }
 };

@@ -242,7 +242,7 @@ export default {
           for (var i = 0; i < gradeJson.length; i++) {
             that.gradeFilter.push({
               text: gradeJson[i].name,
-              value: gradeJson[i].name
+              value: Number(gradeJson[i].name)
             });
           }
         })
@@ -286,6 +286,10 @@ export default {
         });
     },
     add() {
+      if(this.multipleSelection.length==0){
+          this.$message.error("请选择学生")
+          return ;
+      }
       for (var i = 0; i < this.multipleSelection.length; i++) {
         this.students.push(this.multipleSelection[i]);
       }
@@ -328,11 +332,12 @@ export default {
 
     save() {
       if (this.students.length == 0) {
-        alert("请至少添加一名学生！");
+          this.$message.error("请至少添加一名学生！");
         return;
       }
-      if (this.className == null) {
-        alert("请输入班级名称！");
+      this.className = this.className.replace(/\s+/g,"");
+      if (this.className.length==0) {
+          this.$message.error("请输入班级名称！");
         return;
       }
 
@@ -353,6 +358,10 @@ export default {
           if (response.data.code == 200) {
             that.students = []; //清空当前学生
             that.className = null; //清空当前学生
+              that.$message({
+          message: '成功！',
+          type: 'success'
+        });
             VueBus.$emit("closeAddClass", true); //关闭该面板
           }
         })

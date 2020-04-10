@@ -1,74 +1,135 @@
 <template >
   <div>
-    <div v-if="showDetails" class="panel" >
-         <div  style="text-align:right" >
-            <el-button type="mini"
-            circle @click="showDetails = !showDetails"><i class="el-icon-close"/>
-            </el-button>
-         </div>
-     
-       <el-tabs value = 'first'>
-    <el-tab-pane label="课程学生" name="first">
-
-      <div>
-        <el-table
-          ref="multipleTable"
-          :data="CourseProgress"
-          tooltip-effect="dark"
-            @selection-change="handleSelectionChange"
-          style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);"
-        >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="username" label="账号" width="180"></el-table-column>
-          <el-table-column prop="allPercent" label="进度">
-            <div slot-scope="scope">{{getStudentNameByUsername(scope.row.username)}}</div>
-          </el-table-column>
-          <el-table-column prop="allPercent" label="进度">
-            <div slot-scope="scope">{{scope.row.allPercent}}%</div>
-          </el-table-column>
-        </el-table>
-        <div style="margin:10px auto;">
-            一共：{{CourseProgress.length}}名学生，选中{{multipleSelection.length}}名学生。
-        </div>
+    <div v-if="showDetails" class="panel">
+      <div style="text-align:right">
+        <el-button type="mini" circle @click="showDetails = !showDetails">
+          <i class="el-icon-close" />
+        </el-button>
       </div>
+      <el-tabs  @tab-click="handleClick" v-model="tabValue">
+        <el-tab-pane label="课程学生" name="first">
+          <div>
+            <el-table
+              ref="multipleTable"
+              :data="CourseProgress"
+              tooltip-effect="dark"
+              @selection-change="handleSelectionChange"
+              style="width: 60%;txet-align:center;padding:30px;margin:0 auto; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);"
+            >
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column prop="username" label="账号" width="180"></el-table-column>
+              <el-table-column prop="allPercent" label="姓名">
+                <div slot-scope="scope">{{getStudentNameByUsername(scope.row.username)}}</div>
+              </el-table-column>
+              <el-table-column prop="allPercent" label="进度">
+                <div slot-scope="scope" style="color:blue">
+                  <el-popover
+                    placement="left-end"
+                    :title="'学习进度：'+getStudentNameByUsername(scope.row.username)"
+                    width="380"
+                    trigger="hover"
+                  >
+                   <div style="height:250px;overflow:auto" v-html="progressDetailsJson[scope.$index]"></div>
 
-    </el-tab-pane>
+                    <span slot="reference">{{scope.row.allPercent}}%</span>
+                  </el-popover>
+                </div>
+              </el-table-column>
+            </el-table>
+            <div
+              style="margin:10px auto;"
+            >一共：{{CourseProgress.length}}名学生，选中{{multipleSelection.length}}名学生。</div>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="已选学生" name="sel">
+          <el-collapse>
+            <el-collapse-item>
+              <template slot="title">
+                <div style="text-indent:2em;font-size:16px;">已选列表：（共{{multipleSelection.length}}位）</div>
+              </template>
+              <div>
+                <div style="flex-wrap: wrap;display:flex;width:90%;margin:0 auto">
+                  <div
+                    style="font-weight:500;;width:18%;text-align:center;"
+                    v-for="(item,index) in multipleSelection"
+                    :key="index"
+                  >{{item.username}} {{getStudentNameByUsername(item.username)}}</div>
+                </div>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+
+          <div style="margin-top:50px;">
+            <div style="width:100%;">
+              标题：
+              <el-input v-model="title" show-word-limit maxlength="30" style="width:300px;" />
+            </div>
+            <div style="width:100%;">
+              内容：
+              <el-input
+                v-model="content"
+                show-word-limit
+                maxlength="200"
+                type="textarea"
+                style="width:300px;"
+              />
+            </div>
+            <br />
+            <div>
+              <el-button @click="comfirmSend()">确认发送</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="全体消息" name="all">
+                      <el-collapse>
+            <el-collapse-item>
+              <template slot="title">
+                <div style="text-indent:2em;font-size:16px;">全班学生：（共{{CourseProgress.length}}位）</div>
+              </template>
+              <div>
+                <div style="flex-wrap: wrap;display:flex;width:90%;margin:0 auto">
+                  <div
+                    style="font-weight:500;;width:18%;text-align:center;"
+                    v-for="(item,index) in CourseProgress"
+                    :key="index"
+                  >{{item.username}} {{getStudentNameByUsername(item.username)}}</div>
+                </div>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+
+          <div style="margin-top:50px;">
+            <div style="width:100%;">
+              标题：
+              <el-input v-model="title" show-word-limit maxlength="30" style="width:300px;" />
+            </div>
+            <div style="width:100%;">
+              内容：
+              <el-input
+                v-model="content"
+                show-word-limit
+                maxlength="200"
+                type="textarea"
+                style="width:300px;"
+              />
+            </div>
+            <br />
+            <div>
+              <el-button @click="comfirmSendAll()">确认发送</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
 
 
-    <el-tab-pane label="私信通知" name="fourth">
-<el-collapse  >
-  <el-collapse-item>
-     <template slot="title">
-      <div style="text-indent:2em;font-size:16px;">已选列表：（共{{multipleSelection.length}}位）</div>
-    </template>
-  <div>  
-        <div style="flex-wrap: wrap;display:flex;width:90%;margin:0 auto">
-      <div  style="font-weight:500;;width:18%;text-align:center;" v-for="(item,index) in multipleSelection" :key="index">
-           {{item.username}} {{getStudentNameByUsername(item.username)}}
-       </div>
-      </div>      
-  </div>
-  </el-collapse-item>
-</el-collapse>
-
-      <div style="margin-top:50px;">
-         <div style="width:100%;">   标题： <el-input v-model="title"  show-word-limit maxlength="30" style="width:300px;" /> </div>
-         <div style="width:100%;">  内容： <el-input v-model="content" show-word-limit maxlength="200" type="textarea" style="width:300px;" /> </div>
-        <br>
-        <div><el-button @click="comfirmSend()">确认发送</el-button></div>
-      </div>
-
-    </el-tab-pane>
-  </el-tabs>
 
 
 
 
 
+      </el-tabs>
     </div>
-
-
-
 
     <!-- 整个内容区 -->
     <div class="content" v-loading="loading">
@@ -91,8 +152,8 @@
                 </div>
 
                 <div class="bottom-content">
-               <img width="14px;" height="14px" src="../../../assets/icons/like.png"/>
-               <span>{{item.likeNum}}</span>
+                  <img width="14px;" height="14px" src="../../../assets/icons/like.png" />
+                  <span>{{item.likeNum}}</span>
                   <!-- <div>回{{item.replyNum}}</div> -->
                 </div>
 
@@ -190,8 +251,10 @@ export default {
       noCourses: true,
 
       //私信模块
-      title:null,
-      content:null
+      title: null,
+      content: null,
+      progressDetailsJson:[],
+      tabValue:"first"
     };
   },
   mounted() {
@@ -199,56 +262,84 @@ export default {
     this.getAllStudents();
   },
   methods: {
-    toVideoCourse(courseId){
-        this.$router.push({
+    handleClick(){
+    },
+
+    toVideoCourse(courseId) {
+      this.$router.push({
         name: "VideoCourse",
         query: { courseId: courseId, videoId: null }
       });
-
     },
-    comfirmSend(){
-      //1.判断   2.做消息发送
-      if(this.title==''||this.title==null){
-        alert("标题为空。")
-        return ;
+    comfirmSendAll(){
+        //1.判断   2.做消息发送
+      if (this.title == "" || this.title == null) {
+         this.$message.error("标题为空。");
+        return;
       }
-      if(this.content==''||this.content==null){
-        alert("不允许发送空值。")
-          return ;
-      }
-      if(this.multipleSelection.length<1){
-        alert("请于课程学生选中学生")
-          return ;
+      if (this.content == "" || this.content == null) {
+         this.$message.error("不允许发送空值。");
+        return;
       }
       var parmas = new URLSearchParams();
-      parmas.append("title",this.title);
-      parmas.append("content",this.content);
-      parmas.append("messageType",'video_progress_tips');
-      parmas.append("receivers",JSON.stringify(this.multipleSelection));
+      parmas.append("title", this.title);
+      parmas.append("content", this.content);
+      parmas.append("messageType", "video_progress_tips");
+      parmas.append("receivers", JSON.stringify(this.CourseProgress));
       var that = this;
       axios
-        .post("/comm/sendMsgs",parmas)
+        .post("/comm/sendMsgs", parmas)
         .then(function(response) {
-
-            that.$message({
-                showClose: true,
-                duration:0,
-          message: '发送成功！已将消息发送给'+response.data.object+"名学生。",
-          type: 'success'
-        });
-        that.title=null,
-        that.content=null;
-
-
-
-
+          that.$message({
+            showClose: true,
+            duration: 0,
+            message:
+              "发送成功！已将消息发送给" + response.data.object + "名学生。",
+            type: "success"
+          });
+          (that.title = null), (that.content = null);
         })
         .catch(function(error) {
           console.log(error);
         });
+    },
 
-
-
+    comfirmSend() {
+      //1.判断   2.做消息发送
+      if (this.title == "" || this.title == null) {
+         this.$message.error("标题为空。");
+        return;
+      }
+      if (this.content == "" || this.content == null) {
+         this.$message.error("不允许发送空值。");
+        return;
+      }
+      if (this.multipleSelection.length < 1) {
+         this.$message.error("请于课程学生选中学生");
+        return;
+      }
+      console.log("cst:"+JSON.stringify(this.multipleSelection))
+      var parmas = new URLSearchParams();
+      parmas.append("title", this.title);
+      parmas.append("content", this.content);
+      parmas.append("messageType", "video_progress_tips");
+      parmas.append("receivers", JSON.stringify(this.multipleSelection));
+      var that = this;
+      axios
+        .post("/comm/sendMsgs", parmas)
+        .then(function(response) {
+          that.$message({
+            showClose: true,
+            duration: 0,
+            message:
+              "发送成功！已将消息发送给" + response.data.object + "名学生。",
+            type: "success"
+          });
+          (that.title = null), (that.content = null);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     getStudentNameByUsername(username) {
       var name = null;
@@ -288,7 +379,6 @@ export default {
       axios
         .post("/comm/getCoursesByUsername")
         .then(function(response) {
-          console.log(response);
           that.courseObjects = response.data.object;
           that.loading = false;
           that.noCourses = true;
@@ -337,6 +427,7 @@ export default {
         });
     },
     lookClass(array, id) {
+      this.progressDetailsJson = []
       var parmas = new URLSearchParams();
       parmas.append("courseId", id);
       var that = this;
@@ -346,20 +437,28 @@ export default {
           that.CourseProgress = response.data.object;
           that.showDetails = true;
 
+          console.log(that.CourseProgress);
+
           //更新进度
-          that.CourseProgress.forEach(element => {
+          that.CourseProgress.forEach((element,index) => {
+            
             if (element.progress == 0) {
+              that.progressDetailsJson[index] = "<br><br><br><center>学生还未开始学习！</center>"
               return;
             }
+            if(that.progressDetailsJson[index]==null)that.progressDetailsJson[index]="";
             var n = 0; //个数
             var p = 0; //总量
             //当学生第一次进入该课程。并不存在进度
-            if (element.progress == 0) return;
-            JSON.parse(element.progress).catalog.forEach(ec => {
+            // if (element.progress == 0) return;
+            JSON.parse(element.progress).catalog.forEach((ec,i) => {
+               that.progressDetailsJson[index] += "第"+(i+1)+"视频："+ec.label+"："+ec.percent+"%   <br>";
               p += Number(ec.percent);
               n++;
             });
             element.allPercent = (p / n).toFixed(2);
+
+
           });
         })
         .catch(function(error) {
@@ -397,32 +496,32 @@ export default {
   text-align: center;
   margin-top: 10px;
 }
-.title:hover{
-   font-size: 18px;
+.title:hover {
+  font-size: 18px;
   text-align: center;
   cursor: pointer;
-  color: #409Eff;
+  color: #409eff;
   margin-top: 10px;
 }
 .box-card {
   width: 300px;
 }
-.panel{
-      text-align: center;
-    position: fixed;
-    background: white;
-    width: 75%;
-    top: 11%;
-    min-width: 900px;
-    min-height: 550px;
-    height: 70%;
-    font-size: 18px;
-    line-height: 30px;
-    font-weight: 500;
-    overflow: auto;
-    z-index: 9999;
-    padding: 10px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+.panel {
+  text-align: center;
+  position: fixed;
+  background: white;
+  width: 75%;
+  top: 11%;
+  min-width: 900px;
+  min-height: 550px;
+  height: 70%;
+  font-size: 18px;
+  line-height: 30px;
+  font-weight: 500;
+  overflow: auto;
+  z-index: 999;
+  padding: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>
 

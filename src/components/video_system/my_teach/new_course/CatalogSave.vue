@@ -38,6 +38,7 @@
         @node-click="handleNodeClick"
       >
         <span class="custom-tree-node" slot-scope="{ node, data }">
+
           <span v-show="!data.inp_stat">{{data.label}}</span>
           <div style="width:50%">
             <el-input
@@ -46,7 +47,7 @@
               :id="data.id"
               v-model="temp_data"
               :placeholder="data.level==1?'章节名称':(data.level==2?'标题名称':'内容名称')"
-              value="node.label"
+              :value="data.label"
               v-show="data.inp_stat"
               maxlength="24"
               size="small"
@@ -423,7 +424,7 @@ export default {
     //修改数据
     update(curr_node) {
       curr_node.inp_stat = !curr_node.inp_stat;
-      console.log("当前状态：" + curr_node.inp_stat);
+      console.log("当前状态：" , curr_node);
       if (curr_node.inp_stat) {
         setTimeout(() => {
           console.log("获取焦点");

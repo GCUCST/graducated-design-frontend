@@ -67,9 +67,9 @@
               <el-menu-item index="2-2" v-if="role=='student'" @click="routeJump('MyCourse')">
                 <i class="el-icon-reading" />我的课程
               </el-menu-item>
-              <el-menu-item index="2-6" v-if="role=='student'">
+              <!-- <el-menu-item index="2-6" v-if="role=='student'">
                 <i class="el-icon-notebook-2"></i>我的笔记
-              </el-menu-item>
+              </el-menu-item> -->
               <el-menu-item index="2-4" v-if="role=='teacher'" @click="routeJump('VideoLibrary')">
                 <i class="el-icon-folder"></i>
                 我的视频库

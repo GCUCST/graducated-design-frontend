@@ -1,8 +1,8 @@
 <template>
   <div class="practice" v-loading="loading">
     <div>
-      <div style="text-align:center" v-if="questions.length<1">老师未设置题库</div>
-      <el-collapse accordion @change="handleChange">
+      <div style="text-align:center" v-if="questions.length<1">老师未设置本节练习题~</div>
+      <el-collapse v-if="questions.length>=1" accordion @change="handleChange">
         <div v-for="(item,index) in questions" :key="index">
           <!-- 选择题 -->
           <el-collapse-item v-if="item.questionType==0">
@@ -65,13 +65,13 @@
               style="float: right; padding: 3px 0"
               type="text"
             >删除</el-button>
-            <div style="display:flex;">
+            <!-- <div style="display:flex;">
               <div v-for="(i,j) in JSON.parse(item.answer)" :key="j">
                 {{j+1}}、
                 <el-input v-model="blankList[j]" 
                 style="margin-right:50px;;width:100px;" />
               </div>
-            </div>
+            </div> -->
             <div style="text-align:center">
               <br />
               <el-button @click="shwoAnswer(index)">查看答案</el-button>
@@ -145,7 +145,7 @@ export default {
       axios
         .post("/comm/getAllQuestionsByPracticeSystem")
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
           that.allQuestions = response.data.object;
         })
         .catch(function(error) {
@@ -163,10 +163,14 @@ export default {
         .then(function(response) {
           if (response.data.object == null) {
             that.questions = [];
+            that.loading = false;
             return;
           } else if (response.data.object.questions) {
+            // console.log("---陈少桐---",response.data.object.questions)
             that.questions = JSON.parse(response.data.object.questions);
+            // console.log("-----/陈少桐------------"+that.questions.length)
           }
+          console.log("正常跑完。")
               that.loading = false;
         })
         .catch(function(error) {

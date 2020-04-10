@@ -6,12 +6,13 @@
       <!-- 开始。。。。。。。。。。。。。。。。。 -->
       <el-table
         ref="multipleTable"
-        :data="allTeachers"
+         :data="allTeachers.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
         tooltip-effect="dark"
         @selection-change="handleSelectionChange"
         height="450"
       >
         <el-table-column type="selection"></el-table-column>
+          <el-table-column label="序号" type="index" width="80"></el-table-column>
         <el-table-column sortable prop="staId" label="工号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column
@@ -19,9 +20,25 @@
           :filters="[{text: '男', value: 1},{text: '女', value: 0},{text:'未设置',value:-1}]"
           :filter-method="filterHandler"
           label="性别"
-        ></el-table-column>
+        >
+           <template slot-scope="scope">
+                <span
+                  style="margin-left: 10px"
+                >{{ scope.row.gender==1?'男':scope.row.gender==0?'女':'未设置' }}</span>
+              </template>
+        </el-table-column>
 
-        <el-table-column label="操作">
+        <el-table-column label="操作"   align="right">
+          
+
+                <template slot="header" slot-scope="scope">
+        <el-input
+          v-model="search"
+         @click="fun(scope.$index)"
+          placeholder="输入姓名搜索"/>
+      </template>
+          
+          
           <template slot-scope="scope">
             <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -69,6 +86,7 @@ export default {
   name: "teacher",
   data() {
     return {
+      search:'',
       loading: true,
       staId: null,
       name: null,
@@ -82,6 +100,7 @@ export default {
     this.getAllTeachers();
   },
   methods: {
+    fun(num){},
     getGSMA() {
       // var params = new URLSearchParams();
       // params.append("GSMAJson", JSON.stringify(GSMAJson));
@@ -122,20 +141,36 @@ export default {
       var params = new URLSearchParams();
       params.append("staId", row.staId);
       var that = this;
+
       axios
         .post("/comm/delTeacher", params)
         .then(function(response) {
           console.log(response.data.object);
           if (response.data.object == 1) {
-            alert("删除成功。");
+            that.$message({
+          showClose: true,
+          message: '删除成功',
+          type: 'success'
+        });
             that.allTeachers.splice(index, 1);
           } else {
-            alert("删除失败。");
+            if(response.data.code==444)
+            {
+               that.$message.error("该教师的文件库非空，需要先清空！")
+            }
+            else  that.$message.error("删除失败：未知错误！");
           }
         })
         .catch(function(error) {
           console.log(error);
         });
+
+        
+
+
+
+
+
     },
     filterHandler(value, row, column) {
       const property = column["property"];
@@ -193,16 +228,19 @@ export default {
       axios
         .post("/comm/addTeacher", params)
         .then(function(response) {
-          console.log("res:", response);
+          // console.log("res:", response);
+           that.$message({
+          message: '添加成功。',
+          type: 'success'
+        });
           if (response.data.code == 200) {
             that.allTeachers.push({
               staId: that.staId,
               name: that.name,
               gender: that.gender
             });
-            // alert("添加成功！请刷新")
           } else {
-            alert("添加失败。" + response.data.message);
+            that.$message.error("添加失败。存在该教工！");
           }
           that.staId = null;
           that.name = null;

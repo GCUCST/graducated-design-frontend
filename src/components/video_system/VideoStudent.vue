@@ -53,8 +53,8 @@
 
           <transition name="custom-classes-transition" enter-active-class="animated bounceInRight">
             <div style="width:35%" v-show="!video_full">
-              <el-tabs style="height:100%" type="border-card" stretch>
-                <el-tab-pane label="章节">
+              <el-tabs style="height:95%" type="border-card" stretch>
+                <el-tab-pane  style="height: 470px;overflow:auto" label="章节">
                   <el-tree
                     node-key="id"
                     default-expand-all
@@ -64,7 +64,7 @@
                   ></el-tree>
                 </el-tab-pane>
 
-                <el-tab-pane label="我的进度" style="overflow:auto">
+                <el-tab-pane label="我的进度" style="height: 470px;overflow:auto">
                   <div
                     style="font-size:12px;line-height:30px;font-weigth:700"
                     v-for=" (item,index) in progress.catalog"
@@ -125,6 +125,7 @@ export default {
       var that = this;
       axios.post("/comm/addLiked", parmas).then(function(response) {
         console.log(response);
+        if(!response.data.object){
         if (targetType == "course") that.course.likeNum++;
         if (targetType == "comment") {
           for (var i = 0; i < that.allReplies.length; i++) {
@@ -132,7 +133,13 @@ export default {
               that.allReplies[i].likeNum++;
             }
           }
+        }}
+        else{
+            that.$message('已经点过赞了哦');
         }
+
+
+
       });
     },
 
