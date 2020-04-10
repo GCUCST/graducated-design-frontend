@@ -55,41 +55,6 @@
         <!-- 显示答案 -->
         <h2>{{question.answer}}</h2>
         
-        <!-- <el-form-item label="答案">
-            <div v-if="subject.type=='0'">
-            <el-radio 
-            v-model="subject.answer" 
-                :key="item.id"
-                v-for="(item,i) in subject.options" 
-                :label="fmtNumber2EN(i)">
-                {{i | fmtNumber2EN}}
-            </el-radio>
-            </div>
-
-            <div v-if="subject.type===SUBJECT_TYPE.DUOXUAN">
-            <el-checkbox-group v-model="subject.answer">
-                <el-checkbox 
-                :key="item.id"
-                v-for="(item,i) in subject.options" 
-                :label="fmtNumber2EN(i)">
-                {{i | fmtNumber2EN}}
-                </el-checkbox>
-            </el-checkbox-group>
-            </div>
-            <div v-if="subject.type===SUBJECT_TYPE.PANDUAN">
-            <el-radio v-model="subject.answer" label="Y">T</el-radio>
-            <el-radio v-model="subject.answer" label="F">F</el-radio>
-            </div>
-            <div v-if="subject.type===SUBJECT_TYPE.JIANDA">
-            <el-input
-                type="textarea"
-                :rows="2"
-                placeholder="请输入内容"
-                v-model="subject.answer">
-            </el-input>
-            </div>
-        </el-form-item> -->
-
         <!-- 解析 -->
         <el-form-item label="解析"">
             <el-input
@@ -102,7 +67,7 @@
 
         <!-- 添加题的教师 -->
         <el-form-item label="题目的添加教师"">
-            <el-input v-model="question.createTea"></el-input>
+            <el-input v-model="question.creTea"></el-input>
         </el-form-item>
 
         <!-- 添加题的时间 -->
@@ -175,7 +140,7 @@ export default {
             arrtD:'',
             answer:'',   //答案
             desc:'',   //解析
-            createTea:'',   //添加题的教师
+            creTea:'',   //添加题的教师
             createTime:''   //添加题的时间
         }
     };

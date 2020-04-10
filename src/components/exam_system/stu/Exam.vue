@@ -2,6 +2,7 @@
   <div class="stuexam">
     我的考试-试卷管理
     <el-divider></el-divider>
+    <!-- <router-link :to="{name:'StartExam'}">开始考试</router-link> -->
 
     <!-- 使用 行内表单  设置 试卷 的搜索条件 -->
     <div style="padding-top: 20px;">
@@ -12,7 +13,7 @@
         <el-form-item label="试卷类型">
           <el-select v-model="examSearch.type" placeholder="试卷类型">
             <el-option label="章节练习" value="0"></el-option>
-            <el-option label="章节测试"" value="1"></el-option>
+            <el-option label="章节测试"" value=" 1"></el-option>
             <el-option label="考试" value="2"></el-option>
           </el-select>
         </el-form-item>
@@ -33,59 +34,63 @@
 
 
     <!-- 试卷列表 使用表格展示 -->
+    <h3>章节练习</h3>
     <div style="border: 1px #ccc solid;">
-      <el-table
-      ref="singleTable"
-      highlight-current-row
-      @current-change="handleCurrentChange"
-      border
-      :data="paperlist"
-      style="width: 100%"
-      height="550">
-        <el-table-column
-          fixed
-          type="index"
-          width="50">
+      <el-table ref="singleTable" highlight-current-row 
+        @selection-change="selectionChangeChoice" border :data="practiceList"
+        style="width: 100%" height="550">
+        <el-table-column type="selection" width="50">
         </el-table-column>
-        <el-table-column
-          prop="ename"
-          label="考试名称"
-          width="200">
+        <el-table-column prop="practiceSetId" label="练习编号" width="100">
         </el-table-column>
-        <el-table-column
-          prop="type"
-          label="试卷类型"
-          width="150">
+        <el-table-column prop="practiceName" label="练习名称" width="350">
         </el-table-column>
-        <el-table-column
-          prop="subject"
-          label="所属科目"
-          width="150">
+        <el-table-column prop="subjectId" label="所属科目" width="150">
         </el-table-column>
-        <el-table-column
-          prop="startTime"
-          label="考试开始时间"
-          width="160">
+        <el-table-column prop="startTime" label="练习开始时间" width="160">
         </el-table-column>
-        <el-table-column
-          prop="endTime"
-          label="考试截止时间"
-          width="160">
+        <el-table-column prop="endTime" label="练习截止时间" width="160">
         </el-table-column>
-        <el-table-column
-          prop="avaliableTime"
-          label="考试时长"
-          width="100">
+        <el-table-column prop="needTime" label="练习时长" width="100">
         </el-table-column>
-        <el-table-column
-          prop="totalScore"
-          label="试卷总分"
-          width="100">
+        
+        <el-table-column fixed="right" label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button @click="routeJump('ChapterPractice')"  type="primary" size="small">开始练习</el-button>
+            <!-- <el-button type="text" size="small">编辑</el-button> -->
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="passScore"
-          label="及格分数"
-          >
+      </el-table>
+    </div>
+
+
+    <h3>考试</h3>
+    <div style="border: 1px #ccc solid;">
+      <el-table ref="singleTable" highlight-current-row 
+        @selection-change="selectionChangeChoice" border :data="exam"
+        style="width: 100%" height="550">
+        <el-table-column type="selection" width="50">
+        </el-table-column>
+        <el-table-column prop="examId" label="考试编号" width="100">
+        </el-table-column>
+        <el-table-column prop="examName" label="考试名称" width="350">
+        </el-table-column>
+        <el-table-column prop="subjectId" label="所属科目" width="150">
+        </el-table-column>
+        <el-table-column prop="examType" label="考试类型" width="150">
+        </el-table-column>
+        <el-table-column prop="startTime" label="考试开始时间" width="160">
+        </el-table-column>
+        <el-table-column prop="endTime" label="考试截止时间" width="160">
+        </el-table-column>
+        <el-table-column prop="needTime" label="考试时长" width="100">
+        </el-table-column>
+        
+        <el-table-column fixed="right" label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button @click="routeJump('ChapterPractice')"  type="primary" size="small">开始考试</el-button>
+            <!-- <el-button type="text" size="small">编辑</el-button> -->
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -95,69 +100,73 @@
 
 
 <script>
-export default {
-  name: "stuexam",
-  data() {
-    return{
-      examSearch:{  
-        ename:'',  //试卷名称
-        subject:'',  //科目
-        type:'',   //试卷类型
-        status:'',  //试卷状态
+  import axios from "axios";
+  export default {
+    name: "stuexam",
+    data() {
+      return {
+        examSearch: {
+          ename: '',  //试卷名称
+          subject: '',  //科目
+          type: '',   //试卷类型
+          status: '',  //试卷状态
+        },
+        practiceList: [ ],  //章节练习设置信息
+        exam:[ ],  //测试与考试设置信息
+        practiceSetId:null,
+      };
+    },
+    created () {
+      this.getPractice();
+      this.getExam();
+    },
+    methods: {
+      getPractice(){
+        let that = this;
+        axios.get("/practiceSet/getAllPracticeSet").then(res => {
+          console.log(res.data);
+          that.practiceList = res.data;
+        });
       },
-      paperlist:[    //试卷列表
-        {
-          ename:'java基础-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          avaliableTime:'80',   //考试可用时长
-          startTime:'2020-03-04 13:25:22',   //开始时间
-          endTime:'2020-03-24 13:25:22',    //结束时间
-          subject:'java基础',   //考试所属科目
-          totalScore:100,   //试卷总分
-          passScore:60,   //及格分数
-        },
-        {
-          ename:'java进阶-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          avaliableTime:'80',   //考试可用时长
-          startTime:'2020-03-04 13:25:22',   //开始时间
-          endTime:'2020-03-24 13:25:22',    //结束时间
-          subject:'java进阶',   //考试所属科目
-          totalScore:100,   //试卷总分
-          passScore:60,   //及格分数
-        },
-        {
-          ename:'spring基础-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          avaliableTime:'80',   //考试可用时长
-          startTime:'2020-03-04 13:25:22',   //开始时间
-          endTime:'2020-03-24 13:25:22',    //结束时间
-          subject:'spring基础',   //考试所属科目
-          totalScore:100,   //试卷总分
-          passScore:60,   //及格分数
-        }
-      ]
-    };
-  },
-  methods: {
-    onSubmit(){
-      console.log('搜索试卷');
-    },
-    handleCurrentChange(val) {
-      this.currentRow = val;
-    },
-  }
-};
+      getExam(){
+        let that = this;
+        axios.get("/exam/getAllExam").then(res => {
+          console.log(res.data);
+          that.exam = res.data;
+        });
+      },
+      selectionChangeChoice(selection){
+        this.practiceSetId = null;
+        console.log(selection);
+        this.practiceSetId=selection[0].practiceSetId;
+        console.log(this.quesid);
+      },
+      onSubmit() {
+        console.log('搜索试卷');
+      },
+      handleCurrentChange(val) {
+        this.currentRow = val;
+      },
+      handleClick(row) {
+        console.log(row);
+      },
+      routeJump(e) {
+      // console.log(e);
+      if (e == "ChapterPractice")
+        this.$router.push({ name: "ChapterPractice" });
+      }
+    }
+  };
 </script>
 
 <style scoped>
-.stuexam{
-  margin: 20px auto;
-  padding: 30px;
-  background: white;
-  width: 95%;
-  /* height: 600px; */
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
+  .stuexam {
+    margin: 20px auto;
+    padding: 30px;
+    background: white;
+    width: 95%;
+    /* height: 600px; */
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
 </style>

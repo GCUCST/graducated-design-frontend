@@ -50,6 +50,8 @@
                   <router-view  name="ManagePassword"></router-view>
                   <router-view  name="PublicCourse"></router-view>
 
+                  <router-view  name="StartExam"></router-view>
+
                   
 
                   

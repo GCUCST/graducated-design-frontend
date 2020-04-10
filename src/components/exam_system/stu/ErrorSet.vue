@@ -50,14 +50,14 @@
       style="width: 100%"
       height="550">
         <el-table-column
-          fixed
+          fixed="left"
           type="index"
           width="50">
         </el-table-column>
         <el-table-column
           prop="ename"
           label="考试名称"
-          width="200">
+          width="250">
         </el-table-column>
         <el-table-column
           prop="type"
@@ -94,6 +94,11 @@
           label="试卷总分"
           >
         </el-table-column>
+        <el-table-column fixed="right" label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="routeJump('ChapterTest')" size="small">回看试卷</el-button>
+          </template>
+        </el-table-column>
         <!-- <el-table-column
           prop="createTime"
           label="添加的时间"
@@ -107,6 +112,7 @@
 
 
 <script>
+import axios from "axios";
 export default {
   name: "errorset",
   data() {
@@ -161,6 +167,14 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val;
     },
+    handleClick(row) {
+        console.log(row);
+    },
+    routeJump(e) {
+      // console.log(e);
+      if (e == "ChapterTest")
+        this.$router.push({ name: "ChapterTest" });
+    }
   }
 };
 </script>

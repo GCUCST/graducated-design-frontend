@@ -2,6 +2,8 @@
   <div class="testsetting">
     考试设置-考试管理
     <el-divider></el-divider>
+
+    
     
     <!-- 考试的增删改查操作 -->
     <el-row>
@@ -194,6 +196,28 @@ export default {
        cla:'',    //班级
        startTime:'',   //开始时间
        endTime:''  //结束时间
+     },
+     exam:{
+      id:111,
+      ename:'',   //考试名称
+      type:'',   //试卷类型
+      subject:'',  //考试所属科目
+      grade:'',   //年级
+      cla:'',  //班级
+      startTime:'',  //考试开始日期
+      endTime:'',    //考试结束日期
+      avaliableTime:'',   //考试限制时间
+      questionNum:0,    //考试试题总数
+      totalScore:0,   //总分
+      passScore:0,   //及格线
+      selectNum:0,   //选择题数量
+      blankNum:0,    //填空题数量
+      shortNum: 0,   //简答题数量
+      proBlankNum:0,   //程序填空题
+      programNum:0,    //编程题数量
+      paperNum: 0,   //生成试卷数量（每生成一张卷子就+1）
+      examedNum:0,   //已考人数
+      createTime:'2020-03-03  00:00:00'   //添加考试的时间
      },
      examlist:
      [

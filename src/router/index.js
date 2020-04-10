@@ -90,6 +90,8 @@ const ChapterPractice = () => import('@/components/exam_system/stu/ChapterPracti
 const ChapterTest = () => import('@/components/exam_system/stu/ChapterTest') //懒加载
 const Exam = () => import('@/components/exam_system/stu/Exam') //懒加载
 const ErrorSet = () => import('@/components/exam_system/stu/ErrorSet') //懒加载
+const ExamedPaper = () => import('@/components/exam_system/stu/ExamedPaper') //懒加载
+const StartExam = () => import('@/components/exam_system/stu/StartExam') //懒加载
 
 
 
@@ -319,7 +321,14 @@ export default new Router({
         {
           path: 'exam',    //考试系统学生的考试
           name: "Exam",
-          components: { Exam }
+          components: { Exam },
+          children:[
+            {
+              path:'startexam',
+              name:"StartExam",
+              components:{StartExam}
+            }
+          ]
         },
         {
           path: 'errorset',    //考试系统学生的错题集
@@ -331,6 +340,5 @@ export default new Router({
     {
       path: '/', redirect: '/index/homebody'
     }
-
   ]
 })

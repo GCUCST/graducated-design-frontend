@@ -124,37 +124,37 @@
             </template>
             <el-menu-item-group>
               <span slot="title">考试系统</span>
-              <el-menu-item
+              <!-- <el-menu-item
                 index="4-1"
                 v-if="role=='student'"
                 @click="routeJump('ChapterPractice')"
-              >章节自由练习</el-menu-item>
-              <el-menu-item
+              >开始考试</el-menu-item> -->
+              <!-- <el-menu-item
                 index="4-2"
                 v-if="role=='student'"
                 @click="routeJump('ChapterTest')"
-              >章节测试</el-menu-item>
+              >章节测试</el-menu-item> -->
               <el-menu-item index="4-3" v-if="role=='student'" @click="routeJump('Exam')">我的考试</el-menu-item>
               <el-menu-item
                 index="4-4"
                 v-if="role=='student'"
                 @click="routeJump('ErrorSet')"
               >历史考试</el-menu-item>
-              <el-menu-item
+              <!-- <el-menu-item
                 index="4-5"
                 v-if="role=='teacher'"
                 @click="routeJump('Courses')"
-              >我的课程（教师）</el-menu-item>
+              >我的课程（教师）</el-menu-item> -->
               <el-menu-item
                 index="4-6"
                 v-if="role=='teacher'"
                 @click="routeJump('QuestionBank')"
               >我的试题库</el-menu-item>
-              <el-menu-item
+              <!-- <el-menu-item
                 index="4-7"
                 v-if="role=='teacher'"
                 @click="routeJump('LearnProgress')"
-              >学生章节练习进度（教师，查看进度情况）</el-menu-item>
+              >学生章节练习进度（教师，查看进度情况）</el-menu-item> -->
               <el-menu-item
                 index="4-8"
                 v-if="role=='teacher'"
