@@ -161,11 +161,11 @@
                 @click="routeJump('TestSetting')"
               >考试设置</el-menu-item>
               <el-menu-item index="4-9" v-if="role=='teacher'" @click="routeJump('Marking')">我的试卷库</el-menu-item>
-              <el-menu-item
+              <!-- <el-menu-item
                 index="4-10"
                 v-if="role=='teacher'"
                 @click="routeJump('ExportPaper')"
-              >导出学生考试卷（教师）</el-menu-item>
+              >导出学生考试卷（教师）</el-menu-item> -->
             </el-menu-item-group>
           </el-submenu>
 

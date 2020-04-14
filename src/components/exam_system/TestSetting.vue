@@ -219,53 +219,7 @@ export default {
       examedNum:0,   //已考人数
       createTime:'2020-03-03  00:00:00'   //添加考试的时间
      },
-     examlist:
-     [
-        {   //考试例子
-          id:111,
-          ename:'java进阶章节测试-第一章',   //考试名称
-          type:'章节测试',   //试卷类型
-          subject:'java进阶',  //考试所属科目
-          grade:'2017级',   //年级
-          cla:'软件一班',  //班级
-          startTime:'2020-03-01 00:00:00',  //考试开始日期
-          endTime:'2020-03-21 00:00:00',    //考试结束日期
-          avaliableTime:'80',   //考试限制时间
-          questionNum:12,    //考试试题总数
-          totalScore:100,   //总分
-          passScore:60,   //及格线
-          selectNum:5,   //选择题数量
-          blankNum:3,    //填空题数量
-          shortNum: 2,   //简答题数量
-          proBlankNum:1,   //程序填空题
-          programNum:1,    //编程题数量
-          paperNum: 50,   //生成试卷数量（每生成一张卷子就+1）
-          examedNum:20,   //已考人数
-          createTime:'2020-03-03  00:00:00'   //添加考试的时间
-        },
-        {   //考试例子
-          id:111,
-          ename:'java基础章节测试-第二章',   //考试名称
-          type:'章节测试',   //试卷类型
-          subject:'java基础',  //考试所属科目
-          grade:'2018级',   //年级
-          cla:'信科一班',  //班级
-          startTime:'2020-03-01 00:00:00',  //考试开始日期
-          endTime:'2020-03-21 00:00:00',    //考试结束日期
-          avaliableTime:'80',   //考试限制时间
-          questionNum:12,    //考试试题总数
-          totalScore:100,   //总分
-          passScore:60,   //及格线
-          selectNum:5,   //选择题数量
-          blankNum:3,    //填空题数量
-          shortNum: 2,   //简答题数量
-          proBlankNum:1,   //程序填空题
-          programNum:1,    //编程题数量
-          paperNum: 50,   //生成试卷数量
-          examedNum:20,   //已考人数
-          createTime:'2020-03-03  00:00:00'   //添加考试的时间
-        }
-     ]
+     examlist:[ ]
     };
   },
   methods: {

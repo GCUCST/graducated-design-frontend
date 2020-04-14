@@ -35,7 +35,7 @@
 
     <!-- 试卷列表 使用表格展示 -->
     <h3>章节练习</h3>
-    <div style="border: 1px #ccc solid;">
+    <div v-loading="myloading" style="border: 1px #ccc solid;">
       <el-table ref="singleTable" highlight-current-row 
         @selection-change="selectionChangeChoice" border :data="practiceList"
         style="width: 100%" height="550">
@@ -114,6 +114,7 @@
         practiceList: [ ],  //章节练习设置信息
         exam:[ ],  //测试与考试设置信息
         practiceSetId:null,
+        myloading:true
       };
     },
     created () {
@@ -124,6 +125,7 @@
       getPractice(){
         let that = this;
         axios.get("/practiceSet/getAllPracticeSet").then(res => {
+          that.myloading = false;
           console.log(res.data);
           that.practiceList = res.data;
         });
@@ -153,7 +155,11 @@
       routeJump(e) {
       // console.log(e);
       if (e == "ChapterPractice")
-        this.$router.push({ name: "ChapterPractice" });
+       alert("test")
+        this.$router.push({
+        name: "ChapterPractice",
+        query: { id1523:123}
+      });
       }
     }
   };
