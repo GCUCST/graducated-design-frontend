@@ -500,7 +500,7 @@ height:650px;
             </el-table-column>
             <el-table-column label="选择题数目" prop="choiceNum">
             </el-table-column>
-            <el-table-column label="选择题分数"" prop=" choiceScore">
+            <el-table-column label="选择题分数"" prop="choiceScore">
             </el-table-column>
             <el-table-column label="填空题数目" prop="blankNum">
             </el-table-column>
@@ -541,7 +541,7 @@ height:650px;
             </el-table-column>
             <el-table-column label="课程" prop="subjectId">
             </el-table-column>
-            <el-table-column label="练习名称" prop="examName">
+            <el-table-column label="练习名称" prop="practiceName">
             </el-table-column>
             <el-table-column label="练习开始时间" prop="startTime">
             </el-table-column>
@@ -886,9 +886,9 @@ height:650px;
       },
       //删除 练习设置  practiceSet
       handleDeletepra(index, row) {
-        // console.log(index, row.stuId);
-        var params = new URLSearchParams();
-        params.append("stuId", row.stuId);
+        console.log(index, row.practiceSetId);
+        // var params = new URLSearchParams();
+        // params.append("stuId", row.practiceSetId);
         var that = this;
 
         this.$confirm("确定删除该章节练习设置？", "提示", {
@@ -897,24 +897,23 @@ height:650px;
           type: "warning"
         })
           .then(() => {
-            // axios
-            //   .post("/comm/delStudent", params)
-            //   .then(function (response) {
-            //     console.log(response.data.object);
-            //     if (response.data.object == 1) {
-            //       that.$message({
-            //         type: "success",
-            //         message: "删除成功!"
-            //       });
-            //       that.allStudents.splice(index, 1);
-            //     } else {
-            //       alert("删除失败。");
-            //     }
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   });
-            console.log("删除 prac");
+            axios
+              .post("/practiceSet/deletePracticeSet?practiceSetId="+row.practiceSetId)
+              .then(function (response) {
+                console.log(response.data);
+                if (response.data == 1) {
+                  that.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  that.practicelist.splice(index, 1);
+                } else {
+                  alert("删除失败。");
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
           })
           .catch(() => {
             this.$message({
@@ -999,6 +998,7 @@ height:650px;
           .post("/exam/addExam", params)
           .then(function (response) {
             console.log(response);
+            that.showaddexam = !showaddexam;
             if (response.data == 1) {
               that.examlist.push(that.oneexamset);
               that.$message({
@@ -1037,7 +1037,7 @@ height:650px;
           .post("/practiceSet/addPracticeSet", params)
           .then(function (response) {
             console.log(response);
-            console.log()
+            that.showaddpra = !that.showaddpra;
             if (response.data == 1) {
               that.practicelist.push(that.onepracset);  //增加一条
               that.$message({

@@ -126,6 +126,12 @@ export default {
     this.getScore(this.examInfoId);
   },
   methods: {
+    back(){
+      this.$router.push({
+        name: "Marking",
+        // query: { examInfoId:this.examInfoid}
+      });
+    },
     getStuName(stuId){   //获取学生姓名
       let that  = this;
       axios.get("/marking/getstuName?stuId="+stuId).then(res => {
