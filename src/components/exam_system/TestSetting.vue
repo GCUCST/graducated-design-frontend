@@ -518,10 +518,10 @@ height:650px;
             </el-table-column>
             <el-table-column label="编程题分数" prop="programScore">
             </el-table-column>
-            <el-table-column align="right" width="150">
-              <template slot="header" slot-scope="scope">
+            <el-table-column align="right" width="150" label="操作">
+              <!-- <template slot="header" slot-scope="scope">
                 <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -821,24 +821,23 @@ height:650px;
           type: "warning"
         })
           .then(() => {
-            // axios
-            //   .post("/exam/deleteExam?examId=" + row.examId)
-            //   .then(function (response) {
-            //     console.log(response.data);
-            //     if (response.data == 1) {
-            //       that.$message({
-            //         type: "success",
-            //         message: "删除成功!"
-            //       });
-            //       that.examlist.splice(index, 1);
-            //     } else {
-            //       alert("删除失败。");
-            //     }
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   });
-            console.log("删除exam");
+            axios
+              .post("/exam/deleteExam?examId=" + row.examId)
+              .then(function (response) {
+                console.log(response.data);
+                if (response.data == 1) {
+                  that.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  that.examlist.splice(index, 1);
+                } else {
+                  alert("删除失败。");
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
           })
           .catch(() => {
             this.$message({
@@ -966,6 +965,35 @@ height:650px;
         //     });
         // }
         console.log("修改exam");
+      },
+      // 确认修改 practice
+      comfirmpra() {
+        var that = this;
+        // if (ops == "major") {
+        //   var params = new URLSearchParams();
+        //   params.append("stuId", this.newStuInfo.stuId);
+        //   params.append("major", this.newStuInfo.major);
+        //   params.append("adminClass", this.newStuInfo.adminClass);
+        //   axios
+        //     .post("/comm/changeMajor", params)
+        //     .then(function (response) {
+        //       console.log(response);
+        //       if (response.data.code == 200) {
+        //         that.$message({
+        //           showClose: true,
+        //           type: "success",
+        //           message: "成功"
+        //         });
+        //         that.getAllStudents();
+        //         that.oldStuInfo.major = that.newStuInfo.major;
+        //         that.oldStuInfo.adminClass = that.newStuInfo.adminClass;
+        //       }
+        //     })
+        //     .catch(function (error) {
+        //       console.log(error);
+        //     });
+        // }
+        console.log("修改practice");
       },
       // 新增一个 exam 的设置
       save() {

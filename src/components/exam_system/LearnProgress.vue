@@ -3,7 +3,19 @@
       <el-button type="primary" round @click="back()">返回</el-button>
 
       <el-divider></el-divider>
-      {{stuName}} -{{stuId}}
+      <table border="1" 
+      cellpadding="5"
+           cellspacing="0"
+          width="280">
+        <tr>
+          <td style="text-align:right;">姓名：</td>
+          <td>{{stuName}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">姓名：</td>
+          <td>{{stuId}}</td>
+        </tr>
+      </table>
       <h3 style="text-align: center;">{{examName}}</h3>
       <p style="margin-left: 60%;color: red;">总分：{{score.totalSco}}</p>
       <!-- <div v-for="(item,index) in choicelist">
@@ -29,7 +41,7 @@
                 <li>C. {{choicelist[index].attrC}}</li>
                 <li>D. {{choicelist[index].attrD}}</li>
               </div>
-              <li>参考答案：{{item.answer}}</li>
+              <li>参考答案：{{item.answer}}</li> <br/>
               <li>学生答案：{{item.stuAnswer}}</li>
               <p>学生得分：{{item.sco}}</p>
             </ul>
@@ -40,7 +52,7 @@
             <p style="color: salmon;">填空题总得分：{{score.blankSco}}</p>
             <ul v-for="(item,index) in eqb">
               <h4>{{index+1}}（{{exam.blankScore}}分）、{{blanklist[index].title}}</h4>
-              <li>参考答案：{{item.answer}}</li>
+              <li>参考答案：{{item.answer}}</li><br/>
               <li>学生答案：{{item.stuAnswer}}</li>
               <p>学生得分：{{item.sco}}</p>
             </ul>
@@ -51,7 +63,7 @@
             <p style="color: salmon;">简答题总得分：{{score.shortSco}}</p>
             <ul v-for="(item,index) in eqs">
               <h4>{{index+1}}（{{exam.shortScore}}分）、{{shortlist[index].title}}</h4>
-              <li>参考答案：{{item.answer}}</li>
+              <li>参考答案：{{item.answer}}</li><br/>
               <li>学生答案：{{item.stuAnswer}}</li>
               <p>学生得分：{{item.sco}}</p>
             </ul>
@@ -62,7 +74,7 @@
             <p style="color: salmon;">程序填空题总得分：{{score.proBlankSco}}</p>
             <ul v-for="(item,index) in eqpb">
               <h4>{{index+1}}（{{exam.proBlankScore}}分）、{{proBlanklist[index].title}}</h4>
-              <li>参考答案：{{item.answer}}</li>
+              <li>参考答案：{{item.answer}}</li><br/>
               <li>学生答案：{{item.stuAnswer}}</li>
               <p>学生得分：{{item.sco}}</p>
             </ul>
@@ -73,14 +85,14 @@
             <p style="color: salmon;">编程题总得分：{{score.programSco}}</p>
             <ul v-for="(item,index) in eqpro">
               <h4>{{index+1}}（{{exam.programScore}}分）、{{programlist[index].title}}</h4>
-              <li>参考答案：{{item.answer}}</li>
+              <li>参考答案：<pre>{{item.answer}}</pre></li><br/>
               <li>学生答案：{{item.stuAnswer}}</li>
               <p>学生得分：{{item.sco}}</p>
             </ul>
           </div>
 
 
-          <el-button type="primary" round @click.prevent="onSubmit()">导出试卷</el-button>
+          <!-- <el-button type="primary" round @click.prevent="onSubmit()">导出试卷</el-button> -->
         </form>
         
       </div>

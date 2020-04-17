@@ -4,7 +4,7 @@
     <el-divider></el-divider>
 
     <!-- 使用 行内表单  设置 试卷 的搜索条件 -->
-    <div style="padding-top: 20px;">
+    <!-- <div style="padding-top: 20px;">
       <el-form :inline="true" :model="examSearch" class="demo-form-inline">
         <el-form-item label="考试名称">
           <el-input v-model="examSearch.ename" placeholder="考试名称"></el-input>
@@ -36,75 +36,37 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </div> -->
 
 
     <!-- 试卷列表 使用表格展示 -->
     <div style="border: 1px #ccc solid;">
-      <el-table
-      ref="singleTable"
-      highlight-current-row
-      @current-change="handleCurrentChange"
-      border
-      :data="paperlist"
-      style="width: 100%"
-      height="550">
-        <el-table-column
-          fixed="left"
-          type="index"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          prop="ename"
-          label="考试名称"
-          width="250">
-        </el-table-column>
-        <el-table-column
-          prop="type"
-          label="试卷类型"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="subject"
-          label="所属科目"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="avaliableTime"
-          label="考试时长"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="useTime"
-          label="考试耗时"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="examTime"
-          label="考试时间"
-          width="160">
-        </el-table-column>
-        <el-table-column
-          prop="getScore"
-          label="试卷得分"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="totalScore"
-          label="试卷总分"
-          >
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" width="100">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="routeJump('ChapterTest')" size="small">回看试卷</el-button>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column
-          prop="createTime"
-          label="添加的时间"
-          width="100">
-        </el-table-column> -->
-      </el-table>
+      <div style="text-align: center;">
+        <el-table
+          :data="paperlist.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+          style="width: 100%;height: 550px;">
+          <el-table-column type="index" width="50">
+          </el-table-column>
+          <el-table-column label="课程" prop="subjectId">
+          </el-table-column>
+          <el-table-column label="试卷名称" prop="examName">
+          </el-table-column>
+          <el-table-column label="考试类型" prop="examType">
+          </el-table-column>
+          <el-table-column label="学号" prop="stuId">
+          </el-table-column>
+          <el-table-column label="考试时间" prop="generationTime">
+          </el-table-column>
+          <el-table-column align="right">
+            <!-- <template slot="header" slot-scope="scope">
+              <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+            </template> -->
+            <template slot-scope="scope">
+              <el-button size="mini" type="danger" @click="lookpaper(scope.$index, scope.row)">回看试卷</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
   </div>
@@ -124,43 +86,39 @@ export default {
         status:'',  //试卷状态
       },
       paperlist:[    //试卷列表
-        {
-          ename:'java基础-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          status:'未批阅',  //试卷状态
-          avaliableTime:'80',   //考试可用时长
-          useTime:'50',    //考试耗时
-          examTime:'2020-03-04 13:25:22 2020-03-04 13:26:30',   //考试时间
-          subject:'java基础',   //考试所属科目
-          getScore:95,   //试卷得分
-          totalScore:100,   //试卷总分
-        },
-        {
-          ename:'java进阶-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          status:'已批阅',  //试卷状态
-          avaliableTime:'80',   //考试可用时长
-          useTime:'70',    //考试耗时
-          examTime:'2020-03-04 13:25:22 2020-03-04 13:26:30',   //考试时间
-          subject:'java进阶',   //考试所属科目
-          getScore:65,   //试卷得分
-          totalScore:100,   //试卷总分
-        },
-        {
-          ename:'spring基础-期末考试',  //  试卷名称
-          type:'期末考试',   //试卷类型
-          status:'已批阅',  //试卷状态
-          avaliableTime:'80',   //考试可用时长
-          useTime:'80',    //考试耗时
-          examTime:'2020-03-04 13:25:22 2020-03-04 13:26:30',   //考试时间
-          subject:'spring基础',   //考试所属科目
-          getScore:75,   //试卷得分
-          totalScore:100,   //试卷总分
-        }
-      ]
+      ],
+      stuId:'',  //当前学生
+      search:'',
     };
   },
+  mounted () {
+    this.loadComments();
+    this.getallpapers();
+  },
   methods: {
+    getallpapers() {   //拿到试卷
+        let that = this;
+        axios.get("/examInfo/getAllExamInfo").then(res => {
+          console.log(res.data);
+          let papers = res.data;
+          for (let i = 0; i < papers.length; i++) {
+            if (papers[i].stuId == that.stuId) {   //只拿当前学生的试卷
+              that.paperlist.push(papers[i]);
+            } 
+          };
+
+          console.log(that.paperlist);
+        });
+      },
+      loadComments() {   //拿到当前用户的信息
+        let that = this;
+        //localStorage.getItem("userInfo");
+        var list = JSON.parse(localStorage.getItem("userInfo"));
+        that.local = list;
+         console.log("localstorage******");
+         that.stuId = that.local.account;
+        console.log("学号"+that.stuId);
+       },
     onSubmit(){
       console.log('搜索试卷');
     },
@@ -174,7 +132,24 @@ export default {
       // console.log(e);
       if (e == "ChapterTest")
         this.$router.push({ name: "ChapterTest" });
-    }
+    },
+
+    //回看某个试卷
+    lookpaper(index, row) {
+        console.log(index, row);
+        //console.log(row.examInfoId);  当前的试卷id
+        this.examInfoid = row.examInfoId
+        this.examName = row.examName
+        this.stuId = row.stuId;
+        // this.$router.push({
+        // name: "LearnProgress",
+        // query: { 
+        //   examInfoId:this.examInfoid,
+        //   examName:this.examName,
+        //   stuId:this.stuId
+        // }
+        // });
+      },
   }
 };
 </script>

@@ -1,11 +1,11 @@
 <template>
-  <div class="stuexam">
+  <div class="stuexam" v-loading="myloading">
     我的考试-试卷管理
     <el-divider></el-divider>
     <!-- <router-link :to="{name:'StartExam'}">开始考试</router-link> -->
 
     <!-- 使用 行内表单  设置 试卷 的搜索条件 -->
-    <div style="padding-top: 20px;">
+    <!-- <div style="padding-top: 20px;">
       <el-form :inline="true" :model="examSearch" class="demo-form-inline">
         <el-form-item label="考试名称">
           <el-input v-model="examSearch.ename" placeholder="考试名称"></el-input>
@@ -30,70 +30,76 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </div> -->
 
 
-    <!-- 试卷列表 使用表格展示 -->
-    <h3>章节练习</h3>
-    <div v-loading="myloading" style="border: 1px #ccc solid;">
-      <el-table ref="singleTable" highlight-current-row 
-        @selection-change="selectionChangeChoice" border :data="practiceList"
-        style="width: 100%" height="550">
-        <el-table-column type="selection" width="50">
-        </el-table-column>
-        <el-table-column prop="practiceSetId" label="练习编号" width="100">
-        </el-table-column>
-        <el-table-column prop="practiceName" label="练习名称" width="350">
-        </el-table-column>
-        <el-table-column prop="subjectId" label="所属科目" width="150">
-        </el-table-column>
-        <el-table-column prop="startTime" label="练习开始时间" width="160">
-        </el-table-column>
-        <el-table-column prop="endTime" label="练习截止时间" width="160">
-        </el-table-column>
-        <el-table-column prop="needTime" label="练习时长" width="100">
-        </el-table-column>
-        
-        <el-table-column fixed="right" label="操作" width="100">
-          <template slot-scope="scope">
-            <el-button @click="routeJump('ChapterPractice')"  type="primary" size="small">开始练习</el-button>
-            <!-- <el-button type="text" size="small">编辑</el-button> -->
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="章节练习" name="first">
+        <div style="text-align: center;">
+          <el-table :data="practiceList.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            style="width: 100%" height="450">
+            <el-table-column label="序号" type="index" >
+            </el-table-column>
+            <el-table-column prop="practiceSetId" label="练习编号" >
+            </el-table-column>
+            <el-table-column prop="practiceName" label="练习名称" >
+            </el-table-column>
+            <el-table-column prop="subjectId" label="所属科目" >
+            </el-table-column>
+            <el-table-column prop="startTime" label="练习开始时间">
+            </el-table-column>
+            <el-table-column prop="endTime" label="练习截止时间">
+            </el-table-column>
+            <el-table-column prop="needTime" label="练习时长" >
+            </el-table-column>
+            <el-table-column align="right" label="操作">
+              <!-- <template slot="header" slot-scope="scope">
+                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+              </template> -->
+              <template slot-scope="scope">
+                <el-button @click="handleTurnpra(scope.$index, scope.row)"  type="primary" size="small">开始练习</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
 
 
-    <h3>考试</h3>
-    <div style="border: 1px #ccc solid;">
-      <el-table ref="singleTable" highlight-current-row 
-        @selection-change="selectionChangeChoice" border :data="exam"
-        style="width: 100%" height="550">
-        <el-table-column type="selection" width="50">
-        </el-table-column>
-        <el-table-column prop="examId" label="考试编号" width="100">
-        </el-table-column>
-        <el-table-column prop="examName" label="考试名称" width="350">
-        </el-table-column>
-        <el-table-column prop="subjectId" label="所属科目" width="150">
-        </el-table-column>
-        <el-table-column prop="examType" label="考试类型" width="150">
-        </el-table-column>
-        <el-table-column prop="startTime" label="考试开始时间" width="160">
-        </el-table-column>
-        <el-table-column prop="endTime" label="考试截止时间" width="160">
-        </el-table-column>
-        <el-table-column prop="needTime" label="考试时长" width="100">
-        </el-table-column>
-        
-        <el-table-column fixed="right" label="操作" width="100">
-          <template slot-scope="scope">
-            <el-button @click="routeJump('ChapterPractice')"  type="primary" size="small">开始考试</el-button>
-            <!-- <el-button type="text" size="small">编辑</el-button> -->
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+      <el-tab-pane label="章节测试与考试" name="second">
+        <div style="text-align: center;">
+          <el-table
+            :data="exam.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            style="width: 100%" height="450">
+            <el-table-column label="序号" type="index" >
+            </el-table-column>
+            <el-table-column prop="examId" label="考试编号">
+            </el-table-column>
+            <el-table-column prop="examName" label="考试名称">
+            </el-table-column>
+            <el-table-column prop="subjectId" label="所属科目">
+            </el-table-column>
+            <el-table-column prop="examType" label="考试类型">
+            </el-table-column>
+            <el-table-column prop="startTime" label="考试开始时间">
+            </el-table-column>
+            <el-table-column prop="endTime" label="考试截止时间">
+            </el-table-column>
+            <el-table-column prop="needTime" label="考试时长" >
+            </el-table-column>
+            <el-table-column align="right"  label="操作">
+              <!-- <template slot="header" slot-scope="scope">
+                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+              </template> -->
+              <template slot-scope="scope">
+                <!-- <el-button  @click="handleTurnpra(scope.$index, scope.row)" @click="routeJump('ChapterPractice')"  type="primary" size="small">开始考试</el-button> -->
+                <el-button  @click="handleTurnexam(scope.$index, scope.row)" type="primary" size="small">开始考试</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
 
   </div>
 </template>
@@ -114,7 +120,9 @@
         practiceList: [ ],  //章节练习设置信息
         exam:[ ],  //测试与考试设置信息
         practiceSetId:null,
-        myloading:true
+        myloading:true,
+        activeName: "second",
+        search:'',
       };
     },
     created () {
@@ -122,6 +130,9 @@
       this.getExam();
     },
     methods: {
+      handleClick(tab, event) {   //tab切换
+        console.log(tab, event);
+      },
       getPractice(){
         let that = this;
         axios.get("/practiceSet/getAllPracticeSet").then(res => {
@@ -133,6 +144,7 @@
       getExam(){
         let that = this;
         axios.get("/exam/getAllExam").then(res => {
+          that.myloading = false;
           console.log(res.data);
           that.exam = res.data;
         });
@@ -152,15 +164,31 @@
       handleClick(row) {
         console.log(row);
       },
-      routeJump(e) {
-      // console.log(e);
-      if (e == "ChapterPractice")
-       alert("test")
+      handleTurnpra(index,row){   //跳转去章节练习页面
+        console.log(index,row);
+        // this.$router.push({
+        // name: "ChapterPractice",
+        // query: { practiceSetId:row.practiceSetId}
+        // });
+      },
+      handleTurnexam(index,row){   //跳转去考试页面
+        console.log(index,row);
         this.$router.push({
         name: "ChapterPractice",
-        query: { id1523:123}
-      });
-      }
+        query: { examId:row.examId}
+        });
+      },
+      // routeJump(e) {
+      // // console.log(e);
+      // if (e == "ChapterPractice")
+      //  alert("test")
+      //   this.$router.push({
+      //   name: "ChapterPractice",
+      //   query: { id1523:123}
+      // });
+      // }
+
+
     }
   };
 </script>

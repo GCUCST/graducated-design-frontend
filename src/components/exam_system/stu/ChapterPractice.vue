@@ -14,7 +14,7 @@
 
               </div>
 
-              <div class="test_content">
+              <div class="test_content" id="q1">
                 <div class="test_content_title">
                   <h2>选择题</h2>
                   <p>
@@ -26,10 +26,10 @@
               </div>
               <div class="test_content_nr">
                 <ul>
-                  <li v-for="(item,index) in choicelist" :key="index" :id="' q_1_' + (index+1)">
+                  <li v-for="(item,index) in choicelist" :key="index" :id="'q_1_' + (index+1)">
                     <div class="test_content_nr_tt">
                       <i>{{index+1}}</i><span>({{exam.choiceScore}}分)</span>
-                      <font>{{item.title}}</font>
+                      <font>{{item==null?"":item.title}}</font>
                     </div>
 
                     <div class="test_content_nr_main">
@@ -44,7 +44,7 @@
 
                           <label :for=" '1_answer_' + (index+1) +'_option_1'">
                             A.
-                            <p class="ue" style="display: inline;">{{item.attrA}}</p>
+                            <p class="ue" style="display: inline;">{{item==null?"":item.attrA}}</p>
                           </label>
                         </li>
 
@@ -57,7 +57,7 @@
 
                           <label :for=" '1_answer_' + (index+1) + '_option_2' ">
                             B.
-                            <p class="ue" style="display: inline;">{{item.attrB}}</p>
+                            <p class="ue" style="display: inline;">{{item==null?"":item.attrB}}</p>
                           </label>
                         </li>
 
@@ -70,7 +70,7 @@
 
                           <label :for=" '1_answer_' + (index+1) + '_option_3'">
                             C.
-                            <p class="ue" style="display: inline;">{{item.attrC}}</p>
+                            <p class="ue" style="display: inline;">{{item==null?"":item.attrC}}</p>
                           </label>
                         </li>
 
@@ -83,7 +83,7 @@
 
                           <label :for=" '1_answer_' + (index+1) + '_option_4'">
                             D.
-                            <p class="ue" style="display: inline;">{{item.attrD}}</p>
+                            <p class="ue" style="display: inline;">{{item==null?"":item.attrD}}</p>
                           </label>
                         </li>
 
@@ -96,7 +96,7 @@
                 </ul>
               </div>
 
-              <div class="test_content">
+              <div class="test_content" id="q2">
                 <div class="test_content_title">
                   <h2>填空题</h2>
                   <p>
@@ -108,16 +108,16 @@
               <div class="test_content_nr">
                 <ul>
 
-                  <li v-for="(item,index) in blanklist" :key="index" :id="' q_2_' + (index+1)">
+                  <li v-for="(item,index) in blanklist" :key="index" :id="'q_2_' + (index+1)">
                     <div class="test_content_nr_tt">
                       <i>{{index + 1}}</i><span>({{exam.blankScore}}分)</span>
-                      <font>{{item.title}}</font>
+                      <font>{{item==null?"":item.title}}</font>
                     </div>
 
                     <div class="test_content_nr_main">
                       <font>答案：</font>
                       <input type="text" v-model="checkedb[index]" @change="get_bla_value(index)"
-                        style="height: 25px;font-size: 16px;color:black;" name="answer1" id="'2_answer_'+ (index+1)" />
+                        style="height: 25px;font-size: 16px;color:black;" />
                     </div>
                   </li>
 
@@ -125,7 +125,7 @@
               </div>
 
 
-              <div class="test_content">
+              <div class="test_content" id="q3">
                 <div class="test_content_title">
                   <h2>简答题</h2>
                   <p>
@@ -136,15 +136,15 @@
               </div>
               <div class="test_content_nr">
                 <ul>
-                  <li v-for="(item,index) in shortlist" :key="index" :id="' q_3_' + (index+1)">
+                  <li v-for="(item,index) in shortlist" :key="index" :id="'q_3_' + (index+1)">
                     <div class="test_content_nr_tt">
                       <i>{{index+1}}</i><span>({{exam.shortScore}}分)</span>
-                      <font>{{item.title}}</font>
+                      <font>{{item==null?"":item.title}}</font>
                     </div>
 
                     <div class="test_content_nr_main">
                       <font>答案：</font>
-                      <el-input type="textarea" :rows="2"  @change="get_short_value(index)" v-model="checkeds[index]">
+                      <el-input type="textarea" :rows="2" @change="get_short_value(index)" v-model="checkeds[index]">
                       </el-input>
                     </div>
                   </li>
@@ -152,7 +152,7 @@
               </div>
 
 
-              <div class="test_content">
+              <div class="test_content" id="q4">
                 <div class="test_content_title">
                   <h2>程序填空题</h2>
                   <p>
@@ -164,23 +164,23 @@
               <div class="test_content_nr">
                 <ul>
 
-                  <li v-for="(item,index) in proBlanklist" :key="index" :id="' q_4_' + (index+1)">
+                  <li v-for="(item,index) in proBlanklist" :key="index" :id="'q_4_' + (index+1)">
                     <div class="test_content_nr_tt">
                       <i>{{index+1}}</i><span>({{exam.proBlankScore}}分)</span>
-                      <font>{{item.title}}</font>
+                      <font>{{item==null?"":item.title}}</font>
                     </div>
 
                     <div class="test_content_nr_main">
                       <font>答案：</font>
                       <input type="text" style="height: 25px;font-size: 16px;color:black;" name="answer1"
-                        v-model="checkedpb[index]" @change="get_pb_value(index)" id="4_answer_'+ (index+1)" />
+                        v-model="checkedpb[index]" @change="get_pb_value(index)" />
                     </div>
                   </li>
 
                 </ul>
               </div>
 
-              <div class="test_content">
+              <div class="test_content" id="q5">
                 <div class="test_content_title">
                   <h2>编程题</h2>
                   <p>
@@ -192,15 +192,16 @@
               <div class="test_content_nr">
                 <ul>
 
-                  <li v-for="(item,index) in programlist" :key="index" :id="' q_5_' + (index+1)">
+                  <li v-for="(item,index) in programlist" :key="index" :id="'q_5_' + (index+1)">
                     <div class="test_content_nr_tt">
                       <i>{{index+1}}</i><span>({{exam.programScore}}分)</span>
-                      <font>{{item.title}}</font>
+                      <font>{{item==null?"":item.title}}</font>
                     </div>
 
                     <div class="test_content_nr_main">
                       <font>答案：</font>
-                      <el-input type="textarea" :rows="2" placeholder="请输入内容" @change="get_pro_value(index)" v-model="checkedpro[index]">
+                      <el-input type="textarea" :rows="2" placeholder="请输入内容" @change="get_pro_value(index)"
+                        v-model="checkedpro[index]">
                       </el-input>
 
                     </div>
@@ -222,7 +223,7 @@
             <div class="rt_nr1">
               <div class="rt_nr1_title">
                 <h1>
-                  答题卡
+                  考试剩余时间
                 </h1>
                 <p class="test_time">
                   <b class="alt-1">{{keepTime}}</b>
@@ -230,18 +231,18 @@
               </div>
 
               <div class="rt_content">
-                <div class="rt_content_tt">
+                <div class="rt_content_tt" >
                   <h2>选择题</h2>
                   <p>
                     <span>共</span><i class="content_lit">{{exam.choiceNum}}</i><span>题</span>
                   </p>
                 </div>
-                <div class="rt_content_nr answerSheet">
-                  <ul>
+                <!--<div class="rt_content_nr answerSheet">
+                   <ul> -->
                     <!-- <li v-for="index in choicelist.length"><a :href=" '#q_1_' + index">{{index}}</a></li> -->
-                    <li v-for="index in choicelist.length" @click="myAnchor('#q_1_'+index)">{{index}}</li>
-                  </ul>
-                </div>
+                    <!-- <li v-for="index in choicelist.length" @click="trun('q_1_'+index)">{{index}}</li>
+                  </ul> 
+                </div>-->
               </div>
 
               <div class="rt_content">
@@ -251,12 +252,12 @@
                     <span>共</span><i class="content_lit">{{exam.blankNum}}</i><span>题</span>
                   </p>
                 </div>
-                <div class="rt_content_nr answerSheet">
+                <!--<div class="rt_content_nr answerSheet">
                   <ul>
-                    <li><a href="">1</a></li>
-
+                     <li><a href="">1</a></li> 
+                    <li v-for="index in blanklist.length">{{index}}</li>
                   </ul>
-                </div>
+                </div>-->
               </div>
 
 
@@ -267,12 +268,12 @@
                     <span>共</span><i class="content_lit">{{exam.shortNum}}</i><span>题</span>
                   </p>
                 </div>
-                <div class="rt_content_nr answerSheet">
+                <!--<div class="rt_content_nr answerSheet">
                   <ul>
-                    <li><a href="">1</a></li>
-
+                     <li><a href="">1</a></li>
+                    <li v-for="index in shortlist.length">{{index}}</li>
                   </ul>
-                </div>
+                </div> -->
               </div>
 
 
@@ -283,12 +284,12 @@
                     <span>共</span><i class="content_lit">{{exam.proBlankNum}}</i><span>题</span>
                   </p>
                 </div>
-                <div class="rt_content_nr answerSheet">
+                <!--<div class="rt_content_nr answerSheet">
                   <ul>
-                    <li><a href="">1</a></li>
-
+                     <li><a href="">1</a></li> 
+                    <li v-for="index in proBlanklist.length">{{index}}</li>
                   </ul>
-                </div>
+                </div>-->
               </div>
 
 
@@ -299,12 +300,12 @@
                     <span>共</span><i class="content_lit">{{exam.programNum}}</i><span>题</span>
                   </p>
                 </div>
-                <div class="rt_content_nr answerSheet">
+                <!-- <div class="rt_content_nr answerSheet">
                   <ul>
-                    <li><a href="">1</a></li>
-
+                    <li><a href="">1</a></li> 
+                    <li v-for="index in programlist.length">{{index}}</li>
                   </ul>
-                </div>
+                </div>-->
               </div>
 
 
@@ -362,42 +363,44 @@
         limittime: 90,
         settime: '',
         questid: null,
-        id:null,
-        myloading:true,   //正在加载
-        examInfoId:5,
+        examId: null,   //当前考试的examid
+        myloading: true,   //正在加载
+        examInfoId: 5,
       };
     },
     created() {
       //this.StartCountDown();
       this.getExam();
       this.getExamInfo();
-      this.getChoice();
+      this.getChoice();   //拿到所有的题目
       // this.setChoiceAnswer();
       // this.getBlank();
       // this.getShort();
       // this.getProBlank();
-      // this.getProgram();
+      // this.getProgram(); 
     },
     mounted() {
-     this.id=this.$route.query.id1523;
-     console.log("***************************************"+this.id);
+      this.examId = this.$route.query.examId;
+      console.log("***************************************" + this.id);
     },
     methods: {
-      //  测试传choice答案
-      sendCanswer() {
-        //let tmp=that.choiceAnswer;
-        let date = [{ id: 15, type: 2, ans: 'test15' }, { id: 22, type: 3, ans: 'test22' }];
-        // let date=[{id:11,type:1,ans:'A'}];
-        let tmp = JSON.stringify(date);
-        console.log(tmp);
-        axios.post("/home/exam/arrtest", tmp, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(res => {
-          console.log(res);
-        });
-      },
+      // goAnchor,
+      // GetQueryString,
+      //  传c答案
+      // sendCanswer() {
+      //   //let tmp=that.choiceAnswer;
+      //   let date = [{ id: 15, type: 2, ans: 'test15' }, { id: 22, type: 3, ans: 'test22' }];
+      //   // let date=[{id:11,type:1,ans:'A'}];
+      //   let tmp = JSON.stringify(date);
+      //   console.log(tmp);
+      //   axios.post("/home/exam/arrtest", tmp, {
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     }
+      //   }).then(res => {
+      //     console.log(res);
+      //   });
+      // },
       StartCountDown() {
         var mydate = new Date();
         mydate.setMinutes(mydate.getMinutes() + this.limittime);
@@ -456,6 +459,9 @@
           that.shortlist = res.data.shortQues;
           that.proBlanklist = res.data.proBlank;
           that.programlist = res.data.program;
+          console.log(that.choicelist);
+          that.myloading = false;
+          that.StartCountDown();
           that.num1 = that.exam.choiceNum;    //拿到题目的数量
           that.num2 = that.exam.blankNum;
           that.num3 = that.exam.shortNum;
@@ -466,37 +472,47 @@
           that.setsAnswer(that.num3);
           that.setpbAnswer(that.num4);
           that.setproAnswer(that.num5);
-          that.myloading=false;
-          that.StartCountDown();
         });
-      }, 
-      arrconcat(){   //将答案数组连接成一个
-        let that= this;  
+        // that.num1 = that.exam.choiceNum;    //拿到题目的数量
+        // that.num2 = that.exam.blankNum;
+        // that.num3 = that.exam.shortNum;
+        // that.num4 = that.exam.proBlankNum;
+        // that.num5 = that.exam.programNum;
+        // that.setChoiceAnswer(that.num1);   //设置 答案空对象
+        // that.setbAnswer(that.num2);
+        // that.setsAnswer(that.num3);
+        // that.setpbAnswer(that.num4);
+        // that.setproAnswer(that.num5);
+      },
+      arrconcat() {   //将答案数组连接成一个
+        let that = this;
         that.allAnswers = that.canswers.concat(that.banswers).concat(that.sanswers).concat(that.pbanswers).concat(that.proanswers);
       },
-      get_radio_value: function (index) {
+      get_radio_value(index) {   //选择题
         let that = this;
         // 获取当前radio当前值
         console.log(index + 1 + "题" + that.checkedc[index]);
         let ans = that.checkedc[index];
         that.canswers[index].ans = ans; //赋值给 答案数组
+        console.log(index + 1 + "题" + that.canswers[index].ans);
       },
-      get_bla_value: function (index) {
+      get_bla_value(index) {
         let that = this;
         let ans = that.checkedb[index];
         that.banswers[index].ans = ans; //赋值给 答案数组
+        console.log(index + 1 + "题" + that.banswer[index].ans);
       },
-      get_short_value: function (index) {
+      get_short_value(index) {   //简答题
         let that = this;
         let ans = that.checkeds[index];
         that.sanswers[index].ans = ans; //赋值给 答案数组
       },
-      get_pb_value: function (index) {
+      get_pb_value(index) {
         let that = this;
         let ans = that.checkedpb[index];
         that.pbanswers[index].ans = ans; //赋值给 答案数组   程序填空
       },
-      get_pro_value: function (index) {
+      get_pro_value(index) {
         let that = this;
         let ans = that.checkedpro[index];
         that.proanswers[index].ans = ans; //赋值给 答案数组  编程题
@@ -504,7 +520,7 @@
       setChoiceAnswer(n) {   //选择题
         let that = this;
         for (var i = 0; i < n; i++) {
-          that.canswers.push({ examInfoId:that.examInfoId,id: that.choicelist[i].choiceId, type: 1, ans: "null" });
+          that.canswers.push({ examInfoId: that.examInfoId, id: that.choicelist[i].choiceId, type: 1, ans: "null" });
         }
         console.log("choiceAnswer:");
         console.log(that.canswers);
@@ -512,13 +528,13 @@
       setbAnswer(n) {   //填空
         let that = this;
         for (var i = 0; i < n; i++) {
-          that.banswers.push({ examInfoId:that.examInfoId,id: that.blanklist[i].blankQuesId, type: 2, ans: "null" });
+          that.banswers.push({ examInfoId: that.examInfoId, id: that.blanklist[i].blankQuesId, type: 2, ans: "null" });
         }
       },
       setsAnswer(n) {
         let that = this;
         for (var i = 0; i < n; i++) {
-          that.sanswers.push({ examInfoId:that.examInfoId,id: that.shortlist[i].shortQuesId, type: 3, ans: "null" });
+          that.sanswers.push({ examInfoId: that.examInfoId, id: that.shortlist[i].shortQuesId, type: 3, ans: "null" });
         }
         console.log("choiceAnswer:");
         console.log(that.canswers);
@@ -526,15 +542,13 @@
       setpbAnswer(n) {   //程序填空
         let that = this;
         for (var i = 0; i < n; i++) {
-          that.pbanswers.push({ examInfoId:that.examInfoId,id: that.proBlanklist[i].proBlankId, type: 4, ans: "null" });
+          that.pbanswers.push({ examInfoId: that.examInfoId, id: that.proBlanklist[i].proBlankId, type: 4, ans: "null" });
         }
-        console.log("choiceAnswer:");
-        console.log(that.canswers);
       },
       setproAnswer(n) {   //编程题
         let that = this;
         for (var i = 0; i < n; i++) {
-          that.proanswers.push({ examInfoId:that.examInfoId,id: that.programlist[i].programId, type: 5, ans: "null" });
+          that.proanswers.push({ examInfoId: that.examInfoId, id: that.programlist[i].programId, type: 5, ans: "null" });
         }
       },
 
@@ -549,14 +563,14 @@
       generateCq(index) {
         return "#q_0_" + index;
       },
-      goAnchor(selector) {
-        let that = this;
-        let anchor = that.$el.querySelector(selector)
-        document.documentElement.scrollTop = anchor.offsetTop
-      },
-      myAnchor(selector) {
-        document.querySelector(selector).scrollIntoView(true);
-      },
+      // goAnchor(selector) {
+      //   let that = this;
+      //   let anchor = that.$el.querySelector(selector)
+      //   document.documentElement.scrollTop = anchor.offsetTop
+      // },
+      // myAnchor(selector) {
+      //   document.querySelector(selector).scrollIntoView(true);
+      // },
       sum(a, b) {
         return a * b;
       },
@@ -564,7 +578,7 @@
         let that = this;
         that.arrconcat();  //将答案数组连接
         //let date = { 11: "A", 14: "C", 17: "B", 18: "B", 22: "A", 23: "B", 26: "B", 27: "B", 29: "C", 34: "D" };
-        let date=that.allAnswers;
+        let date = that.allAnswers;
         let formData = JSON.stringify(date);
         console.log(formData);
 
@@ -574,9 +588,29 @@
           }
         })
           .then(res => {
+            if (res.data == 1) {
+              that.$message({
+                type: "success",
+                message: "交卷成功!"
+              });
+            } else {
+              alert("交卷失败。");
+            }
             console.log(res);
+            this.$router.push({
+              name: "Exam"
+            });
           });
       },
+      //锚点跳转
+      trun(anc) {
+        console.log(anc);
+        let ele = document.getElementById(anc);
+        console.log(ele);
+        let top = ele.getBoundingClientRect().top;  //返回相对视口的位置 
+        window.scrollTo(10, top);
+      },
+
 
     }
   };
@@ -919,16 +953,17 @@
 
   .rt_content_tt {
     width: 95%;
-    height: 40px;
-    line-height: 40px;
+    height: 80px;
+    line-height: 80px;
     margin: 0 auto;
     border-bottom: 1px solid #e4e4e4;
   }
 
   .rt_content_tt h2 {
     width: 150px;
-    font-size: 14px;
+    font-size: 18px;
     display: inline-block;
+    padding-left: 8px;
   }
 
   .rt_content_tt p {
