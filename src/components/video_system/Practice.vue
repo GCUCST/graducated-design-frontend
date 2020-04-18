@@ -15,19 +15,17 @@
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
-            >删除</el-button>
+            >删除</el-button><br>
+              <el-button   type="text"  style="float: right; padding: 3px 0" @click="shwoAnswer(index)">答案</el-button>
             <el-checkbox-group v-model="checkList">
               <el-checkbox :label="'A、 '+item.attrA"></el-checkbox>
               <el-checkbox :label="' B、'+item.attrB"></el-checkbox>C、
               <el-checkbox :label="'C、'+item.attrC"></el-checkbox>D、
               <el-checkbox :label="'D、'+item.attrD"></el-checkbox>
-            </el-checkbox-group>
-            <div style="text-align:center">
-              <br />
-              <el-button @click="shwoAnswer(index)">查看答案</el-button>
-              <br />
+            </el-checkbox-group><br>
+            <div style="ltext-align:left">
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
-              <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
+              <span v-show="showAnswerId==index">,&nbsp;&nbsp;&nbsp;描述：{{item.description}}</span>
             </div>
           </el-collapse-item>
 
@@ -42,17 +40,17 @@
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
-            >删除</el-button>
-            <el-input style="width:50%;margin:0 auto;" v-model="simpleAnswers" />
-            <div style="text-align:center">
-              <br />
-              <br />
-              <el-button @click="shwoAnswer(index)">查看答案</el-button>
-              <br />
-              <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
+            >删除</el-button><br>
+              <el-button   type="text"  style="float: right; padding: 3px 0" @click="shwoAnswer(index)">答案</el-button>
+            <el-input style="width:85%;margin:20px 20px" v-model="simpleAnswers" />
+            <div style="text-align:left">
+             
+              <span v-show="showAnswerId==index">答案：{{item.answer}}</span><br>
               <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
             </div>
           </el-collapse-item>
+
+
           <!-- 填空 -->
           <el-collapse-item v-if="item.questionType==3||item.questionType==1">
             <template slot="title">
@@ -64,17 +62,16 @@
               v-if="role=='teacher'"
               style="float: right; padding: 3px 0"
               type="text"
-            >删除</el-button>
-            <!-- <div style="display:flex;">
+            >删除</el-button><br>
+    <el-button   type="text"  style="float: right; padding: 3px 0" @click="shwoAnswer(index)">答案</el-button>
+            <div style="display:flex;">
               <div v-for="(i,j) in JSON.parse(item.answer)" :key="j">
                 {{j+1}}、
                 <el-input v-model="blankList[j]" 
                 style="margin-right:50px;;width:100px;" />
               </div>
-            </div> -->
-            <div style="text-align:center">
-              <br />
-              <el-button @click="shwoAnswer(index)">查看答案</el-button>
+            </div>
+            <div style="text-align:left">
               <br />
               <span v-show="showAnswerId==index">答案：{{item.answer}}</span>
               <span v-show="showAnswerId==index">,描述：{{item.description}}</span>
@@ -99,11 +96,15 @@
       <el-table
         :data="allQuestions.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase()))"
         max-height="450"
-        style="width: 100%"
+        style="width: 80%;margin:0 auto"
       >
         <el-table-column label="编号" prop="questionId"></el-table-column>
-        <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="类型" prop="questionType"></el-table-column>
+        <el-table-column label="标题"  width="350" prop="title"></el-table-column>
+        <el-table-column label="类型" prop="questionType">
+             <template slot-scope="scope">
+        <span style="margin-left: 10px">{{ scope.row.questionType==0?'选择题':scope.row.questionType==1?'填空题':'简答题' }}</span>
+      </template>
+        </el-table-column>
         <el-table-column align="right">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleAdd(scope.$index, scope.row)">添加</el-button>
