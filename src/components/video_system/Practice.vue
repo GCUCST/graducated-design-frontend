@@ -100,9 +100,14 @@
       >
         <el-table-column label="编号" prop="questionId"></el-table-column>
         <el-table-column label="标题"  width="350" prop="title"></el-table-column>
-        <el-table-column label="类型" prop="questionType">
+        <el-table-column label="类型" 
+        
+          :filters="[{text: '填空题', value: '1'}, {text: '选择题', value: '0'}, {text: '简答题', value: '2'},{text: '代码题', value: '4'}]"
+      :filter-method="filterHandler"
+
+        prop="questionType">
              <template slot-scope="scope">
-        <span style="margin-left: 10px">{{ scope.row.questionType==0?'选择题':scope.row.questionType==1?'填空题':'简答题' }}</span>
+        <span style="margin-left: 10px">{{ scope.row.questionType==0?'选择题':scope.row.questionType==1?'填空题':scope.row.questionType==2?'简答题':'代码题' }}</span>
       </template>
         </el-table-column>
         <el-table-column align="right">
@@ -233,7 +238,11 @@ export default {
       this.questions.forEach((element, i) => {
         if (element.questionId == questionId) this.questions.splice(i, 1);
       });
-    }
+    },
+     filterHandler(value, row, column) {
+        const property = column['property'];
+        return row[property] === value;
+      }
   },
 
   mounted() {
