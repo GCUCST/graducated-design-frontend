@@ -9,11 +9,11 @@
           <el-button @click="addGrade()">添加</el-button>
         </div>
 
-        <el-table :data="gradeJson" style="width: 60%;margin:0 auto" max-height="400">
+        <el-table :data="gradeJson" style="width: 40%;margin:0 auto" max-height="400">
              <el-table-column type="selection"></el-table-column>
-            <el-table-column label="序号" type="index" width="80"></el-table-column>
-          <el-table-column fixed prop="id" label="编号" width="150"></el-table-column>
-          <el-table-column prop="name" sortable label="名称" width="150"></el-table-column>
+            <el-table-column label="序号" type="index" width="100"></el-table-column>
+          <!-- <el-table-column fixed prop="id" label="编号" width="150"></el-table-column> -->
+          <el-table-column prop="name" sortable label="名称" width="120"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
